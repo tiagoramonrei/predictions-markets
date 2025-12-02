@@ -37,6 +37,7 @@ interface OutcomeData {
   isYes: boolean;
   question?: string;
   isMultipleChoice?: boolean;
+   cotas?: number;
 }
 
 // Helper Components from Figma Import

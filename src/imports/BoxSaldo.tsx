@@ -67,8 +67,8 @@ function Title2() {
 
 function TxtTaxa() {
   return (
-    <div className="box-border content-stretch flex gap-[2px] h-full items-center pl-[12px] pr-0 py-0 relative shrink-0" data-name="txtTaxa">
-      <div aria-hidden="true" className="absolute border-[#242424] border-[0px_0px_0px_1px] border-solid inset-0 pointer-events-none" />
+    <div className="box-border content-stretch flex gap-[6px] h-full items-center pl-[12px] pr-0 py-0 relative shrink-0" data-name="txtTaxa">
+      <div aria-hidden="true" className="absolute left-0 top-[6px] bottom-[6px] border-l border-[#242424] pointer-events-none" />
       <Icon />
       <Title2 />
     </div>

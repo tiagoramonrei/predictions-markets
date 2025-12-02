@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import svgPaths from "../imports/svg-5505oo64wo";
-import svgPathsEsconder from "../imports/svg-py3wa1pfwb";
 import svgPathsSell from "../imports/svg-vrudki1plq";
 import svgPathsTaylor from "../imports/svg-wjbrcz9efd";
+import svgPathsSaldo from "../imports/svg-cvp093bg6z";
 import type { OutcomeData } from './InternaMercado';
 import BtnLoading from "../imports/BtnLoading";
 import imgLoadingAnima from "figma:asset/905f098b527169db8617a747c06509da2180719d.png";
@@ -153,6 +153,18 @@ function Text({ outcome }: { outcome: OutcomeData }) {
     ? outcome.nome 
     : ((outcome as any).question || outcome.nome);
 
+  // Para perguntas sim/não (não múltipla escolha), mostrar apenas SIM/NÃO em 16px
+  if (!outcome.isMultipleChoice) {
+    return (
+      <div className="basis-0 flex flex-col gap-[2px] grow items-start justify-center min-w-0 relative shrink-0" data-name="text">
+        <div className="font-['DM_Sans:Bold',sans-serif] text-[16px]">
+          <p className={`leading-none whitespace-nowrap font-bold ${outcome.isYes ? 'text-[#32a866]' : 'text-[#d92341]'}`}>{outcome.isYes ? 'SIM' : 'NÃO'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Para múltipla escolha, mostrar pergunta + SIM/NÃO
   return (
     <div className="basis-0 flex flex-col gap-[2px] grow items-start justify-center min-w-0 relative shrink-0" data-name="text">
       <div className="w-full font-['DM_Sans:Bold',sans-serif] text-[16px] text-white">
@@ -227,6 +239,7 @@ function TextSell({ outcome }: { outcome: OutcomeData }) {
   const displayName = outcome.isMultipleChoice 
     ? outcome.nome 
     : ((outcome as any).question || outcome.nome);
+  const chanceCompra = outcome.porcentagemSim;
 
   return (
     <div className="basis-0 flex flex-col gap-[2px] grow items-start justify-center min-w-0 relative shrink-0" data-name="text">
@@ -236,26 +249,27 @@ function TextSell({ outcome }: { outcome: OutcomeData }) {
         </p>
       </div>
       <div className="font-['DM_Sans:Regular',sans-serif] text-[#e3e3e3] text-[10px]">
-        <p className="leading-none whitespace-nowrap">Comprou com chance 90%</p>
+        <p className="leading-none whitespace-nowrap">Comprou com chance {chanceCompra}%</p>
       </div>
     </div>
   );
 }
 
-function CotasHeld() {
+function CotasHeld({ cotas }: { cotas: number }) {
+  const formatted = (cotas ?? 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
   return (
     <div className="content-stretch flex flex-col gap-[2px] items-end justify-center leading-[0] not-italic relative shrink-0 text-nowrap" data-name="porcentagem">
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[16px] text-white" style={{ fontWeight: 'bold' }}>
-        <p className="leading-[1.2] text-nowrap whitespace-pre">111,1</p>
+        <p className="leading-[1.2] text-nowrap whitespace-pre">{formatted}</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Cotas</p>
+        <p className="leading-none text-nowrap whitespace-pre">Qtd de Cotas</p>
       </div>
     </div>
   );
 }
 
-function HeaderOutcomeSell({ outcome }: { outcome: OutcomeData }) {
+function HeaderOutcomeSell({ outcome, cotas }: { outcome: OutcomeData; cotas: number }) {
   return (
     <div className="relative shrink-0 w-full" data-name="headerOutcome">
       <div className="flex flex-col items-start w-full gap-[16px]">
@@ -276,7 +290,7 @@ function HeaderOutcomeSell({ outcome }: { outcome: OutcomeData }) {
               />
             </div>
             <TextSell outcome={outcome} />
-            <CotasHeld />
+            <CotasHeld cotas={cotas} />
           </div>
         </div>
       </div>
@@ -342,12 +356,13 @@ function PercentagesSell({ onPct25, onPct50, onPct75, onMax }: { onPct25: () => 
 }
 
 function BaseContentVenderSim({ 
-  outcome, valor, onPct25, onPct50, onPct75, onMax,
+  outcome, valor, onPct25, onPct50, onPct75, onMax, cotasDisponiveis,
   onPress1, onPress2, onPress3, onPress4, onPress5, onPress6, 
   onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace 
 }: {
   outcome: OutcomeData;
   valor: string;
+  cotasDisponiveis: number;
   onPct25: () => void;
   onPct50: () => void;
   onPct75: () => void;
@@ -368,7 +383,7 @@ function BaseContentVenderSim({
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
       <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="baseEscolha">
-        <HeaderOutcomeSell outcome={outcome} />
+        <HeaderOutcomeSell outcome={outcome} cotas={cotasDisponiveis} />
       </div>
       <BaseValorSell valor={valor} />
       <PercentagesSell onPct25={onPct25} onPct50={onPct50} onPct75={onPct75} onMax={onMax} />
@@ -406,7 +421,7 @@ function IconSetaDown() {
   );
 }
 
-function InfoSell({ cotas, valor }: { cotas: number; valor: number }) {
+function InfoSell({ cotas, valor, chanceAtual }: { cotas: number; valor: number; chanceAtual: number }) {
   // Formata valor
   const formatarReal = (num: number): string => {
     return num.toLocaleString('pt-BR', { 
@@ -418,6 +433,8 @@ function InfoSell({ cotas, valor }: { cotas: number; valor: number }) {
   const formatarCotas = (num: number): string => {
     return num.toLocaleString('pt-BR', { maximumFractionDigits: 1 });
   };
+
+  const displayValor = valor > 0 ? valor : cotas * (chanceAtual / 100);
 
   return (
     <div className="flex items-center gap-[8px]">
@@ -432,11 +449,11 @@ function InfoSell({ cotas, valor }: { cotas: number; valor: number }) {
             </div>
           </div>
           <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-nowrap text-white">
-            <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>R${formatarReal(valor)}</p>
+            <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>R${formatarReal(displayValor)}</p>
           </div>
         </div>
         <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-nowrap text-white">
-          <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>Chance atual 85%</p>
+          <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>Chance atual {chanceAtual}%</p>
         </div>
       </div>
       
@@ -453,7 +470,7 @@ function InfoSell({ cotas, valor }: { cotas: number; valor: number }) {
   );
 }
 
-function BtnSell({ cotas, valor, isActive, onClick, isLoading }: { cotas: number; valor: number; isActive: boolean; onClick: () => void; isLoading?: boolean }) {
+function BtnSell({ cotas, valor, chanceAtual, isActive, onClick, isLoading }: { cotas: number; valor: number; chanceAtual: number; isActive: boolean; onClick: () => void; isLoading?: boolean }) {
   if (isLoading) {
     return (
       <div className="h-[48px] relative shrink-0 w-full" data-name="btn">
@@ -473,7 +490,7 @@ function BtnSell({ cotas, valor, isActive, onClick, isLoading }: { cotas: number
        <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex h-[48px] items-center justify-between px-[24px] py-0 relative w-full">
           <p className="font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre" style={{ fontWeight: 'bold' }}>Vender</p>
-          <InfoSell cotas={cotas === 0 ? 111.1 : cotas} valor={valor === 0 ? 94.44 : valor} />
+          <InfoSell cotas={cotas} valor={valor} chanceAtual={chanceAtual} />
         </div>
       </div>
     </div>
@@ -489,6 +506,7 @@ function TextSellNo({ outcome }: { outcome: OutcomeData }) {
   const displayName = outcome.isMultipleChoice 
     ? outcome.nome 
     : ((outcome as any).question || outcome.nome);
+  const chanceCompra = outcome.porcentagemNao;
 
   return (
     <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="text">
@@ -496,26 +514,17 @@ function TextSellNo({ outcome }: { outcome: OutcomeData }) {
         <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">{displayName}</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Comprou com chance 85%</p>
+        <p className="leading-none text-nowrap whitespace-pre">Comprou com chance {chanceCompra}%</p>
       </div>
     </div>
   );
 }
 
-function PorcentagemSellNo() {
-  return (
-    <div className="content-stretch flex flex-col gap-[2px] items-end justify-center leading-[0] not-italic relative shrink-0 text-nowrap" data-name="porcentagem">
-      <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[16px] text-white">
-        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">117,64</p>
-      </div>
-      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Cotas</p>
-      </div>
-    </div>
-  );
+function PorcentagemSellNo({ cotas }: { cotas: number }) {
+  return <CotasHeld cotas={cotas} />;
 }
 
-function HeaderOutcomeSellNo({ outcome }: { outcome: OutcomeData }) {
+function HeaderOutcomeSellNo({ outcome, cotas }: { outcome: OutcomeData; cotas: number }) {
   return (
     <div className="relative shrink-0 w-full" data-name="headerOutcome">
       <div className="flex flex-col items-start w-full gap-[16px]">
@@ -532,7 +541,7 @@ function HeaderOutcomeSellNo({ outcome }: { outcome: OutcomeData }) {
               <img alt="" className="block max-w-none size-full rounded-full object-cover" height="48" src={getOutcomeImage(outcome)} width="48" />
             </div>
             <TextSellNo outcome={outcome} />
-            <PorcentagemSellNo />
+            <PorcentagemSellNo cotas={cotas} />
           </div>
         </div>
       </div>
@@ -583,7 +592,7 @@ function IconSetaWhite() {
   );
 }
 
-function RetornoSellNo({ valor }: { valor: number }) {
+function RetornoSellNo({ valor, cotas, chanceAtual }: { valor: number; cotas: number; chanceAtual: number }) {
   const formatarReal = (num: number): string => {
     return num.toLocaleString('pt-BR', { 
       minimumFractionDigits: 2, 
@@ -595,12 +604,16 @@ function RetornoSellNo({ valor }: { valor: number }) {
     return num.toLocaleString('pt-BR', { maximumFractionDigits: 2 });
   };
 
-  const displayValor = valor === 0 ? 105.88 : valor;
+  const chanceDecimal = Math.max(chanceAtual, 0) / 100;
+  const displayValor = valor > 0 ? valor : cotas * chanceDecimal;
+  const cotasParaMostrar = cotas > 0 
+    ? cotas 
+    : (chanceDecimal > 0 ? displayValor / chanceDecimal : 0);
 
   return (
     <div className="content-stretch flex gap-[8px] items-center justify-end relative shrink-0 w-full" data-name="retorno">
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-nowrap text-white">
-        <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>{formatarCotas(displayValor / 0.9)} cotas</p>
+        <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>{formatarCotas(cotasParaMostrar)} cotas</p>
       </div>
       <div className="flex items-center justify-center relative shrink-0">
         <div className="flex-none scale-y-[-100%]">
@@ -614,13 +627,13 @@ function RetornoSellNo({ valor }: { valor: number }) {
   );
 }
 
-function InfoSellNo({ valor }: { valor: number }) {
+function InfoSellNo({ valor, cotas, chanceAtual }: { valor: number; cotas: number; chanceAtual: number }) {
   return (
     <div className="flex items-center gap-[8px]">
       <div className="content-stretch flex flex-col gap-[2px] items-end relative shrink-0" data-name="info">
-        <RetornoSellNo valor={valor} />
+        <RetornoSellNo valor={valor} cotas={cotas} chanceAtual={chanceAtual} />
         <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-nowrap text-white">
-          <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>Chance atual 90%</p>
+          <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>Chance atual {chanceAtual}%</p>
         </div>
       </div>
       <div className="flex items-center justify-center relative shrink-0">
@@ -636,7 +649,7 @@ function InfoSellNo({ valor }: { valor: number }) {
   );
 }
 
-function BtnSellNo({ isActive, onClick, isLoading, valor }: { isActive: boolean; onClick: () => void; isLoading?: boolean; valor: number }) {
+function BtnSellNo({ isActive, onClick, isLoading, valor, cotas, chanceAtual }: { isActive: boolean; onClick: () => void; isLoading?: boolean; valor: number; cotas: number; chanceAtual: number }) {
   if (isLoading) {
     return (
       <div className="h-[48px] relative shrink-0 w-full" data-name="btn">
@@ -657,7 +670,7 @@ function BtnSellNo({ isActive, onClick, isLoading, valor }: { isActive: boolean;
        <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex h-[48px] items-center justify-between px-[24px] py-0 relative w-full">
           <p className="font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre" style={{ fontWeight: 'bold' }}>Vender</p>
-          <InfoSellNo valor={valor} />
+          <InfoSellNo valor={valor} cotas={cotas} chanceAtual={chanceAtual} />
         </div>
       </div>
     </div>
@@ -665,12 +678,13 @@ function BtnSellNo({ isActive, onClick, isLoading, valor }: { isActive: boolean;
 }
 
 function BaseContentVenderNaoTaylor({ 
-  outcome, valor, onPct25, onPct50, onPct75, onMax,
+  outcome, valor, onPct25, onPct50, onPct75, onMax, cotasDisponiveis,
   onPress1, onPress2, onPress3, onPress4, onPress5, onPress6, 
   onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace 
 }: {
   outcome: OutcomeData;
   valor: string;
+  cotasDisponiveis: number;
   onPct25: () => void;
   onPct50: () => void;
   onPct75: () => void;
@@ -691,7 +705,7 @@ function BaseContentVenderNaoTaylor({
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
       <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="baseEscolha">
-        <HeaderOutcomeSellNo outcome={outcome} />
+        <HeaderOutcomeSellNo outcome={outcome} cotas={cotasDisponiveis} />
       </div>
       <BaseValorSellNo valor={valor} />
       <PercentagesSell onPct25={onPct25} onPct50={onPct50} onPct75={onPct75} onMax={onMax} />
@@ -820,124 +834,88 @@ function Valor1({ onAdd10, onAdd50, onAdd100, onMax }: { onAdd10: () => void; on
   );
 }
 
-// Ícone de olho aberto (saldo visível)
-function IconMostrarEsconder() {
+function SummaryValue({ label, value }: { label: string; value: string }) {
   return (
-    <div className="relative shrink-0 size-[16px]" data-name="iconMostrarEsconder">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-        <g id="iconMostrarEsconder">
-          <path d={svgPaths.p2bf7c580} id="iconMostrarEsconder_2" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path clipRule="evenodd" d={svgPaths.p23abe000} fillRule="evenodd" id="iconMostrarEsconder_3" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-// Ícone de olho fechado/cortado (saldo escondido)
-function IconEsconderSaldo() {
-  return (
-    <div className="relative shrink-0 size-[16px]" data-name="iconMostrarEsconder">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-        <g id="iconMostrarEsconder">
-          <path d={svgPathsEsconder.p7bafdc0} id="iconMostrarEsconder_2" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path d={svgPathsEsconder.p102e7900} id="iconMostrarEsconder_3" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path d={svgPathsEsconder.p18fe5000} id="iconMostrarEsconder_4" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path d={svgPathsEsconder.p169a2580} id="iconMostrarEsconder_5" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-function Title({ saldoVisivel }: { saldoVisivel: boolean }) {
-  return (
-    <div className="content-stretch flex flex-col items-start not-italic relative shrink-0 text-white" data-name="title">
-      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] h-[16px] justify-center leading-[0] relative shrink-0 text-[10px] w-[54px]">
-        <p className="leading-none">Seu saldo</p>
+    <div className="basis-0 content-stretch flex flex-col grow items-center min-h-px min-w-px not-italic relative shrink-0 text-center text-nowrap" data-name="title">
+      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] relative shrink-0 text-[10px] text-white">
+        <p className="leading-none text-nowrap whitespace-pre">{label}</p>
       </div>
-      <p className="leading-[1.4] relative shrink-0 text-[14px] text-nowrap whitespace-pre" style={{ fontWeight: 'bold' }}>
-        {saldoVisivel ? 'R$ 240,90' : 'R$ *****'}
-      </p>
+      <p className="[white-space-collapse:collapse] font-['DM_Sans:Bold',sans-serif] font-bold leading-[1.4] min-w-full overflow-ellipsis overflow-hidden relative shrink-0 text-[#32a866] text-[14px] w-[min-content]">{value}</p>
     </div>
   );
 }
 
-function Content({ saldoVisivel, onToggleSaldo }: { saldoVisivel: boolean; onToggleSaldo: () => void }) {
+function TaxIcon() {
   return (
-    <div className="basis-0 content-stretch flex gap-[4px] grow items-start min-h-px min-w-px relative shrink-0" data-name="content">
-      <div className="flex gap-[4px] items-start cursor-pointer" onClick={onToggleSaldo}>
-        {saldoVisivel ? <IconMostrarEsconder /> : <IconEsconderSaldo />}
-        <Title saldoVisivel={saldoVisivel} />
+    <div className="opacity-[0.56] relative shrink-0 size-[16px]" data-name="Icon">
+      <div className="absolute inset-[-0.02%]" data-name="Group">
+        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
+          <g id="Group">
+            <circle cx="8.00335" cy="8.00354" id="Oval" r="6.0025" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+            <path d={svgPathsSaldo.p19df2600} id="Path" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+            <path d={svgPathsSaldo.pb554400} id="Path_2" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+            <path d={svgPathsSaldo.p2a194920} id="Path_3" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+            <g id="Path_4"></g>
+          </g>
+        </svg>
       </div>
     </div>
   );
 }
 
-function IconDepositar() {
+function TaxInfo({ value }: { value: string }) {
   return (
-    <div className="relative shrink-0 size-[16px]" data-name="iconDepositar">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
-        <g id="iconDepositar">
-          <path d="M7.99325 5.98348V5.33358" id="iconDepositar_2" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path d="M7.99325 10V10.6667" id="iconDepositar_3" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path d={svgPaths.p15dccf00} id="iconDepositar_4" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path d={svgPaths.p3f1a5d00} id="iconDepositar_5" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path d={svgPaths.p250b4e00} id="iconDepositar_6" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path d={svgPaths.pf3ff680} id="iconDepositar_7" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-        </g>
-      </svg>
-    </div>
-  );
-}
-
-function Txt1() {
-  return (
-    <div className="content-stretch flex gap-[4px] items-center justify-end relative shrink-0" data-name="txt">
-      <IconDepositar />
-      <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[10px] text-nowrap text-white whitespace-pre" style={{ fontWeight: 'bold' }}>Depositar</p>
-    </div>
-  );
-}
-
-function BtnDepositar() {
-  return (
-    <div className="box-border content-stretch flex h-[32px] items-center justify-center px-[16px] py-[10px] relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#242424]/20 transition-colors" data-name="btn-depositar">
-      <div aria-hidden="true" className="absolute border border-[#242424] border-solid inset-0 pointer-events-none rounded-[1000px]" />
-      <Txt1 />
-    </div>
-  );
-}
-
-function Saldo({ saldoVisivel, onToggleSaldo }: { saldoVisivel: boolean; onToggleSaldo: () => void }) {
-  return (
-    <div className="content-stretch flex gap-[16px] items-center relative shrink-0 w-full" data-name="saldo">
-      <Content saldoVisivel={saldoVisivel} onToggleSaldo={onToggleSaldo} />
-      <BtnDepositar />
-    </div>
-  );
-}
-
-function BoxSaldo({ saldoVisivel, onToggleSaldo }: { saldoVisivel: boolean; onToggleSaldo: () => void }) {
-  return (
-    <div className="relative rounded-[8px] shrink-0 w-full" data-name="boxSaldo">
-      <div aria-hidden="true" className="absolute border border-[#242424] border-solid inset-0 pointer-events-none rounded-[8px]" />
-      <div className="size-full">
-        <div className="box-border content-stretch flex flex-col gap-[8px] items-start p-[12px] relative w-full">
-          <Saldo saldoVisivel={saldoVisivel} onToggleSaldo={onToggleSaldo} />
+    <div className="content-stretch flex h-full items-center relative shrink-0" data-name="txtTaxa">
+      <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[#242424]" />
+      <div className="flex gap-[2px] items-center" style={{ paddingLeft: '12px' }}>
+        <TaxIcon />
+        <div className="content-stretch flex flex-col h-[20px] items-start not-italic relative shrink-0 text-[10px] text-center text-nowrap text-white" data-name="title">
+          <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] relative shrink-0">
+            <p className="leading-none text-nowrap whitespace-pre">Taxa</p>
+          </div>
+          <p className="font-['DM_Sans:Bold',sans-serif] font-bold leading-none overflow-ellipsis overflow-hidden relative shrink-0 whitespace-pre">{value}</p>
         </div>
       </div>
     </div>
   );
 }
 
-function BaseValor1({ onAdd10, onAdd50, onAdd100, onMax, saldoVisivel, onToggleSaldo }: { onAdd10: () => void; onAdd50: () => void; onAdd100: () => void; onMax: () => void; saldoVisivel: boolean; onToggleSaldo: () => void }) {
+function BoxSaldo({ cotas, retorno, taxa }: { cotas: number; retorno: number; taxa: number }) {
+  const formatarReal = (num: number): string => {
+    return num.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  return (
+    <div className="relative rounded-[8px] shrink-0 w-full" data-name="boxSaldo">
+      <div aria-hidden="true" className="absolute border border-[#242424] border-solid inset-0 pointer-events-none rounded-[8px]" />
+      <div className="size-full">
+        <div className="box-border content-stretch flex flex-col gap-[8px] items-start p-[12px] relative w-full">
+          <div className="content-stretch flex gap-[8px] items-center justify-end relative shrink-0 w-full" data-name="saldo">
+            <SummaryValue label="Cotas adquiridas" value={formatarReal(cotas)} />
+            <SummaryValue label="Retorno potencial" value={`R$${formatarReal(retorno)}`} />
+            <div className="flex flex-row items-center self-stretch">
+              <TaxInfo value={`-R$${formatarReal(Math.abs(taxa))}`} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BaseValor1({ onAdd10, onAdd50, onAdd100, onMax, cotas, retorno, taxa, valor }: { onAdd10: () => void; onAdd50: () => void; onAdd100: () => void; onMax: () => void; cotas: number; retorno: number; taxa: number; valor: string }) {
+  const numericValue = parseFloat(valor.replace(/\./g, '').replace(',', '.')) || 0;
+  const hasValue = numericValue > 0;
+  
   return (
     <div className="relative shrink-0 w-full" data-name="baseValor">
       <div className="flex flex-col items-center justify-center size-full">
         <div className="box-border content-stretch flex flex-col gap-[20px] items-center justify-center px-[20px] py-0 relative w-full">
           <Valor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} />
-          <BoxSaldo saldoVisivel={saldoVisivel} onToggleSaldo={onToggleSaldo} />
+          {hasValue && <BoxSaldo cotas={cotas} retorno={retorno} taxa={taxa} />}
         </div>
       </div>
     </div>
@@ -1224,12 +1202,12 @@ function BaseContentVender({ isYes, outcome }: { isYes: boolean; outcome: Outcom
   );
 }
 
-function BaseContent({ 
+function BaseContent({
   valor, onAdd10, onAdd50, onAdd100, onMax,
-  onPress1, onPress2, onPress3, onPress4, onPress5, onPress6, 
+  onPress1, onPress2, onPress3, onPress4, onPress5, onPress6,
   onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace,
-  saldoVisivel, onToggleSaldo, isYes, outcome
-}: { 
+  cotas, retorno, taxa, isYes, outcome
+}: {
   valor: string;
   onAdd10: () => void;
   onAdd50: () => void;
@@ -1247,8 +1225,9 @@ function BaseContent({
   onPress0: () => void;
   onPressComma: () => void;
   onBackspace: () => void;
-  saldoVisivel: boolean;
-  onToggleSaldo: () => void;
+  cotas: number;
+  retorno: number;
+  taxa: number;
   isYes: boolean;
   outcome: OutcomeData;
 }) {
@@ -1256,8 +1235,8 @@ function BaseContent({
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
       <BaseEscolha isYes={isYes} outcome={outcome} />
       <BaseValor valor={valor} />
-      <BaseValor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} saldoVisivel={saldoVisivel} onToggleSaldo={onToggleSaldo} />
-      <BaseTeclado 
+      <BaseValor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} cotas={cotas} retorno={retorno} taxa={taxa} valor={valor} />
+      <BaseTeclado
         onPress1={onPress1}
         onPress2={onPress2}
         onPress3={onPress3}
@@ -1275,63 +1254,7 @@ function BaseContent({
   );
 }
 
-function IconSeta() {
-  return (
-    <div className="h-[6.667px] relative w-[9.333px]" data-name="iconSeta">
-      <div className="absolute inset-[-7.5%_-5.36%]">
-        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11 8">
-          <g id="iconSeta">
-            <path d="M9.83333 3.83333H0.5" id="Path" stroke="var(--stroke-0, #E3E3E3)" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M6.5 7.16667L9.83333 3.83333" id="Path_2" stroke="var(--stroke-0, #E3E3E3)" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M6.5 0.5L9.83333 3.83333" id="Path_3" stroke="var(--stroke-0, #E3E3E3)" strokeLinecap="round" strokeLinejoin="round" />
-          </g>
-        </svg>
-      </div>
-    </div>
-  );
-}
-
-function Retorno({ valor, isYes, outcome }: { valor: number; isYes: boolean; outcome: OutcomeData }) {
-  // Função para formatar valor no padrão brasileiro
-  const formatarReal = (num: number): string => {
-    return num.toLocaleString('pt-BR', { 
-      minimumFractionDigits: 2, 
-      maximumFractionDigits: 2 
-    });
-  };
-
-  // Se valor = 0, mostra simulação fixa R$100
-  // Se valor > 0, mostra cálculo real
-  const displayValor = valor > 0 ? valor : 100;
-  
-  // Cálculo do retorno baseado na opção escolhida e nas porcentagens reais do outcome:
-  // Usa a porcentagem correta de cada artista
-  const percentage = isYes ? (outcome.porcentagemSim / 100) : (outcome.porcentagemNao / 100);
-  const retorno = displayValor / percentage;
-
-  return (
-    <div className="flex flex-col gap-[2px] items-end relative shrink-0" data-name="info">
-      <div className="content-stretch flex gap-[8px] items-center justify-center relative shrink-0" data-name="retorno">
-        <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-white text-[12px] text-nowrap">
-          <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>R$ {formatarReal(displayValor)}</p>
-        </div>
-        <div className="flex items-center justify-center relative shrink-0" style={{ "--stroke-0": "#ffffff" } as React.CSSProperties}>
-          <div className="flex-none scale-y-[-100%]">
-            <IconSeta />
-          </div>
-        </div>
-        <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-white text-[12px] text-nowrap">
-          <p className="leading-none whitespace-pre" style={{ fontWeight: 'bold' }}>R$ {formatarReal(retorno)}</p>
-        </div>
-      </div>
-      <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-white text-[12px] text-nowrap">
-        <p className="leading-none whitespace-pre font-bold">{formatarReal(retorno)} cotas</p>
-      </div>
-    </div>
-  );
-}
-
-function Btn({ valor, isActive, isYes, outcome, onClick, isLoading }: { valor: number; isActive: boolean; isYes: boolean; outcome: OutcomeData; onClick?: () => void; isLoading?: boolean }) {
+function Btn({ isActive, onClick, isLoading }: { isActive: boolean; onClick?: () => void; isLoading?: boolean }) {
   const opacityClass = isActive ? '' : 'opacity-[0.32]';
 
   if (isLoading) {
@@ -1349,9 +1272,8 @@ function Btn({ valor, isActive, isYes, outcome, onClick, isLoading }: { valor: n
       onClick={isActive && onClick ? onClick : undefined}
     >
       <div className="flex flex-row items-center size-full">
-        <div className="box-border content-stretch flex h-[48px] items-center justify-between px-[24px] py-0 relative w-full">
+        <div className="box-border content-stretch flex h-[48px] items-center justify-center px-[24px] py-0 relative w-full">
           <p className="font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre" style={{ fontWeight: 'bold' }}>Comprar</p>
-          <Retorno valor={valor} isYes={isYes} outcome={outcome} />
         </div>
       </div>
     </div>
@@ -1360,45 +1282,44 @@ function Btn({ valor, isActive, isYes, outcome, onClick, isLoading }: { valor: n
 
 function BaseFooter({ 
   valor, isActive, isYes, activeTab, outcome, onBuy, isLoading,
-  sellValue, isSellActive, sellCotas, sellReturn, onSell
+  sellValue, isSellActive, sellCotas, sellReturn, onSell, hasSellPosition, currentChance, shouldShowSellForm
 }: { 
   valor: number; isActive: boolean; isYes: boolean; activeTab: 'comprar' | 'vender'; outcome: OutcomeData; onBuy: () => void; isLoading?: boolean;
-  sellValue: number; isSellActive: boolean; sellCotas: number; sellReturn: number; onSell?: () => void;
+  sellValue: number; isSellActive: boolean; sellCotas: number; sellReturn: number; onSell?: () => void; hasSellPosition: boolean; currentChance: number; shouldShowSellForm?: boolean;
 }) {
   
-  const isBadBunnyQuestion = outcome.nome === "Quem será o artista mais popular no Spotify este ano?" || outcome.nome === "Bad Bunny";
-  const isTaylorSwiftQuestion = outcome.nome === "Taylor Swift";
-
   // Se for tab Vender
   if (activeTab === 'vender') {
-    // Se for SIM e Bad Bunny, mostra o botão de vender
-    if (isYes && isBadBunnyQuestion) {
-      return (
-        <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter">
-          <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
-          <div className="flex flex-col items-center justify-center size-full">
-            <div className="box-border content-stretch flex flex-col items-center justify-center p-[20px] relative w-full">
-               <BtnSell cotas={sellValue} valor={sellReturn} isActive={isSellActive} onClick={onSell || (() => {})} isLoading={isLoading} />
-            </div>
+    if (!shouldShowSellForm) return null;
+
+    return (
+      <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter">
+        <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
+        <div className="flex flex-col items-center justify-center size-full">
+          <div className="box-border content-stretch flex flex-col items-center justify-center p-[20px] relative w-full">
+            {isYes ? (
+              <BtnSell 
+                cotas={sellCotas} 
+                valor={sellReturn} 
+                chanceAtual={currentChance} 
+                isActive={isSellActive} 
+                onClick={onSell || (() => {})} 
+                isLoading={isLoading} 
+              />
+            ) : (
+              <BtnSellNo 
+                valor={sellReturn} 
+                cotas={sellCotas}
+                chanceAtual={currentChance}
+                isActive={isSellActive} 
+                onClick={onSell || (() => {})} 
+                isLoading={isLoading} 
+              />
+            )}
           </div>
         </div>
-      );
-    }
-    // Se for NÃO e Taylor Swift
-    if (!isYes && isTaylorSwiftQuestion) {
-       return (
-        <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter">
-          <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
-          <div className="flex flex-col items-center justify-center size-full">
-            <div className="box-border content-stretch flex flex-col items-center justify-center p-[20px] relative w-full">
-               <BtnSellNo valor={sellReturn} isActive={isSellActive} onClick={onSell || (() => {})} isLoading={isLoading} />
-            </div>
-          </div>
-        </div>
-       );
-    }
-    // Para outros casos de vender, não mostra nada (estado vazio)
-    return null;
+      </div>
+    );
   }
 
   // Se for tab Comprar, mostra botão de comprar
@@ -1407,7 +1328,7 @@ function BaseFooter({
       <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
       <div className="flex flex-col items-center justify-center size-full">
         <div className="box-border content-stretch flex flex-col items-center justify-center p-[20px] relative w-full">
-          <Btn valor={valor} isActive={isActive} isYes={isYes} outcome={outcome} onClick={onBuy} isLoading={isLoading} />
+          <Btn isActive={isActive} onClick={onBuy} isLoading={isLoading} />
         </div>
       </div>
     </div>
@@ -1418,12 +1339,15 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
   const [valueString, setValueString] = useState('0');
   const [sellValueString, setSellValueString] = useState('0');
   const maxSaldo = 3400;
+  const availableCotas = outcome.cotas ?? 0;
   
-  const isBadBunnyCheck = outcome.nome === "Quem será o artista mais popular no Spotify este ano?" || outcome.nome === "Bad Bunny";
-  const maxCotas = isBadBunnyCheck ? 111.1 : 117.64;
+  const [isYes, setIsYes] = useState(outcome.isYes);
   
-  const [saldoVisivel, setSaldoVisivel] = useState(true);
-  const [isYes, setIsYes] = useState(outcome.isYes); 
+  // Bad Bunny (SIM) e Taylor Swift (NÃO) podem vender mesmo sem posições
+  const isBadBunny = outcome.nome === "Bad Bunny" && outcome.isYes === true;
+  const isTaylorSwift = outcome.nome === "Taylor Swift" && outcome.isYes === false;
+  // Se for Bad Bunny (SIM) ou Taylor Swift (NÃO) sem posições, usa 111.1 como limite máximo
+  const maxCotas = (availableCotas > 0) ? availableCotas : ((isBadBunny || isTaylorSwift) ? 111.1 : 0);
   const [activeTab, setActiveTab] = useState<'comprar' | 'vender'>(outcome.initialTab || 'comprar');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -1431,6 +1355,12 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
     ...outcome,
     volume: outcome.volume
   };
+  const hasSellPosition = availableCotas > 0;
+  // Bad Bunny: mostra formulário completo apenas quando escolha é SIM (isYes === true)
+  // Taylor Swift: mostra formulário completo apenas quando escolha é NÃO (isYes === false)
+  const shouldShowSellForm = hasSellPosition || isBadBunny || isTaylorSwift;
+  // Para Bad Bunny (SIM) ou Taylor Swift (NÃO) sem posições, mostra 111.1 cotas no header
+  const displayedCotas = (availableCotas > 0) ? availableCotas : ((isBadBunny || isTaylorSwift) ? 111.1 : 0);
 
   const parseValue = (str: string): number => {
     const cleaned = str.replace(/\./g, '').replace(',', '.');
@@ -1527,12 +1457,15 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
   const displaySellValue = formatDisplay(sellValueString);
   const numericSellValue = getCurrentSellValue();
   const isSellActive = numericSellValue > 0;
+
+  const selectedPercentage = isYes ? (outcome.porcentagemSim / 100) : (outcome.porcentagemNao / 100);
+  const valorSimulado = numericValue > 0 ? numericValue : 100;
+  const potentialReturn = selectedPercentage > 0 ? valorSimulado / selectedPercentage : 0;
+  const cotasAdquiridas = potentialReturn;
+  const taxaValue = potentialReturn * 0.02;
   
   // Calculate return for sell
-  const isTaylorSwiftQuestion = outcome.nome === "Taylor Swift";
-  const isBadBunnyQuestion = outcome.nome === "Quem será o artista mais popular no Spotify este ano?" || outcome.nome === "Bad Bunny";
-
-  const currentChance = (activeTab === 'vender' && !isYes && isTaylorSwiftQuestion) ? 90 : 85;
+  const currentChance = isYes ? outcome.porcentagemSim : outcome.porcentagemNao;
   const sellReturn = numericSellValue * (currentChance / 100);
 
   const handleBuy = () => {
@@ -1564,48 +1497,52 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
       {/* Conteúdo scrollável no meio */}
       <div className="flex-1 overflow-y-auto min-h-0">
         {activeTab === 'vender' ? (
-          (isYes && isBadBunnyQuestion) ? (
-            <BaseContentVenderSim 
-              outcome={displayedOutcome}
-              valor={displaySellValue}
-              onPct25={handleSellPct25}
-              onPct50={handleSellPct50}
-              onPct75={handleSellPct75}
-              onMax={handleSellMax}
-              onPress1={() => handleNumberPress('1')}
-              onPress2={() => handleNumberPress('2')}
-              onPress3={() => handleNumberPress('3')}
-              onPress4={() => handleNumberPress('4')}
-              onPress5={() => handleNumberPress('5')}
-              onPress6={() => handleNumberPress('6')}
-              onPress7={() => handleNumberPress('7')}
-              onPress8={() => handleNumberPress('8')}
-              onPress9={() => handleNumberPress('9')}
-              onPress0={() => handleNumberPress('0')}
-              onPressComma={handleCommaPress}
-              onBackspace={handleBackspace}
-            />
-          ) : (!isYes && isTaylorSwiftQuestion) ? (
-             <BaseContentVenderNaoTaylor 
-              outcome={displayedOutcome}
-              valor={displaySellValue}
-              onPct25={handleSellPct25}
-              onPct50={handleSellPct50}
-              onPct75={handleSellPct75}
-              onMax={handleSellMax}
-              onPress1={() => handleNumberPress('1')}
-              onPress2={() => handleNumberPress('2')}
-              onPress3={() => handleNumberPress('3')}
-              onPress4={() => handleNumberPress('4')}
-              onPress5={() => handleNumberPress('5')}
-              onPress6={() => handleNumberPress('6')}
-              onPress7={() => handleNumberPress('7')}
-              onPress8={() => handleNumberPress('8')}
-              onPress9={() => handleNumberPress('9')}
-              onPress0={() => handleNumberPress('0')}
-              onPressComma={handleCommaPress}
-              onBackspace={handleBackspace}
-            />
+          shouldShowSellForm ? (
+            isYes ? (
+              <BaseContentVenderSim 
+                outcome={displayedOutcome}
+                valor={displaySellValue}
+                cotasDisponiveis={displayedCotas}
+                onPct25={handleSellPct25}
+                onPct50={handleSellPct50}
+                onPct75={handleSellPct75}
+                onMax={handleSellMax}
+                onPress1={() => handleNumberPress('1')}
+                onPress2={() => handleNumberPress('2')}
+                onPress3={() => handleNumberPress('3')}
+                onPress4={() => handleNumberPress('4')}
+                onPress5={() => handleNumberPress('5')}
+                onPress6={() => handleNumberPress('6')}
+                onPress7={() => handleNumberPress('7')}
+                onPress8={() => handleNumberPress('8')}
+                onPress9={() => handleNumberPress('9')}
+                onPress0={() => handleNumberPress('0')}
+                onPressComma={handleCommaPress}
+                onBackspace={handleBackspace}
+              />
+            ) : (
+              <BaseContentVenderNaoTaylor 
+                outcome={displayedOutcome}
+                valor={displaySellValue}
+                cotasDisponiveis={displayedCotas}
+                onPct25={handleSellPct25}
+                onPct50={handleSellPct50}
+                onPct75={handleSellPct75}
+                onMax={handleSellMax}
+                onPress1={() => handleNumberPress('1')}
+                onPress2={() => handleNumberPress('2')}
+                onPress3={() => handleNumberPress('3')}
+                onPress4={() => handleNumberPress('4')}
+                onPress5={() => handleNumberPress('5')}
+                onPress6={() => handleNumberPress('6')}
+                onPress7={() => handleNumberPress('7')}
+                onPress8={() => handleNumberPress('8')}
+                onPress9={() => handleNumberPress('9')}
+                onPress0={() => handleNumberPress('0')}
+                onPressComma={handleCommaPress}
+                onBackspace={handleBackspace}
+              />
+            )
           ) : (
             <BaseContentVender isYes={isYes} outcome={displayedOutcome} />
           )
@@ -1628,8 +1565,9 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
             onPress0={() => handleNumberPress('0')}
             onPressComma={handleCommaPress}
             onBackspace={handleBackspace}
-            saldoVisivel={saldoVisivel}
-            onToggleSaldo={() => setSaldoVisivel(!saldoVisivel)}
+            cotas={cotasAdquiridas}
+            retorno={potentialReturn}
+            taxa={taxaValue}
             isYes={isYes}
             outcome={displayedOutcome}
           />
@@ -1651,6 +1589,9 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
           sellCotas={numericSellValue}
           sellReturn={sellReturn}
           onSell={handleSell}
+          hasSellPosition={hasSellPosition}
+          currentChance={currentChance}
+          shouldShowSellForm={shouldShowSellForm}
         />
       </div>
     </div>

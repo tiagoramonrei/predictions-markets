@@ -129,6 +129,7 @@ function Card(props: CardProps) {
     isYes: true,
     isMultipleChoice: true,
     initialTab: 'vender',
+    cotas: parseFloat(cotas.replace(/\./g, "").replace(",", ".")) || 0,
     // @ts-ignore - question property might not be in the strict type but is used by OrderBottomSheetFuncional
     question: title
   };

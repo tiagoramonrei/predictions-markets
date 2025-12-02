@@ -26,6 +26,7 @@ export interface OutcomeData {
   isYes: boolean; // true = SIM, false = NÃO
   isMultipleChoice?: boolean;
   initialTab?: 'comprar' | 'vender';
+  cotas?: number; // quantidade disponível para vender
 }
 
 export default function InternaMercado() {

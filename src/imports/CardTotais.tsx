@@ -49,6 +49,7 @@ interface OutcomeData {
   isYes: boolean;
   question?: string;
   isMultipleChoice?: boolean;
+  cotas?: number;
 }
 
 const SelectionContext = createContext<((data: OutcomeData) => void) | null>(null);

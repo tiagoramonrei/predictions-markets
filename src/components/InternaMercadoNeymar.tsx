@@ -29,6 +29,7 @@ export interface OutcomeData {
   porcentagemNao: number;
   isYes: boolean; // true = SIM, false = NÃO
   isMultipleChoice?: boolean;
+  cotas?: number;
 }
 
 function CardHeaderNeymar() {
