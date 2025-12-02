@@ -128,4 +128,8 @@
       port: 3000,
       open: true,
     },
+    base: '/predictions-markets/',
+    build: {
+      outDir: 'docs',
+    },
   });
