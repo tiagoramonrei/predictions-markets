@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import InternaMercado from "./components/InternaMercado";
 import InternaMercadoNeymar from "./components/InternaMercadoNeymar";
 import Inicio from "./components/Inicio";
