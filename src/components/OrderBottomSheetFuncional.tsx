@@ -1,5 +1,7 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import svgPaths from "../imports/svg-5505oo64wo";
+import svgPathsModal from "../imports/svg-5yxjl810rg";
 import svgPathsSell from "../imports/svg-vrudki1plq";
 import svgPathsTaylor from "../imports/svg-wjbrcz9efd";
 import svgPathsSaldo from "../imports/svg-cvp093bg6z";
@@ -11,6 +13,65 @@ import imgNenhum from "figma:asset/49700c649bca78f49561401caa7e05e89a96668c.png"
 import imgMaduro from "figma:asset/065ca6711a3eca5fd95f4ec7f173ed5f1a9e85b4.png";
 import imgDorival from "figma:asset/50882ac1ab781e7116eedf88af570ea8311d0c1e.png";
 import imgVojvoda from "figma:asset/b56641d75ea5dc11d6fbc5730e830d740cd1329a.png";
+import desceuImg from '../assets/desceu.png';
+import subiuImg from '../assets/subiu.png';
+
+// Modal explicativo da Taxa (exportado para usar no OrderBottomSheet)
+export function TaxaExplicativaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ y: '100%' }}
+          animate={{ y: 0 }}
+          exit={{ y: '100%' }}
+          transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          className="fixed bottom-0 left-0 right-0 z-[70] max-w-[499px] mx-auto"
+        >
+          <div className="bg-[#1e1e1e] rounded-tl-[8px] rounded-tr-[8px] w-full">
+            {/* Header com X */}
+            <div className="box-border flex justify-end items-center pl-[20px] pr-[12px] py-[12px]">
+              <button 
+                onClick={onClose}
+                className="size-[32px] flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            {/* Body */}
+            <div className="box-border flex flex-col gap-[28px] items-center justify-center pb-[40px] pt-[28px] px-[20px]">
+              {/* Ícone de interrogação - mesmo do ModalBs */}
+              <div className="relative shrink-0 size-[56px]">
+                <div className="absolute inset-[-0.02%]">
+                  <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 57 57">
+                    <g>
+                      <circle cx="28.0117" cy="28.0116" r="21.0087" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                      <path d={svgPathsModal.p355cb480} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                      <path d={svgPathsModal.p7688200} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                      <path d={svgPathsModal.p2d15c600} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" />
+                    </g>
+                  </svg>
+                </div>
+              </div>
+              {/* Conteúdo */}
+              <div className="flex flex-col gap-[12px] items-center text-center w-full">
+                <p className="font-['DM_Sans:Bold',sans-serif] leading-[1.4] text-[16px] text-white font-bold">
+                  O que é essa Taxa?
+                </p>
+                <div className="font-['DM_Sans:Regular',sans-serif] leading-[1.4] text-[12px] text-[#e3e3e3]">
+                  <p className="mb-4">Cobramos uma taxa fixa de 2% em cada compra ou venda realizada nos mercados. Ela é aplicada sobre o valor da transação e já aparece descontada no seu retorno.</p>
+                  <p>Essa cobrança ajuda a manter a operação, a liquidez e o funcionamento do sistema.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
 
 function BtnLoadingSell() {
   return (
@@ -85,12 +146,12 @@ function BaseHeader({ onClose, outcome }: { onClose: () => void; outcome: Outcom
   );
 }
 
-function Game({ isActive, onClick }: { isActive: boolean; onClick: () => void }) {
+function Game({ isActive }: { isActive: boolean }) {
   const borderClass = isActive ? 'border-[#32a866] border-[0px_0px_2px]' : '';
   const textColor = isActive ? 'text-white' : 'text-[#d9d9d9]';
   
   return (
-    <div className={`content-stretch flex gap-[8px] h-full items-center justify-center relative shrink-0 w-[80px] cursor-pointer`} data-name="game" onClick={onClick}>
+    <div className={`content-stretch flex gap-[8px] h-full items-center justify-center relative shrink-0 w-[80px]`} data-name="game">
       <div aria-hidden="true" className={`absolute ${borderClass} border-solid inset-0 pointer-events-none`} />
       <div className={`flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-nowrap ${textColor}`} style={{ fontWeight: 'bold' }}>
         <p className="leading-none whitespace-pre">Comprar</p>
@@ -101,23 +162,23 @@ function Game({ isActive, onClick }: { isActive: boolean; onClick: () => void })
 
 function Tab({ isActive, onClick }: { isActive: boolean; onClick: () => void }) {
   return (
-    <div className="basis-0 grow h-[40px] min-h-px min-w-px relative shrink-0" data-name="tab">
+    <div className="basis-0 grow h-[40px] min-h-px min-w-px relative shrink-0 cursor-pointer" data-name="tab" onClick={onClick}>
       <div aria-hidden="true" className="absolute border-[#242424] border-[0px_0px_1px] border-solid inset-0 pointer-events-none" />
       <div className="flex flex-row items-center justify-center size-full">
         <div className={`box-border content-stretch flex h-[40px] items-center justify-center px-[20px] relative w-full ${isActive ? 'py-0' : 'py-[14px]'}`}>
-          <Game isActive={isActive} onClick={onClick} />
+          <Game isActive={isActive} />
         </div>
       </div>
     </div>
   );
 }
 
-function Game1({ isActive, onClick }: { isActive: boolean; onClick: () => void }) {
+function Game1({ isActive }: { isActive: boolean }) {
   const borderClass = isActive ? 'border-[#32a866] border-[0px_0px_2px]' : '';
   const textColor = isActive ? 'text-white' : 'text-[#d9d9d9]';
   
   return (
-    <div className={`content-stretch flex gap-[8px] h-full items-center justify-center relative shrink-0 w-[80px] cursor-pointer`} data-name="game" onClick={onClick}>
+    <div className={`content-stretch flex gap-[8px] h-full items-center justify-center relative shrink-0 w-[80px]`} data-name="game">
       <div aria-hidden="true" className={`absolute ${borderClass} border-solid inset-0 pointer-events-none`} />
       <div className={`flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-nowrap ${textColor}`} style={{ fontWeight: 'bold' }}>
         <p className="leading-none whitespace-pre">Vender</p>
@@ -128,11 +189,11 @@ function Game1({ isActive, onClick }: { isActive: boolean; onClick: () => void }
 
 function Tab1({ isActive, onClick }: { isActive: boolean; onClick: () => void }) {
   return (
-    <div className="basis-0 grow h-[40px] min-h-px min-w-px relative shrink-0" data-name="tab">
+    <div className="basis-0 grow h-[40px] min-h-px min-w-px relative shrink-0 cursor-pointer" data-name="tab" onClick={onClick}>
       <div aria-hidden="true" className="absolute border-[#242424] border-[0px_0px_1px] border-solid inset-0 pointer-events-none" />
       <div className="flex flex-row items-center justify-center size-full">
         <div className={`box-border content-stretch flex h-[40px] items-center justify-center px-[20px] relative w-full ${isActive ? 'py-0' : 'py-[14px]'}`}>
-          <Game1 isActive={isActive} onClick={onClick} />
+          <Game1 isActive={isActive} />
         </div>
       </div>
     </div>
@@ -239,8 +300,19 @@ function TextSell({ outcome }: { outcome: OutcomeData }) {
   const displayName = outcome.isMultipleChoice 
     ? outcome.nome 
     : ((outcome as any).question || outcome.nome);
-  const chanceCompra = outcome.porcentagemSim;
 
+  // Para perguntas sim/não (não múltipla escolha), mostrar apenas SIM em 16px
+  if (!outcome.isMultipleChoice) {
+    return (
+      <div className="basis-0 flex flex-col gap-[2px] grow items-start justify-center min-w-0 relative shrink-0" data-name="text">
+        <div className="font-['DM_Sans:Bold',sans-serif] text-[16px]">
+          <p className="leading-none whitespace-nowrap font-bold text-[#32a866]">SIM</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Para múltipla escolha, mostrar pergunta + SIM
   return (
     <div className="basis-0 flex flex-col gap-[2px] grow items-start justify-center min-w-0 relative shrink-0" data-name="text">
       <div className="w-full font-['DM_Sans:Bold',sans-serif] text-[16px] text-white">
@@ -248,8 +320,8 @@ function TextSell({ outcome }: { outcome: OutcomeData }) {
           {displayName}
         </p>
       </div>
-      <div className="font-['DM_Sans:Regular',sans-serif] text-[#e3e3e3] text-[10px]">
-        <p className="leading-none whitespace-nowrap">Comprou com chance {chanceCompra}%</p>
+      <div className="font-['DM_Sans:Bold',sans-serif] text-[#32A866] text-[12px]">
+        <p className="leading-none whitespace-nowrap font-bold">SIM</p>
       </div>
     </div>
   );
@@ -262,7 +334,7 @@ function CotasHeld({ cotas }: { cotas: number }) {
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[16px] text-white" style={{ fontWeight: 'bold' }}>
         <p className="leading-[1.2] text-nowrap whitespace-pre">{formatted}</p>
       </div>
-      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
+      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[#e3e3e3] text-[12px]">
         <p className="leading-none text-nowrap whitespace-pre">Qtd de Cotas</p>
       </div>
     </div>
@@ -272,14 +344,7 @@ function CotasHeld({ cotas }: { cotas: number }) {
 function HeaderOutcomeSell({ outcome, cotas }: { outcome: OutcomeData; cotas: number }) {
   return (
     <div className="relative shrink-0 w-full" data-name="headerOutcome">
-      <div className="flex flex-col items-start w-full gap-[16px]">
-        {outcome.isMultipleChoice && (
-          <div className="box-border px-[20px] w-full">
-             <p className="text-white text-[12px] font-bold leading-[100%] font-['DM_Sans:Bold',sans-serif]">
-               {(outcome as any).question || "Quem será o artista mais popular no Spotify este ano?"}
-             </p>
-          </div>
-        )}
+      <div className="flex flex-col items-start w-full">
         <div className="flex flex-row items-center w-full">
           <div className="box-border content-stretch flex gap-[8px] items-center px-[20px] py-0 relative w-full">
             <div className="relative rounded-[100px] shrink-0 size-[48px]" data-name="imgPergunta">
@@ -342,7 +407,7 @@ function PercentagesSell({ onPct25, onPct50, onPct75, onMax }: { onPct25: () => 
   return (
     <div className="relative shrink-0 w-full" data-name="baseValor">
       <div className="flex flex-col items-center justify-center size-full">
-        <div className="box-border content-stretch flex flex-col gap-[20px] items-center justify-center px-[20px] py-0 relative w-full">
+        <div className="box-border content-stretch flex flex-col gap-[20px] items-center justify-center py-0 relative w-full">
           <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full" data-name="valor">
             <PorcentagemBtn text="25%" onClick={onPct25} />
             <PorcentagemBtn text="50%" onClick={onPct50} />
@@ -355,10 +420,161 @@ function PercentagesSell({ onPct25, onPct50, onPct75, onMax }: { onPct25: () => 
   );
 }
 
+function SummaryValueSell({ label, value, color = "#32a866" }: { label: string; value: string; color?: string }) {
+  return (
+    <div className="basis-0 content-stretch flex flex-col grow items-center min-h-px min-w-px not-italic relative shrink-0 text-center text-nowrap" data-name="title">
+      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] relative shrink-0 text-[10px] text-white">
+        <p className="leading-none text-nowrap whitespace-pre">{label}</p>
+      </div>
+      <p className="[white-space-collapse:collapse] font-['DM_Sans:Bold',sans-serif] font-bold leading-[1.4] min-w-full overflow-ellipsis overflow-hidden relative shrink-0 text-[14px] w-[min-content]" style={{ color }}>{value}</p>
+    </div>
+  );
+}
+
+function ChanceValue({ chanceAnterior, chanceAtual, isSimulation }: { chanceAnterior: number; chanceAtual: number; isSimulation?: boolean }) {
+  const isDecreasing = chanceAtual < chanceAnterior;
+  const color = isSimulation ? "#ffffff" : (isDecreasing ? "#D92341" : "#32a866");
+  
+  return (
+    <div className="basis-0 content-stretch flex flex-col grow items-center min-h-px min-w-px not-italic relative shrink-0 text-center text-nowrap" data-name="title">
+      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] relative shrink-0 text-[10px] text-white">
+        <p className="leading-none text-nowrap whitespace-pre">Chance</p>
+      </div>
+      <div className="flex items-center gap-[4px]">
+        {isSimulation ? (
+          <p className="font-['DM_Sans:Bold',sans-serif] font-bold leading-[1.4] text-[14px]" style={{ color }}>{chanceAtual}%</p>
+        ) : (
+          <>
+            <p className="font-['DM_Sans:Bold',sans-serif] font-bold leading-[1.4] text-[14px]" style={{ color }}>{chanceAnterior}%</p>
+            <span className="text-[14px]" style={{ color }}>→</span>
+            <p className="font-['DM_Sans:Bold',sans-serif] font-bold leading-[1.4] text-[14px]" style={{ color }}>{chanceAtual}%</p>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function RetornoValue({ retorno, isDecreasing, isSimulation }: { retorno: number; isDecreasing: boolean; isSimulation?: boolean }) {
+  const formatarReal = (num: number): string => {
+    return num.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+  const color = isSimulation ? "#ffffff" : (isDecreasing ? "#D92341" : "#32a866");
+  
+  return (
+    <div className="basis-0 content-stretch flex flex-col grow items-center min-h-px min-w-px not-italic relative shrink-0 text-center text-nowrap" data-name="title">
+      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] relative shrink-0 text-[10px] text-white">
+        <p className="leading-none text-nowrap whitespace-pre">Retorno</p>
+      </div>
+      <div className="flex items-center gap-[4px]">
+        <p className="font-['DM_Sans:Bold',sans-serif] font-bold leading-[1.4] text-[14px]" style={{ color }}>R${formatarReal(retorno)}</p>
+        {isDecreasing && !isSimulation && (
+          <div className="flex items-center justify-center relative shrink-0">
+            <div className="flex-none scale-y-[-1]">
+              <svg className="block size-[8px]" fill="none" viewBox="0 0 8 8">
+                <path d="M4 0L7.4641 6H0.535898L4 0Z" fill={color} />
+              </svg>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BoxSell({ chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange }: { chanceAnterior: number; chanceAtual: number; retorno: number; taxa: number; isDecreasing: boolean; isSimulation?: boolean; onTaxaClick?: () => void; showPriceChange?: boolean }) {
+  const formatarReal = (num: number): string => {
+    return num.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  // Determina se o retorno é positivo (verde) ou negativo (vermelho)
+  // Se a chance atual é menor que quando comprou, está no prejuízo
+  const isPositive = !isDecreasing;
+  
+  // Retorno líquido = retorno bruto - taxa
+  const retornoLiquido = retorno - Math.abs(taxa);
+  
+  const retornoColor = isSimulation ? 'text-white' : (isPositive ? 'text-[#32a866]' : 'text-[#d92341]');
+
+  return (
+    <div className="relative rounded-[8px] shrink-0 w-full" data-name="boxSell">
+      <div aria-hidden="true" className="absolute border border-[#242424] border-solid inset-0 pointer-events-none rounded-[8px]" />
+      <div className="size-full">
+        <div className="box-border content-stretch flex gap-[8px] items-center px-[20px] py-[12px] relative w-full">
+          {/* Lado esquerdo - Preço Médio e Taxa */}
+          <div className="flex flex-col gap-[8px] items-start justify-center shrink-0">
+            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
+              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Preço Médio:</span>
+              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">
+                {showPriceChange ? `${Math.round(chanceAnterior)} → ${Math.round(chanceAtual)} centavos` : `${Math.round(chanceAnterior)} centavos`}
+              </span>
+            </div>
+            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap cursor-pointer" onClick={onTaxaClick}>
+              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Taxa:</span>
+              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">R${formatarReal(Math.abs(taxa))}</span>
+            </div>
+          </div>
+          {/* Lado direito - Retorno */}
+          <div className="basis-0 grow flex flex-col items-end justify-center min-h-px min-w-px text-nowrap">
+            <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-none">Retorno</span>
+            <div className="flex gap-[8px] items-center justify-end">
+              {!isSimulation && (
+                <img 
+                  src={isPositive ? subiuImg : desceuImg} 
+                  alt={isPositive ? "subiu" : "desceu"} 
+                  className="w-[10px] h-[9px]" 
+                />
+              )}
+              <span className={`font-['DM_Sans:Bold',sans-serif] text-[16px] ${retornoColor} leading-[1.4] font-bold`}>R${formatarReal(retornoLiquido)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BaseValorSell1({ onPct25, onPct50, onPct75, onMax, chanceAnterior, chanceAtual, retorno, taxa, valor, isDecreasing, isSimulation, onTaxaClick, showPriceChange }: { 
+  onPct25: () => void; 
+  onPct50: () => void; 
+  onPct75: () => void; 
+  onMax: () => void; 
+  chanceAnterior: number; 
+  chanceAtual: number; 
+  retorno: number; 
+  taxa: number; 
+  valor: string;
+  isDecreasing: boolean;
+  isSimulation?: boolean;
+  onTaxaClick?: () => void;
+  showPriceChange?: boolean;
+}) {
+  const numericValue = parseFloat(valor.replace(/\./g, '').replace(',', '.')) || 0;
+  const hasValue = numericValue > 0;
+  
+  return (
+    <div className="relative shrink-0 w-full" data-name="baseValor">
+      <div className="flex flex-col items-center justify-center size-full">
+        <div className="box-border content-stretch flex flex-col gap-[20px] items-center justify-center px-[20px] py-0 relative w-full">
+          {hasValue && <BoxSell chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} retorno={retorno} taxa={taxa} isDecreasing={isDecreasing} isSimulation={isSimulation} onTaxaClick={onTaxaClick} showPriceChange={showPriceChange} />}
+          <PercentagesSell onPct25={onPct25} onPct50={onPct50} onPct75={onPct75} onMax={onMax} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function BaseContentVenderSim({ 
   outcome, valor, onPct25, onPct50, onPct75, onMax, cotasDisponiveis,
   onPress1, onPress2, onPress3, onPress4, onPress5, onPress6, 
-  onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace 
+  onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace,
+  chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange
 }: {
   outcome: OutcomeData;
   valor: string;
@@ -379,6 +595,14 @@ function BaseContentVenderSim({
   onPress0: () => void;
   onPressComma: () => void;
   onBackspace: () => void;
+  chanceAnterior: number;
+  chanceAtual: number;
+  retorno: number;
+  taxa: number;
+  isDecreasing: boolean;
+  isSimulation?: boolean;
+  onTaxaClick?: () => void;
+  showPriceChange?: boolean;
 }) {
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
@@ -386,7 +610,21 @@ function BaseContentVenderSim({
         <HeaderOutcomeSell outcome={outcome} cotas={cotasDisponiveis} />
       </div>
       <BaseValorSell valor={valor} />
-      <PercentagesSell onPct25={onPct25} onPct50={onPct50} onPct75={onPct75} onMax={onMax} />
+      <BaseValorSell1 
+        onPct25={onPct25} 
+        onPct50={onPct50} 
+        onPct75={onPct75} 
+        onMax={onMax}
+        chanceAnterior={chanceAnterior}
+        chanceAtual={chanceAtual}
+        retorno={retorno}
+        taxa={taxa}
+        valor={valor}
+        isDecreasing={isDecreasing}
+        isSimulation={isSimulation}
+        onTaxaClick={onTaxaClick}
+        showPriceChange={showPriceChange}
+      />
       <BaseTeclado 
         onPress1={onPress1}
         onPress2={onPress2}
@@ -488,9 +726,8 @@ function BtnSell({ cotas, valor, chanceAtual, isActive, onClick, isLoading }: { 
       onClick={isActive ? onClick : undefined}
     >
        <div className="flex flex-row items-center size-full">
-        <div className="box-border content-stretch flex h-[48px] items-center justify-between px-[24px] py-0 relative w-full">
+        <div className="box-border content-stretch flex h-[48px] items-center justify-center px-[24px] py-0 relative w-full">
           <p className="font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre" style={{ fontWeight: 'bold' }}>Vender</p>
-          <InfoSell cotas={cotas} valor={valor} chanceAtual={chanceAtual} />
         </div>
       </div>
     </div>
@@ -506,15 +743,26 @@ function TextSellNo({ outcome }: { outcome: OutcomeData }) {
   const displayName = outcome.isMultipleChoice 
     ? outcome.nome 
     : ((outcome as any).question || outcome.nome);
-  const chanceCompra = outcome.porcentagemNao;
 
+  // Para perguntas sim/não (não múltipla escolha), mostrar apenas NÃO em 16px
+  if (!outcome.isMultipleChoice) {
+    return (
+      <div className="basis-0 flex flex-col gap-[2px] grow items-start justify-center min-w-0 relative shrink-0" data-name="text">
+        <div className="font-['DM_Sans:Bold',sans-serif] text-[16px]">
+          <p className="leading-none whitespace-nowrap font-bold text-[#d92341]">NÃO</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Para múltipla escolha, mostrar pergunta + NÃO
   return (
     <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="text">
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[16px] text-white">
         <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">{displayName}</p>
       </div>
-      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Comprou com chance {chanceCompra}%</p>
+      <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[#D92341] text-[12px]">
+        <p className="leading-none text-nowrap whitespace-pre font-bold">NÃO</p>
       </div>
     </div>
   );
@@ -527,14 +775,7 @@ function PorcentagemSellNo({ cotas }: { cotas: number }) {
 function HeaderOutcomeSellNo({ outcome, cotas }: { outcome: OutcomeData; cotas: number }) {
   return (
     <div className="relative shrink-0 w-full" data-name="headerOutcome">
-      <div className="flex flex-col items-start w-full gap-[16px]">
-        {outcome.isMultipleChoice && (
-          <div className="box-border px-[20px] w-full">
-             <p className="text-white text-[12px] font-bold leading-[100%] font-['DM_Sans:Bold',sans-serif]">
-               {(outcome as any).question || "Quem será o artista mais popular no Spotify este ano?"}
-             </p>
-          </div>
-        )}
+      <div className="flex flex-col items-start w-full">
         <div className="flex flex-row items-center w-full">
           <div className="box-border content-stretch flex gap-[8px] items-center px-[20px] py-0 relative w-full">
             <div className="relative shrink-0 size-[48px]" data-name="imagem">
@@ -668,9 +909,8 @@ function BtnSellNo({ isActive, onClick, isLoading, valor, cotas, chanceAtual }: 
     >
        <div aria-hidden="true" className="absolute border border-[#32a866] border-solid inset-0 pointer-events-none rounded-[1000px]" />
        <div className="flex flex-row items-center size-full">
-        <div className="box-border content-stretch flex h-[48px] items-center justify-between px-[24px] py-0 relative w-full">
+        <div className="box-border content-stretch flex h-[48px] items-center justify-center px-[24px] py-0 relative w-full">
           <p className="font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre" style={{ fontWeight: 'bold' }}>Vender</p>
-          <InfoSellNo valor={valor} cotas={cotas} chanceAtual={chanceAtual} />
         </div>
       </div>
     </div>
@@ -680,7 +920,8 @@ function BtnSellNo({ isActive, onClick, isLoading, valor, cotas, chanceAtual }: 
 function BaseContentVenderNaoTaylor({ 
   outcome, valor, onPct25, onPct50, onPct75, onMax, cotasDisponiveis,
   onPress1, onPress2, onPress3, onPress4, onPress5, onPress6, 
-  onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace 
+  onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace,
+  chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange
 }: {
   outcome: OutcomeData;
   valor: string;
@@ -701,6 +942,14 @@ function BaseContentVenderNaoTaylor({
   onPress0: () => void;
   onPressComma: () => void;
   onBackspace: () => void;
+  chanceAnterior: number;
+  chanceAtual: number;
+  retorno: number;
+  taxa: number;
+  isDecreasing: boolean;
+  isSimulation?: boolean;
+  onTaxaClick?: () => void;
+  showPriceChange?: boolean;
 }) {
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
@@ -708,7 +957,21 @@ function BaseContentVenderNaoTaylor({
         <HeaderOutcomeSellNo outcome={outcome} cotas={cotasDisponiveis} />
       </div>
       <BaseValorSellNo valor={valor} />
-      <PercentagesSell onPct25={onPct25} onPct50={onPct50} onPct75={onPct75} onMax={onMax} />
+      <BaseValorSell1 
+        onPct25={onPct25} 
+        onPct50={onPct50} 
+        onPct75={onPct75} 
+        onMax={onMax}
+        chanceAnterior={chanceAnterior}
+        chanceAtual={chanceAtual}
+        retorno={retorno}
+        taxa={taxa}
+        valor={valor}
+        isDecreasing={isDecreasing}
+        isSimulation={isSimulation}
+        onTaxaClick={onTaxaClick}
+        showPriceChange={showPriceChange}
+      />
       <BaseTeclado 
         onPress1={onPress1}
         onPress2={onPress2}
@@ -863,9 +1126,13 @@ function TaxIcon() {
   );
 }
 
-function TaxInfo({ value }: { value: string }) {
+function TaxInfo({ value, onClick }: { value: string; onClick?: () => void }) {
   return (
-    <div className="content-stretch flex h-full items-center relative shrink-0" data-name="txtTaxa">
+    <div 
+      className="content-stretch flex h-full items-center relative shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
+      data-name="txtTaxa"
+      onClick={onClick}
+    >
       <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-[#242424]" />
       <div className="flex gap-[2px] items-center" style={{ paddingLeft: '12px' }}>
         <TaxIcon />
@@ -880,7 +1147,7 @@ function TaxInfo({ value }: { value: string }) {
   );
 }
 
-function BoxSaldo({ cotas, retorno, taxa }: { cotas: number; retorno: number; taxa: number }) {
+function BoxSaldo({ retorno, taxa, chanceAnterior, chanceAtual }: { retorno: number; taxa: number; chanceAnterior: number; chanceAtual: number }) {
   const formatarReal = (num: number): string => {
     return num.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
@@ -892,13 +1159,22 @@ function BoxSaldo({ cotas, retorno, taxa }: { cotas: number; retorno: number; ta
     <div className="relative rounded-[8px] shrink-0 w-full" data-name="boxSaldo">
       <div aria-hidden="true" className="absolute border border-[#242424] border-solid inset-0 pointer-events-none rounded-[8px]" />
       <div className="size-full">
-        <div className="box-border content-stretch flex flex-col gap-[8px] items-start p-[12px] relative w-full">
-          <div className="content-stretch flex gap-[8px] items-center justify-end relative shrink-0 w-full" data-name="saldo">
-            <SummaryValue label="Cotas adquiridas" value={formatarReal(cotas)} />
-            <SummaryValue label="Retorno potencial" value={`R$${formatarReal(retorno)}`} />
-            <div className="flex flex-row items-center self-stretch">
-              <TaxInfo value={`-R$${formatarReal(Math.abs(taxa))}`} />
+        <div className="box-border content-stretch flex gap-[8px] items-start px-[20px] py-[12px] relative w-full">
+          {/* Lado esquerdo - Preço Médio e Taxa */}
+          <div className="flex flex-col gap-[8px] items-start justify-center shrink-0">
+            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
+              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Preço Médio:</span>
+              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">{Math.round(chanceAnterior)} centavos</span>
             </div>
+            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
+              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Taxa:</span>
+              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">R${formatarReal(Math.abs(taxa))}</span>
+            </div>
+          </div>
+          {/* Lado direito - Retorno potencial */}
+          <div className="basis-0 grow flex flex-col items-end justify-center min-h-px min-w-px text-nowrap">
+            <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-none">Retorno potencial</span>
+            <span className="font-['DM_Sans:Bold',sans-serif] text-[16px] text-[#32a866] leading-[1.4] font-bold">R${formatarReal(retorno)}</span>
           </div>
         </div>
       </div>
@@ -906,7 +1182,7 @@ function BoxSaldo({ cotas, retorno, taxa }: { cotas: number; retorno: number; ta
   );
 }
 
-function BaseValor1({ onAdd10, onAdd50, onAdd100, onMax, cotas, retorno, taxa, valor }: { onAdd10: () => void; onAdd50: () => void; onAdd100: () => void; onMax: () => void; cotas: number; retorno: number; taxa: number; valor: string }) {
+function BaseValor1({ onAdd10, onAdd50, onAdd100, onMax, retorno, taxa, valor, chanceAnterior, chanceAtual }: { onAdd10: () => void; onAdd50: () => void; onAdd100: () => void; onMax: () => void; retorno: number; taxa: number; valor: string; chanceAnterior: number; chanceAtual: number }) {
   const numericValue = parseFloat(valor.replace(/\./g, '').replace(',', '.')) || 0;
   const hasValue = numericValue > 0;
   
@@ -914,8 +1190,8 @@ function BaseValor1({ onAdd10, onAdd50, onAdd100, onMax, cotas, retorno, taxa, v
     <div className="relative shrink-0 w-full" data-name="baseValor">
       <div className="flex flex-col items-center justify-center size-full">
         <div className="box-border content-stretch flex flex-col gap-[20px] items-center justify-center px-[20px] py-0 relative w-full">
+          {hasValue && <BoxSaldo retorno={retorno} taxa={taxa} chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} />}
           <Valor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} />
-          {hasValue && <BoxSaldo cotas={cotas} retorno={retorno} taxa={taxa} />}
         </div>
       </div>
     </div>
@@ -1206,7 +1482,7 @@ function BaseContent({
   valor, onAdd10, onAdd50, onAdd100, onMax,
   onPress1, onPress2, onPress3, onPress4, onPress5, onPress6,
   onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace,
-  cotas, retorno, taxa, isYes, outcome
+  retorno, taxa, isYes, outcome, chanceAnterior, chanceAtual
 }: {
   valor: string;
   onAdd10: () => void;
@@ -1225,17 +1501,18 @@ function BaseContent({
   onPress0: () => void;
   onPressComma: () => void;
   onBackspace: () => void;
-  cotas: number;
   retorno: number;
   taxa: number;
   isYes: boolean;
   outcome: OutcomeData;
+  chanceAnterior: number;
+  chanceAtual: number;
 }) {
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
       <BaseEscolha isYes={isYes} outcome={outcome} />
       <BaseValor valor={valor} />
-      <BaseValor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} cotas={cotas} retorno={retorno} taxa={taxa} valor={valor} />
+      <BaseValor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} retorno={retorno} taxa={taxa} valor={valor} chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} />
       <BaseTeclado
         onPress1={onPress1}
         onPress2={onPress2}
@@ -1254,8 +1531,8 @@ function BaseContent({
   );
 }
 
-function Btn({ isActive, onClick, isLoading }: { isActive: boolean; onClick?: () => void; isLoading?: boolean }) {
-  const opacityClass = isActive ? '' : 'opacity-[0.32]';
+function Btn({ isActive, onClick, isLoading, insufficientFunds }: { isActive: boolean; onClick?: () => void; isLoading?: boolean; insufficientFunds?: boolean }) {
+  const opacityClass = (isActive && !insufficientFunds) ? '' : 'opacity-[0.32]';
 
   if (isLoading) {
     return (
@@ -1265,15 +1542,19 @@ function Btn({ isActive, onClick, isLoading }: { isActive: boolean; onClick?: ()
     );
   }
 
+  const canClick = isActive && !insufficientFunds;
+  const buttonText = insufficientFunds ? 'Saldo insuficiente - Deposite' : 'Comprar';
+  const textSize = insufficientFunds ? 'text-[14px]' : 'text-[16px]';
+
   return (
     <div 
-      className={`bg-[#19954F] ${opacityClass} h-[48px] relative rounded-[1000px] shrink-0 w-full transition-all ${isActive ? 'cursor-pointer hover:bg-[#158243]' : 'cursor-not-allowed'}`} 
+      className={`bg-[#19954F] ${opacityClass} h-[48px] relative rounded-[1000px] shrink-0 w-full transition-all ${canClick ? 'cursor-pointer hover:bg-[#158243]' : 'cursor-not-allowed'}`} 
       data-name="btn"
-      onClick={isActive && onClick ? onClick : undefined}
+      onClick={canClick && onClick ? onClick : undefined}
     >
       <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex h-[48px] items-center justify-center px-[24px] py-0 relative w-full">
-          <p className="font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre" style={{ fontWeight: 'bold' }}>Comprar</p>
+          <p className={`font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic relative shrink-0 ${textSize} text-nowrap text-white whitespace-pre`} style={{ fontWeight: 'bold' }}>{buttonText}</p>
         </div>
       </div>
     </div>
@@ -1282,10 +1563,10 @@ function Btn({ isActive, onClick, isLoading }: { isActive: boolean; onClick?: ()
 
 function BaseFooter({ 
   valor, isActive, isYes, activeTab, outcome, onBuy, isLoading,
-  sellValue, isSellActive, sellCotas, sellReturn, onSell, hasSellPosition, currentChance, shouldShowSellForm
+  sellValue, isSellActive, sellCotas, sellReturn, onSell, hasSellPosition, currentChance, shouldShowSellForm, insufficientFunds
 }: { 
   valor: number; isActive: boolean; isYes: boolean; activeTab: 'comprar' | 'vender'; outcome: OutcomeData; onBuy: () => void; isLoading?: boolean;
-  sellValue: number; isSellActive: boolean; sellCotas: number; sellReturn: number; onSell?: () => void; hasSellPosition: boolean; currentChance: number; shouldShowSellForm?: boolean;
+  sellValue: number; isSellActive: boolean; sellCotas: number; sellReturn: number; onSell?: () => void; hasSellPosition: boolean; currentChance: number; shouldShowSellForm?: boolean; insufficientFunds?: boolean;
 }) {
   
   // Se for tab Vender
@@ -1328,17 +1609,17 @@ function BaseFooter({
       <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
       <div className="flex flex-col items-center justify-center size-full">
         <div className="box-border content-stretch flex flex-col items-center justify-center p-[20px] relative w-full">
-          <Btn isActive={isActive} onClick={onBuy} isLoading={isLoading} />
+          <Btn isActive={isActive} onClick={onBuy} isLoading={isLoading} insufficientFunds={insufficientFunds} />
         </div>
       </div>
     </div>
   );
 }
 
-export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onSell }: { outcome: OutcomeData; onClose: () => void; onBuy: (amount: number, isYes: boolean) => void; onSell?: (amount: number, isYes: boolean) => void }) {
+export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onSell, onTaxaClick }: { outcome: OutcomeData; onClose: () => void; onBuy: (amount: number, isYes: boolean) => void; onSell?: (amount: number, isYes: boolean) => void; onTaxaClick?: () => void }) {
   const [valueString, setValueString] = useState('0');
   const [sellValueString, setSellValueString] = useState('0');
-  const maxSaldo = 3400;
+  const maxSaldo = 240.90;
   const availableCotas = outcome.cotas ?? 0;
   
   const [isYes, setIsYes] = useState(outcome.isYes);
@@ -1347,7 +1628,8 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
   const isBadBunny = outcome.nome === "Bad Bunny" && outcome.isYes === true;
   const isTaylorSwift = outcome.nome === "Taylor Swift" && outcome.isYes === false;
   // Se for Bad Bunny (SIM) ou Taylor Swift (NÃO) sem posições, usa 111.1 como limite máximo
-  const maxCotas = (availableCotas > 0) ? availableCotas : ((isBadBunny || isTaylorSwift) ? 111.1 : 0);
+  // Para outros sem posições, permite digitar até 99999 para simulação
+  const maxCotas = (availableCotas > 0) ? availableCotas : ((isBadBunny || isTaylorSwift) ? 111.1 : 99999);
   const [activeTab, setActiveTab] = useState<'comprar' | 'vender'>(outcome.initialTab || 'comprar');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -1356,10 +1638,12 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
     volume: outcome.volume
   };
   const hasSellPosition = availableCotas > 0;
-  // Bad Bunny: mostra formulário completo apenas quando escolha é SIM (isYes === true)
-  // Taylor Swift: mostra formulário completo apenas quando escolha é NÃO (isYes === false)
-  const shouldShowSellForm = hasSellPosition || isBadBunny || isTaylorSwift;
+  // Sempre mostra o formulário de venda para permitir simulação
+  const shouldShowSellForm = true;
+  // Pode vender apenas se tem posições reais ou é Bad Bunny (SIM) / Taylor Swift (NÃO)
+  const canSell = hasSellPosition || isBadBunny || isTaylorSwift;
   // Para Bad Bunny (SIM) ou Taylor Swift (NÃO) sem posições, mostra 111.1 cotas no header
+  // Para outros sem posições, mostra 0
   const displayedCotas = (availableCotas > 0) ? availableCotas : ((isBadBunny || isTaylorSwift) ? 111.1 : 0);
 
   const parseValue = (str: string): number => {
@@ -1389,8 +1673,7 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
         newStr = `${intPart}${num}`;
       }
     }
-    const numValue = parseValue(newStr);
-    if (numValue <= maxSaldo) setValueString(newStr);
+    setValueString(newStr);
   };
   const handleCommaPress = () => {
     if (activeTab === 'vender') return handleSellCommaPress();
@@ -1405,17 +1688,17 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
   };
   const handleAdd10 = () => {
     const val = getCurrentValue() + 10;
-    if (val <= maxSaldo) setValueString(val.toString().replace('.', ','));
+    setValueString(val.toString().replace('.', ','));
   };
   const handleAdd50 = () => {
     const val = getCurrentValue() + 50;
-    if (val <= maxSaldo) setValueString(val.toString().replace('.', ','));
+    setValueString(val.toString().replace('.', ','));
   };
   const handleAdd100 = () => {
     const val = getCurrentValue() + 100;
-    if (val <= maxSaldo) setValueString(val.toString().replace('.', ','));
+    setValueString(val.toString().replace('.', ','));
   };
-  const handleSetMax = () => setValueString(maxSaldo.toString().replace('.', ','));
+  const handleSetMax = () => setValueString(maxSaldo.toFixed(2).replace('.', ','));
 
   // Sell Logic
   const getCurrentSellValue = (): number => parseValue(sellValueString);
@@ -1456,17 +1739,31 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
 
   const displaySellValue = formatDisplay(sellValueString);
   const numericSellValue = getCurrentSellValue();
-  const isSellActive = numericSellValue > 0;
+  // Botão ativo apenas se tem valor E pode vender (tem posições ou é Bad Bunny/Taylor)
+  const isSellActive = numericSellValue > 0 && canSell;
 
   const selectedPercentage = isYes ? (outcome.porcentagemSim / 100) : (outcome.porcentagemNao / 100);
   const valorSimulado = numericValue > 0 ? numericValue : 100;
-  const potentialReturn = selectedPercentage > 0 ? valorSimulado / selectedPercentage : 0;
-  const cotasAdquiridas = potentialReturn;
-  const taxaValue = potentialReturn * 0.02;
+  const potentialReturnBruto = selectedPercentage > 0 ? valorSimulado / selectedPercentage : 0;
+  const taxaValue = valorSimulado * 0.02; // Taxa de 2% sobre o valor apostado
+  const potentialReturn = potentialReturnBruto - taxaValue; // Retorno já com taxa descontada
+  
+  // Para o box de compra: chance anterior (atual) e chance após compra (ligeiramente maior)
+  const buyChanceAnterior = selectedPercentage * 100; // Chance atual em %
+  const buyChanceAtual = Math.min(buyChanceAnterior + 1, 99); // Simula aumento de 1% após compra
   
   // Calculate return for sell
-  const currentChance = isYes ? outcome.porcentagemSim : outcome.porcentagemNao;
+  // Taylor Swift (NÃO): chance 85% -> 90%
+  // Bad Bunny (SIM) e outros: usa chance do outcome
+  const currentChance = isTaylorSwift ? 90 : (isYes ? outcome.porcentagemSim : outcome.porcentagemNao);
   const sellReturn = numericSellValue * (currentChance / 100);
+  // Para o box de vender: preço médio é a chance atual do mercado (mesmo da compra)
+  // Bad Bunny: 90 → 85 (comprou a 90, agora vale 85)
+  // Taylor Swift: 85 → 90 (comprou a 85, agora vale 90)
+  const chanceAnterior = isBadBunny ? 90 : (isTaylorSwift ? 85 : buyChanceAnterior);
+  const chanceAtual = isBadBunny ? 85 : (isTaylorSwift ? 90 : currentChance);
+  const isDecreasing = chanceAtual < chanceAnterior;
+  const sellTaxa = sellReturn * 0.02; // Taxa de 2% sobre o retorno
 
   const handleBuy = () => {
     if (isActive && !isLoading) {
@@ -1519,6 +1816,14 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
                 onPress0={() => handleNumberPress('0')}
                 onPressComma={handleCommaPress}
                 onBackspace={handleBackspace}
+                chanceAnterior={chanceAnterior}
+                chanceAtual={chanceAtual}
+                retorno={sellReturn}
+                taxa={sellTaxa}
+                isDecreasing={isDecreasing}
+                isSimulation={!canSell}
+                onTaxaClick={onTaxaClick}
+                showPriceChange={isBadBunny}
               />
             ) : (
               <BaseContentVenderNaoTaylor 
@@ -1541,6 +1846,14 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
                 onPress0={() => handleNumberPress('0')}
                 onPressComma={handleCommaPress}
                 onBackspace={handleBackspace}
+                chanceAnterior={chanceAnterior}
+                chanceAtual={chanceAtual}
+                retorno={sellReturn}
+                taxa={sellTaxa}
+                isDecreasing={isDecreasing}
+                isSimulation={!canSell}
+                onTaxaClick={onTaxaClick}
+                showPriceChange={isTaylorSwift}
               />
             )
           ) : (
@@ -1565,11 +1878,12 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
             onPress0={() => handleNumberPress('0')}
             onPressComma={handleCommaPress}
             onBackspace={handleBackspace}
-            cotas={cotasAdquiridas}
             retorno={potentialReturn}
             taxa={taxaValue}
             isYes={isYes}
             outcome={displayedOutcome}
+            chanceAnterior={buyChanceAnterior}
+            chanceAtual={buyChanceAtual}
           />
         )}
       </div>
@@ -1592,6 +1906,7 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
           hasSellPosition={hasSellPosition}
           currentChance={currentChance}
           shouldShowSellForm={shouldShowSellForm}
+          insufficientFunds={numericValue > maxSaldo}
         />
       </div>
     </div>

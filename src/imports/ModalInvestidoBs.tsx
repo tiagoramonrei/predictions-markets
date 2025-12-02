@@ -71,8 +71,8 @@ function Icon1() {
 function Content() {
   return (
     <div className="content-stretch flex flex-col gap-[12px] items-center leading-[1.4] not-italic relative shrink-0 text-center w-full" data-name="content">
-      <p className="font-['DM_Sans:Bold',sans-serif] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre font-bold">O que é Total Investido?</p>
-      <p className="font-['DM_Sans:Regular',sans-serif] min-w-full relative shrink-0 text-[#e3e3e3] text-[12px] w-[min-content]">É o valor de todas as compras feitas ao longo do tempo, mesmo que você já tenha vendido as posições ou que os mercados tenham sido finalizados.</p>
+      <p className="font-['DM_Sans:Bold',sans-serif] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre font-bold">O que é Aporte Total?</p>
+      <p className="font-['DM_Sans:Regular',sans-serif] min-w-full relative shrink-0 text-[#e3e3e3] text-[12px] w-[min-content]">É o valor de todas as compras feitas ao longo do tempo, mesmo que você já tenha vendido os pitacos ou que os mercados tenham sido finalizados.</p>
     </div>
   );
 }

@@ -105,7 +105,6 @@ function Header({ category }: { category?: string }) {
     <div className="basis-0 content-stretch flex gap-[12px] grow items-center min-h-px min-w-px relative shrink-0" data-name="header">
       <Voltar />
       <Title category={category} />
-      <Icons />
     </div>
   );
 }

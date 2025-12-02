@@ -1,5 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 
+/* Fix for Tailwind arbitrary font syntax */
+[class*="font-['DM_Sans"] {
+  font-family: 'DM Sans', sans-serif !important;
+}
+
+[class*="DM_Sans:Bold"] {
+  font-weight: 700 !important;
+}
+
+[class*="DM_Sans:Regular"] {
+  font-weight: 400 !important;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {

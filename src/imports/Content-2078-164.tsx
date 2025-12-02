@@ -1,5 +1,5 @@
 import svgPathsData from "./svg-gm59clt5kl";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useNavigate } from "react-router-dom";
@@ -150,13 +150,11 @@ function Card(props: CardProps) {
     }
   };
 
-  const handleSell = (amount: number, isYes: boolean) => {
-     console.log("Sell", amount, isYes);
-     handleCloseBS();
+  const handleSell = useCallback((amount: number, isYes: boolean) => {
      if (onSellSuccess) {
         onSellSuccess(amount, isYes, outcomeData);
      }
-  };
+  }, [onSellSuccess, outcomeData]);
 
   return (
     <>
@@ -221,7 +219,7 @@ function Card(props: CardProps) {
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="w-full overflow-hidden"
             >
-              <div className="flex flex-col gap-[12px]">
+              <div className="flex flex-col gap-[12px] mt-[12px]">
                 {/* Tabela de Detalhes */}
                 <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="tabela">
                   {/* Cotas */}
@@ -305,12 +303,14 @@ function Card(props: CardProps) {
         </AnimatePresence>
       </div>
       
-      <OrderBottomSheet 
-        outcome={showOrderBS ? outcomeData : null}
-        onClose={handleCloseBS}
-        onBuy={handleBuy}
-        onSell={handleSell}
-      />
+      {showOrderBS && (
+        <OrderBottomSheet 
+          outcome={outcomeData}
+          onClose={handleCloseBS}
+          onBuy={handleBuy}
+          onSell={handleSell}
+        />
+      )}
     </>
   );
 }
@@ -344,7 +344,7 @@ const initialCards: CardProps[] = [
   {
     title: "Quem será o próximo técnico demitido na Série A?",
     escolha: "Vojvoda - Santos",
-    comprouText: "Investiu R$400",
+    comprouText: "Aporte R$400",
     valorGrande: "R$422,22",
     valorPequeno: "+R$22,22 (5,55%)",
     valorPequenoColor: "#32a866",
@@ -359,16 +359,16 @@ const initialCards: CardProps[] = [
   {
     title: "Quem será o artista mais popular no Spotify este ano?",
     escolha: "Bad Bunny",
-    comprouText: "Investiu R$100",
-    valorGrande: "R$94,43",
-    valorPequeno: "-R$5,57 (5,57%)",
+    comprouText: "Aporte R$100",
+    valorGrande: "R$92,55",
+    valorPequeno: "-R$7,45 (7,45%)",
     valorPequenoColor: "#d92341",
     imgSrc: imgImagem1,
     cotas: "111,1",
     chance: "90 → 85%",
     chanceColor: "#C00A28",
     chanceIconDirection: "down",
-    retornoPotencial: "R$111,1",
+    retornoPotencial: "R$92,55",
     fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
     linkMercado: "/mercado"
   }
@@ -435,8 +435,10 @@ export default function Content() {
     const currentChance = isYes ? outcome.porcentagemSim : outcome.porcentagemNao;
     const price = currentChance / 100;
     
-    // Calcula retorno para o toast (valor recebido da venda)
-    const returnAmount = amount * price;
+    // Calcula retorno para o toast (valor recebido da venda - já com taxa descontada)
+    const returnBruto = amount * price;
+    const taxa = returnBruto * 0.02;
+    const returnAmount = returnBruto - taxa;
 
     setSuccessToastData({
       artistName: outcome.nome,
@@ -462,10 +464,11 @@ export default function Content() {
         }
 
         // Atualiza valores para a nova posição reduzida
-        // Lógica: Resetar P&L (Investido = Valor Atual)
-        const newCurrentValue = remainingQuotas * price;
+        // Retorno líquido = retorno bruto - taxa (2%)
+        const newReturnBruto = remainingQuotas * price;
+        const newTaxa = newReturnBruto * 0.02;
+        const newCurrentValue = newReturnBruto - newTaxa; // Valor já com taxa descontada
         const newInvested = newCurrentValue; 
-        const newPotentialReturn = remainingQuotas * 1.0;
 
         const fmtMoney = (v: number) => `R$${v.toFixed(2).replace(".", ",")}`;
         const fmtQuotas = (v: number) => v.toFixed(2).replace(".", ",");
@@ -474,10 +477,10 @@ export default function Content() {
           ...card,
           cotas: fmtQuotas(remainingQuotas),
           valorGrande: fmtMoney(newCurrentValue),
-          comprouText: `Investiu ${fmtMoney(newInvested)}`, // Atualiza texto e valor
+          comprouText: `Aporte ${fmtMoney(newInvested)}`, // Atualiza texto e valor
           valorPequeno: "-R$0,00 (0,00%)", // Reset P&L
           valorPequenoColor: "#e3e3e3", // Cor neutra
-          retornoPotencial: fmtMoney(newPotentialReturn),
+          retornoPotencial: fmtMoney(newCurrentValue), // Retorno potencial = valor atual líquido
           chance: `${currentChance} → ${currentChance}%` // Atualiza chance visual
         };
       }).filter(Boolean) as CardProps[]);
@@ -525,20 +528,11 @@ export default function Content() {
       <Chips currentFilter={currentFilter} onFilterChange={setCurrentFilter} />
       
       <div className="box-border content-stretch flex flex-col gap-[12px] items-start overflow-clip px-[20px] py-0 relative shrink-0 w-full" data-name="boxPosicao">
-        <AnimatePresence mode="popLayout">
-          {filteredCards.map((card) => (
-            <motion.div
-              key={card.escolha}
-              layout
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.3 } }}
-              className="w-full"
-            >
-              <Card {...card} onSellSuccess={handleSellSuccess} onBuySuccess={handleBuySuccess} />
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {filteredCards.map((card) => (
+          <div key={card.escolha} className="w-full">
+            <Card {...card} onSellSuccess={handleSellSuccess} onBuySuccess={handleBuySuccess} />
+          </div>
+        ))}
       </div>
 
       {createPortal(

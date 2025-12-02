@@ -72,7 +72,7 @@ function Content() {
   return (
     <div className="content-stretch flex flex-col gap-[12px] items-center leading-[1.4] not-italic relative shrink-0 text-center w-full" data-name="content">
       <p className="font-['DM_Sans:Bold',sans-serif] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre font-bold">O que é Desempenho?</p>
-      <p className="font-['DM_Sans:Regular',sans-serif] min-w-full relative shrink-0 text-[#e3e3e3] text-[12px] w-[min-content]">É o resultado final entre tudo que você investiu e tudo que você já ganhou. Mostra se, no total, você está no lucro ou no prejuízo até agora.</p>
+      <p className="font-['DM_Sans:Regular',sans-serif] min-w-full relative shrink-0 text-[#e3e3e3] text-[12px] w-[min-content]">É o resultado final entre todo os seu aporte e tudo que você já ganhou. Mostra se, no total, você está no lucro ou no prejuízo até agora.</p>
     </div>
   );
 }
@@ -84,7 +84,7 @@ function BoxExplicacao() {
         <div className="box-border content-stretch flex gap-[8px] items-center justify-center p-[12px] relative w-full">
           <p className="font-['DM_Sans:Regular',sans-serif] leading-[1.4] not-italic relative shrink-0 text-[#e3e3e3] text-[0px] text-[12px] text-center text-nowrap whitespace-pre">
             <span className="font-['DM_Sans:Bold',sans-serif] font-bold">Desempenho</span>
-            <span>{` = Total ganho – Total investido`}</span>
+            <span>{` = Total ganho – Aporte total`}</span>
           </p>
         </div>
       </div>

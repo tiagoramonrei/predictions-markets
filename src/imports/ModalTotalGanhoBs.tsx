@@ -73,7 +73,7 @@ function Content() {
     <div className="content-stretch flex flex-col gap-[12px] items-center not-italic relative shrink-0 text-center w-full" data-name="content">
       <p className="font-['DM_Sans:Bold',sans-serif] leading-[1.4] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre font-bold">O que é Total Ganho?</p>
       <div className="font-['DM_Sans:Regular',sans-serif] leading-[1.4] min-w-full relative shrink-0 text-[#e3e3e3] text-[12px] w-[min-content]">
-        <p className="mb-0">É o valor que você já recebeu de lucro, nele inclui vitórias em mercados finalizados e lucros de vendas de posições.</p>
+        <p className="mb-4">É o valor que você já recebeu de lucro, nele inclui vitórias em mercados finalizados e lucros de vendas de pitacos.</p>
         <p>Não inclui ganhos futuros ou valores ainda não realizados.</p>
       </div>
     </div>

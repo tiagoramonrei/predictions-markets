@@ -50,20 +50,39 @@ function ChipBase({ isActive, onClick, label }: ChipProps) {
   );
 }
 
-function Chips({ currentFilter, onFilterChange }: { currentFilter: string, onFilterChange: (filter: string) => void }) {
+function ChipsPitaco({ currentFilter, onFilterChange }: { currentFilter: string, onFilterChange: (filter: string) => void }) {
   const filters = [
     "Todos",
     "Compras",
     "Vendas",
-    "Liquidação",
-    "Cancelamento",
+    "Fechamento",
+    "Cancelamento"
+  ];
+
+  return (
+    <div className="box-border content-stretch flex gap-[8px] items-start px-[20px] py-0 relative shrink-0 overflow-x-auto no-scrollbar w-full" data-name="chipsPitaco">
+      {filters.map((filter) => (
+        <ChipBase 
+          key={filter}
+          label={filter}
+          isActive={currentFilter === filter}
+          onClick={() => onFilterChange(filter)}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ChipsFinanceiro({ currentFilter, onFilterChange }: { currentFilter: string, onFilterChange: (filter: string) => void }) {
+  const filters = [
+    "Todos",
     "Depósito",
     "Saque",
     "Bônus"
   ];
 
   return (
-    <div className="box-border content-stretch flex gap-[8px] items-start px-[20px] py-0 relative shrink-0 overflow-x-auto no-scrollbar w-full" data-name="chips">
+    <div className="box-border content-stretch flex gap-[8px] items-start px-[20px] py-0 relative shrink-0 overflow-x-auto no-scrollbar w-full" data-name="chipsFinanceiro">
       {filters.map((filter) => (
         <ChipBase 
           key={filter}
@@ -937,7 +956,7 @@ function BaseEscolha5() {
     <div className="basis-0 content-stretch flex flex-col gap-[2px] grow h-[35px] items-start justify-center min-h-px min-w-px relative shrink-0" data-name="baseEscolha">
       <Text10 />
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-        <p className="leading-none whitespace-pre">Liquidado - Ganhou</p>
+        <p className="leading-none whitespace-pre">Fechamento - Ganhou</p>
       </div>
     </div>
   );
@@ -1101,7 +1120,7 @@ function BaseEscolha6() {
     <div className="basis-0 content-stretch flex flex-col gap-[2px] grow h-[35px] items-start justify-center min-h-px min-w-px relative shrink-0" data-name="baseEscolha">
       <Text12 />
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-        <p className="leading-none whitespace-pre">Liquidado - Perdeu</p>
+        <p className="leading-none whitespace-pre">Fechamento - Perdeu</p>
       </div>
     </div>
   );
@@ -1381,21 +1400,28 @@ function BtnMostrarMais({ onClick }: { onClick: () => void }) {
   );
 }
 
-function BoxPosicao({ currentFilter }: { currentFilter: string }) {
+function BoxPosicao({ currentFilter, activeTab }: { currentFilter: string, activeTab: 'pitaco' | 'financeiro' }) {
   const [showMore, setShowMore] = useState(false);
 
-  const allCards = [
+  // Cards de Pitaco (Compras, Vendas, Fechamento, Cancelamento)
+  const pitacoCards = [
     { component: <Card key="card" />, category: "Compras" },
     { component: <Card1 key="card1" />, category: "Cancelamento" },
     { component: <Card2 key="card2" />, category: "Compras" },
     { component: <Card3 key="card3" />, category: "Vendas" },
+    { component: <Card5 key="card5" />, category: "Fechamento" },
+    { component: <Card6 key="card6" />, category: "Fechamento" },
+  ];
+
+  // Cards de Financeiro (Depósito, Saque, Bônus)
+  const financeiroCards = [
     { component: <Card4 key="card4" />, category: "Depósito" },
-    { component: <Card5 key="card5" />, category: "Liquidação" },
-    { component: <Card6 key="card6" />, category: "Liquidação" },
     { component: <Card7 key="card7" />, category: "Bônus" },
     { component: <Card8 key="card8" />, category: "Saque" },
     { component: <Card9 key="card9" />, category: "Depósito" },
   ];
+
+  const allCards = activeTab === 'pitaco' ? pitacoCards : financeiroCards;
 
   const filteredCards = currentFilter === "Todos" 
     ? allCards 
@@ -1412,13 +1438,22 @@ function BoxPosicao({ currentFilter }: { currentFilter: string }) {
   );
 }
 
-export default function HistoricoContent() {
+export default function HistoricoContent({ activeTab = 'pitaco' }: { activeTab?: 'pitaco' | 'financeiro' }) {
   const [currentFilter, setCurrentFilter] = useState("Todos");
+
+  // Reset filter when tab changes
+  React.useEffect(() => {
+    setCurrentFilter("Todos");
+  }, [activeTab]);
 
   return (
     <div className="box-border content-stretch flex flex-col gap-[24px] items-start px-0 py-[28px] relative size-full pt-[28px] pr-[0px] pb-[0px] pl-[0px]" data-name="content">
-      <Chips currentFilter={currentFilter} onFilterChange={setCurrentFilter} />
-      <BoxPosicao currentFilter={currentFilter} />
+      {activeTab === 'pitaco' ? (
+        <ChipsPitaco currentFilter={currentFilter} onFilterChange={setCurrentFilter} />
+      ) : (
+        <ChipsFinanceiro currentFilter={currentFilter} onFilterChange={setCurrentFilter} />
+      )}
+      <BoxPosicao currentFilter={currentFilter} activeTab={activeTab} />
     </div>
   );
 }

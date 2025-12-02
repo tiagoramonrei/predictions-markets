@@ -80,7 +80,7 @@ function Title({ onClick }: { onClick: () => void }) {
       onClick={onClick}
     >
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[12px] text-nowrap text-white">
-        <p className="leading-none whitespace-pre">Seu Portfólio</p>
+        <p className="leading-none whitespace-pre">Sua Carteira</p>
       </div>
       <Icon />
     </div>
@@ -244,7 +244,7 @@ export default function Content({ isHidden, onToggleHidden }: ContentProps) {
       <Drawer open={isPortfolioDrawerOpen} onOpenChange={setIsPortfolioDrawerOpen}>
         <DrawerContent className="p-0 bg-transparent border-none shadow-none">
           <div className="sr-only">
-            <DrawerTitle>Seu Portfólio</DrawerTitle>
+            <DrawerTitle>Sua Carteira</DrawerTitle>
             <DrawerDescription>Explicação detalhada sobre o cálculo do portfólio</DrawerDescription>
           </div>
           <ModalBs onClose={() => setIsPortfolioDrawerOpen(false)} />

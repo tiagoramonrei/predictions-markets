@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Header from "../imports/Header-2015-203";
 import Subheader from "../imports/Subheader";
-import BaseTab from "../imports/BaseTab";
 import Content from "../imports/Content";
 import Desempenho from "../imports/Desempenho";
 import BaseNavBar from "../imports/BaseNavBar";
@@ -15,9 +14,6 @@ export default function Central() {
       <div className="sticky top-0 z-40 bg-[#171717]">
         <div className="w-full h-auto shrink-0">
           <Subheader />
-        </div>
-        <div className="w-full h-auto shrink-0">
-          <BaseTab />
         </div>
       </div>
       <div className="flex-1 flex flex-col text-white pb-[80px]">

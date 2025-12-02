@@ -23,7 +23,7 @@ function LogoRei() {
 function TxtSaldo() {
   return (
     <div className="content-stretch flex flex-col gap-[4px] items-start justify-center leading-none not-italic relative shrink-0 text-[10px] text-nowrap text-white whitespace-pre" data-name="txt-saldo">
-      <p className="font-['DM_Sans:Regular',sans-serif] relative shrink-0 font-bold">Portfólio</p>
+      <p className="font-['DM_Sans:Regular',sans-serif] relative shrink-0 font-bold">Carteira</p>
       <p className="font-['DM_Sans:Bold',sans-serif] relative shrink-0 font-bold">R$3.400</p>
     </div>
   );

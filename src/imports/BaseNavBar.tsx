@@ -98,7 +98,7 @@ function Btn3({ isActive, onClick }: { isActive: boolean; onClick: () => void })
             <IconCentral />
           </div>
           <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[10px] text-nowrap text-inherit">
-            <p className="leading-none whitespace-pre font-bold">Central</p>
+            <p className="leading-none whitespace-pre font-bold">Carteira</p>
           </div>
         </div>
       </div>

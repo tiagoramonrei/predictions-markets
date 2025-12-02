@@ -1,14 +1,10 @@
-import svgPaths from "./svg-micex7516m";
+import iconHistorico from "../assets/iconHistorico.png";
 
-function IconCentral() {
+// Ícone de Histórico
+function IconHistorico() {
   return (
-    <div className="relative shrink-0 size-[20px]" data-name="iconCentral">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 20 20">
-        <g id="iconCentral">
-          <path d={svgPaths.p10c0fb00} id="iconCentral_2" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-          <path clipRule="evenodd" d={svgPaths.p4ef0a80} fillRule="evenodd" id="iconCentral_3" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
-        </g>
-      </svg>
+    <div className="relative shrink-0 size-[20px]" data-name="iconHistorico">
+      <img src={iconHistorico} alt="Histórico" className="block size-full" />
     </div>
   );
 }
@@ -19,7 +15,7 @@ function Title() {
       <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex gap-[8px] items-center pl-0 pr-[120px] py-0 relative w-full">
           <div className="basis-0 flex flex-col font-['DM_Sans:Bold',sans-serif] grow justify-center leading-[0] min-h-px min-w-px not-italic overflow-ellipsis overflow-hidden relative shrink-0 text-[14px] text-nowrap text-white">
-            <p className="[white-space-collapse:collapse] leading-[1.4] overflow-ellipsis overflow-hidden font-bold">Carteira</p>
+            <p className="[white-space-collapse:collapse] leading-[1.4] overflow-ellipsis overflow-hidden font-bold">Histórico</p>
           </div>
         </div>
       </div>
@@ -30,13 +26,13 @@ function Title() {
 function Header() {
   return (
     <div className="basis-0 content-stretch flex gap-[12px] grow items-center min-h-px min-w-px relative shrink-0" data-name="header">
-      <IconCentral />
+      <IconHistorico />
       <Title />
     </div>
   );
 }
 
-export default function Subheader() {
+export default function SubheaderHistorico() {
   return (
     <div className="relative size-full" data-name="subheader">
       <div className="size-full">

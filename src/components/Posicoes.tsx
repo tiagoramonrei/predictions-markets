@@ -1,6 +1,5 @@
 import Header from "../imports/Header-2015-203";
-import Subheader from "../imports/Subheader";
-import BaseTab from "../imports/BaseTab";
+import SubheaderPosicoes from "../imports/SubheaderPosicoes";
 import BaseNavBar from "../imports/BaseNavBar";
 import Content from "../imports/Content-2078-164";
 
@@ -10,10 +9,7 @@ export default function Posicoes() {
       <Header />
       <div className="sticky top-0 z-40 bg-[#171717]">
         <div className="w-full h-auto shrink-0">
-          <Subheader />
-        </div>
-        <div className="w-full h-auto shrink-0">
-          <BaseTab activeTab="posicoes" />
+          <SubheaderPosicoes />
         </div>
       </div>
       <div className="flex-1 flex flex-col text-white pb-[80px]">

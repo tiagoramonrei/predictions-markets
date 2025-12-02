@@ -615,7 +615,7 @@ function Title({ onClick }: { onClick?: () => void }) {
       onClick={onClick}
     >
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[12px] text-nowrap text-white">
-        <p className="leading-none whitespace-pre">Total investido</p>
+        <p className="leading-none whitespace-pre">Aporte total</p>
       </div>
       <Icon />
     </div>
@@ -630,7 +630,7 @@ function TotalInvestido({ isHidden }: { isHidden: boolean }) {
       <Drawer open={isInvestidoDrawerOpen} onOpenChange={setIsInvestidoDrawerOpen}>
         <DrawerContent className="p-0 bg-transparent border-none shadow-none">
           <div className="sr-only">
-            <DrawerTitle>Total Investido</DrawerTitle>
+            <DrawerTitle>Aporte Total</DrawerTitle>
             <DrawerDescription>Explicação detalhada sobre o total investido</DrawerDescription>
           </div>
           <ModalInvestidoBs onClose={() => setIsInvestidoDrawerOpen(false)} />

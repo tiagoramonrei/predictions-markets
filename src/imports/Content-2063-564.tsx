@@ -45,7 +45,7 @@ function Chip3() {
     <div className="box-border content-stretch flex gap-[8px] h-[24px] items-center justify-center px-[16px] py-[7px] relative rounded-[100px] shrink-0" data-name="chip">
       <div aria-hidden="true" className="absolute border border-[#1e1e1e] border-solid inset-0 pointer-events-none rounded-[100px]" />
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[10px] text-nowrap text-white">
-        <p className="leading-none whitespace-pre">Liquidação</p>
+        <p className="leading-none whitespace-pre">Fechamento</p>
       </div>
     </div>
   );
@@ -669,7 +669,7 @@ function BaseEscolha5() {
     <div className="basis-0 content-stretch flex flex-col gap-[2px] grow h-[35px] items-start justify-center min-h-px min-w-px relative shrink-0" data-name="baseEscolha">
       <Text10 />
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-        <p className="leading-none whitespace-pre">Liquidado - Ganhou</p>
+        <p className="leading-none whitespace-pre">Fechamento - Ganhou</p>
       </div>
     </div>
   );
@@ -772,7 +772,7 @@ function BaseEscolha6() {
     <div className="basis-0 content-stretch flex flex-col gap-[2px] grow h-[35px] items-start justify-center min-h-px min-w-px relative shrink-0" data-name="baseEscolha">
       <Text12 />
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-        <p className="leading-none whitespace-pre">Liquidado - Perdeu</p>
+        <p className="leading-none whitespace-pre">Fechamento - Perdeu</p>
       </div>
     </div>
   );

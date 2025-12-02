@@ -26,7 +26,7 @@ function Text() {
         <p className="leading-[1.2] text-nowrap whitespace-pre">Bad Bunny</p>
       </div>
       <div className="flex flex-col justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">R$ 234.345 volume</p>
+        <p className="leading-none text-nowrap whitespace-pre">R$ 234.345 montante negociado</p>
       </div>
     </div>
   );
@@ -226,7 +226,7 @@ function Box({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeData
       onSelect({
         nome: 'Bad Bunny',
         imagem: imgImagem,
-        volume: 'R$ 234.345 volume',
+        volume: 'R$ 234.345 montante negociado',
         porcentagemSim: 85,
         porcentagemNao: 15,
         isYes: true,
@@ -240,7 +240,7 @@ function Box({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeData
       onSelect({
         nome: 'Bad Bunny',
         imagem: imgImagem,
-        volume: 'R$ 234.345 volume',
+        volume: 'R$ 234.345 montante negociado',
         porcentagemSim: 85,
         porcentagemNao: 15,
         isYes: false,
@@ -254,7 +254,7 @@ function Box({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeData
       onSelect({
         nome: 'Bad Bunny',
         imagem: imgImagem,
-        volume: 'R$ 234.345 volume',
+        volume: 'R$ 234.345 montante negociado',
         porcentagemSim: 85,
         porcentagemNao: 15,
         isYes: true,
@@ -269,7 +269,7 @@ function Box({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeData
       onSelect({
         nome: 'Bad Bunny',
         imagem: imgImagem,
-        volume: 'R$ 234.345 volume',
+        volume: 'R$ 234.345 montante negociado',
         porcentagemSim: 85,
         porcentagemNao: 15,
         isYes: false,
@@ -298,7 +298,7 @@ function Text1() {
         <p className="leading-[1.2] text-nowrap whitespace-pre">Taylor Swift</p>
       </div>
       <div className="flex flex-col justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">R$ 21.124 volume</p>
+        <p className="leading-none text-nowrap whitespace-pre">R$ 21.124 montante negociado</p>
       </div>
     </div>
   );
@@ -502,7 +502,7 @@ function Box1({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeDat
       onSelect({
         nome: 'Taylor Swift',
         imagem: imgImagem1,
-        volume: 'R$ 21.124 volume',
+        volume: 'R$ 21.124 montante negociado',
         porcentagemSim: 10,
         porcentagemNao: 90,
         isYes: true,
@@ -516,7 +516,7 @@ function Box1({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeDat
       onSelect({
         nome: 'Taylor Swift',
         imagem: imgImagem1,
-        volume: 'R$ 21.124 volume',
+        volume: 'R$ 21.124 montante negociado',
         porcentagemSim: 10,
         porcentagemNao: 90,
         isYes: false,
@@ -530,7 +530,7 @@ function Box1({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeDat
       onSelect({
         nome: 'Taylor Swift',
         imagem: imgImagem1,
-        volume: 'R$ 21.124 volume',
+        volume: 'R$ 21.124 montante negociado',
         porcentagemSim: 10,
         porcentagemNao: 90,
         isYes: false,
@@ -540,7 +540,7 @@ function Box1({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeDat
     }
   };
 
-  const tagNao = <Tag onClick={handleSellNao} cotas="117,64 cotas" />;
+  const tagNao = <Tag onClick={handleSellNao} cotas="111,1 cotas" />;
 
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col items-start justify-center p-[16px] rounded-[8px] shrink-0 w-full" data-name="box" style={{ outline: '4px solid #171717' }}>
@@ -559,7 +559,7 @@ function Text2() {
         <p className="leading-[1.2] text-nowrap whitespace-pre">Bruno Mars</p>
       </div>
       <div className="flex flex-col justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">R$ 12.438 volume</p>
+        <p className="leading-none text-nowrap whitespace-pre">R$ 12.438 montante negociado</p>
       </div>
     </div>
   );
@@ -722,7 +722,7 @@ function Box2({ onSelect }: { onSelect?: (outcome: OutcomeData) => void }) {
       onSelect({
         nome: 'Bruno Mars',
         imagem: imgImagem2,
-        volume: 'R$ 12.438 volume',
+        volume: 'R$ 12.438 montante negociado',
         porcentagemSim: 5,
         porcentagemNao: 95,
         isYes: true,
@@ -736,7 +736,7 @@ function Box2({ onSelect }: { onSelect?: (outcome: OutcomeData) => void }) {
       onSelect({
         nome: 'Bruno Mars',
         imagem: imgImagem2,
-        volume: 'R$ 12.438 volume',
+        volume: 'R$ 12.438 montante negociado',
         porcentagemSim: 5,
         porcentagemNao: 95,
         isYes: false,
@@ -760,7 +760,7 @@ function Text3() {
         <p className="leading-[1.2] text-nowrap whitespace-pre">Ariana Grande</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">R$ 5.312 volume</p>
+        <p className="leading-none text-nowrap whitespace-pre">R$ 5.312 montante negociado</p>
       </div>
     </div>
   );
@@ -911,7 +911,7 @@ function Box3({ onSelect }: { onSelect?: (outcome: OutcomeData) => void }) {
       onSelect({
         nome: 'Ariana Grande',
         imagem: imgImagem3,
-        volume: 'R$ 5.312 volume',
+        volume: 'R$ 5.312 montante negociado',
         porcentagemSim: 1,
         porcentagemNao: 99,
         isYes: true,
@@ -935,7 +935,7 @@ function Text4() {
         <p className="leading-[1.2] text-nowrap whitespace-pre">Drake</p>
       </div>
       <div className="flex flex-col justify-center relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">R$ 3.134 volume</p>
+        <p className="leading-none text-nowrap whitespace-pre">R$ 3.134 montante negociado</p>
       </div>
     </div>
   );
@@ -1086,7 +1086,7 @@ function Box4({ onSelect }: { onSelect?: (outcome: OutcomeData) => void }) {
       onSelect({
         nome: 'Drake',
         imagem: imgImagem4,
-        volume: 'R$ 3.134 volume',
+        volume: 'R$ 3.134 montante negociado',
         porcentagemSim: 1,
         porcentagemNao: 99,
         isYes: true,

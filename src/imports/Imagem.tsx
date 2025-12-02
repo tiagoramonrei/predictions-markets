@@ -8,7 +8,7 @@ function Card() {
         <p className="leading-[1.2] font-bold">Quem será o artista mais popular no Spotify este ano?</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#e3e3e3] text-[12px] text-nowrap">
-        <p className="leading-none whitespace-pre">R$ 2.234.345 volume</p>
+        <p className="leading-none whitespace-pre">R$ 2.234.345 montante negociado</p>
       </div>
     </div>
   );

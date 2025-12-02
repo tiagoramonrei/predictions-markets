@@ -70,7 +70,7 @@ function BaseEscolha() {
     <div className="basis-0 content-stretch flex flex-col gap-[2px] grow h-[35px] items-start justify-center min-h-px min-w-px relative shrink-0" data-name="baseEscolha">
       <Text1 />
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-        <p className="leading-none whitespace-pre">Investiu R$47,22</p>
+        <p className="leading-none whitespace-pre">Aporte R$47,22</p>
       </div>
     </div>
   );

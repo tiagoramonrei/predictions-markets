@@ -650,6 +650,7 @@ export default function DestaquesCarousel() {
     question: string;
     amount: number;
     returnAmount: number;
+    isSell?: boolean;
   } | null>(null);
 
   React.useEffect(() => {
@@ -911,6 +912,23 @@ export default function DestaquesCarousel() {
             returnAmount,
           });
         }}
+        onSell={(amount, isYes) => {
+          if (!selectedOutcome) return;
+          const percentage = isYes
+            ? selectedOutcome.porcentagemSim / 100
+            : selectedOutcome.porcentagemNao / 100;
+          const returnAmount = amount * percentage;
+
+          setSuccessToastData({
+            artistName: selectedOutcome.nome,
+            isYes,
+            question:
+              selectedOutcome.question || selectedOutcome.nome,
+            amount,
+            returnAmount,
+            isSell: true,
+          });
+        }}
       />
 
       {createPortal(
@@ -929,6 +947,7 @@ export default function DestaquesCarousel() {
                 amount={successToastData.amount}
                 returnAmount={successToastData.returnAmount}
                 onClose={() => setSuccessToastData(null)}
+                isSell={successToastData.isSell}
               />
             </motion.div>
           )}

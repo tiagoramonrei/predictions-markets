@@ -75,7 +75,7 @@ function BoxExplicacao() {
         <div className="box-border content-stretch flex gap-[8px] items-center justify-center p-[12px] relative w-full">
           <p className="font-['DM_Sans:Regular',sans-serif] leading-[1.4] not-italic relative shrink-0 text-[#e3e3e3] text-[0px] text-[12px] text-center text-nowrap whitespace-pre">
             <span className="font-['DM_Sans:Bold',sans-serif] font-bold">Saldo</span>
-            <span>{` = dinheiro livre e disponível para usar`}</span>
+            <span>{` = dinheiro livre e disponível para pitacar`}</span>
           </p>
         </div>
       </div>
