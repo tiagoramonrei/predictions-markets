@@ -1159,7 +1159,7 @@ function BoxSaldo({ retorno, taxa, chanceAnterior, chanceAtual }: { retorno: num
     <div className="relative rounded-[8px] shrink-0 w-full" data-name="boxSaldo">
       <div aria-hidden="true" className="absolute border border-[#242424] border-solid inset-0 pointer-events-none rounded-[8px]" />
       <div className="size-full">
-        <div className="box-border content-stretch flex gap-[8px] items-start px-[20px] py-[12px] relative w-full">
+        <div className="box-border content-stretch flex gap-[8px] items-center px-[20px] py-[12px] relative w-full">
           {/* Lado esquerdo - Preço Médio e Taxa */}
           <div className="flex flex-col gap-[8px] items-start justify-center shrink-0">
             <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
