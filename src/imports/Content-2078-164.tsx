@@ -490,9 +490,11 @@ export default function Content() {
   };
 
   const handleBuySuccess = (amount: number, isYes: boolean, outcome: OutcomeData) => {
-    // Calcula retorno (estimado)
+    // Calcula retorno usando a regra correta
     const percentage = isYes ? (outcome.porcentagemSim / 100) : (outcome.porcentagemNao / 100);
-    const returnAmount = amount * percentage;
+    const cotas = percentage > 0 ? amount / percentage : 0; // Cotas = valor investido / preço da cota
+    const taxa = amount * 0.02; // Taxa = 2% do valor investido
+    const returnAmount = cotas - taxa; // Retorno potencial = (cotas × R$1) - taxa
 
     setSuccessToastData({
       artistName: outcome.nome,

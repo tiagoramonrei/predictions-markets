@@ -3827,7 +3827,9 @@ export default function CardTotais() {
             if (!selectedOutcome) return;
             const percentage = isYes ? (selectedOutcome.porcentagemSim / 100) : (selectedOutcome.porcentagemNao / 100);
             const safePercentage = percentage > 0 ? percentage : 0.5;
-            const returnAmount = amount / safePercentage;
+            const cotas = amount / safePercentage; // Cotas = valor investido / preço da cota
+            const taxa = amount * 0.02; // Taxa = 2% do valor investido
+            const returnAmount = cotas - taxa; // Retorno potencial = (cotas × R$1) - taxa
             
             setSuccessToastData({
               artistName: selectedOutcome.nome,

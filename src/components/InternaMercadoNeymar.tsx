@@ -137,7 +137,9 @@ export default function InternaMercadoNeymar() {
     if (!selectedOutcome) return;
 
     const percentage = isYes ? (selectedOutcome.porcentagemSim / 100) : (selectedOutcome.porcentagemNao / 100);
-    const returnAmount = amount / percentage;
+    const cotas = amount / percentage; // Cotas = valor investido / preço da cota
+    const taxa = amount * 0.02; // Taxa = 2% do valor investido
+    const returnAmount = cotas - taxa; // Retorno potencial = (cotas × R$1) - taxa
 
     setSuccessToastData({
       artistName: selectedOutcome.nome,

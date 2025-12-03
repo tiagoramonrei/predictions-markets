@@ -1748,10 +1748,9 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
 
   const selectedPercentage = isYes ? (outcome.porcentagemSim / 100) : (outcome.porcentagemNao / 100);
   const valorSimulado = numericValue > 0 ? numericValue : 100;
-  const taxaValue = valorSimulado * 0.02; // Taxa de 2% sobre o valor apostado
-  const valorLiquido = valorSimulado - taxaValue; // Valor após desconto da taxa
-  const cotasAdquiridas = selectedPercentage > 0 ? valorLiquido / selectedPercentage : 0; // Cotas = valor líquido / preço
-  const potentialReturn = cotasAdquiridas; // Retorno = número de cotas (cada cota vale R$1)
+  const taxaValue = valorSimulado * 0.02; // Taxa de 2% sobre o valor investido
+  const cotasBrutas = selectedPercentage > 0 ? valorSimulado / selectedPercentage : 0; // Cotas brutas = valor investido / preço da cota
+  const potentialReturn = cotasBrutas - taxaValue; // Cotas líquidas e retorno potencial = (cotas brutas × R$1) - taxa
   
   // Para o box de compra: chance anterior (atual) e chance após compra (ligeiramente maior)
   const buyChanceAnterior = selectedPercentage * 100; // Chance atual em %
@@ -1889,7 +1888,7 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
             outcome={displayedOutcome}
             chanceAnterior={buyChanceAnterior}
             chanceAtual={buyChanceAtual}
-            cotas={cotasAdquiridas}
+            cotas={potentialReturn}
           />
         )}
       </div>
