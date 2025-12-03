@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import svgPaths from "./svg-6hdm1e4n73";
+import MenuLateral from "../components/MenuLateral";
 
 function Icone() {
   return (
@@ -89,50 +91,67 @@ function IconMenu() {
   );
 }
 
-function BaseMenu() {
+function BaseMenu({ onClick }: { onClick?: () => void }) {
   return (
-    <div className="box-border content-stretch flex items-center justify-center p-[8px] relative rounded-[1000px] shrink-0 w-[40px]" data-name="baseMenu">
+    <button 
+      onClick={onClick}
+      className="box-border content-stretch flex items-center justify-center p-[8px] relative rounded-[1000px] shrink-0 w-[40px] cursor-pointer hover:opacity-80 transition-opacity" 
+      data-name="baseMenu"
+    >
       <div aria-hidden="true" className="absolute border border-solid border-white inset-0 pointer-events-none rounded-[1000px]" />
       <IconMenu />
-    </div>
+    </button>
   );
 }
 
-function Botoes() {
+function Botoes({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-name="botoes">
       <BaseDeposito />
-      <BaseMenu />
+      <BaseMenu onClick={onMenuClick} />
     </div>
   );
 }
 
-function Btns() {
+function Btns({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <div className="content-stretch flex gap-[12px] items-center relative shrink-0" data-name="btns">
       <SaldoCoroas />
-      <Botoes />
+      <Botoes onMenuClick={onMenuClick} />
     </div>
   );
 }
 
-function Content() {
+function Content({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <div className="content-stretch flex items-center justify-between relative shrink-0 w-full" data-name="content">
       <LogoRei />
-      <Btns />
+      <Btns onMenuClick={onMenuClick} />
     </div>
   );
 }
 
 export default function HeaderHome() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <div className="bg-[#164C2E] relative size-full" data-name="header">
-      <div className="size-full">
-        <div className="box-border content-stretch flex gap-[8px] items-start p-[20px] relative size-full">
-          <Content />
+    <>
+      <div className="bg-[#164C2E] relative size-full" data-name="header">
+        <div className="size-full">
+          <div className="box-border content-stretch flex gap-[8px] items-start p-[20px] relative size-full">
+            <Content onMenuClick={() => setIsMenuOpen(true)} />
+          </div>
         </div>
       </div>
-    </div>
+      
+      <MenuLateral 
+        isOpen={isMenuOpen} 
+        onClose={() => setIsMenuOpen(false)}
+        userName="José da Silva"
+        carteira={3400.00}
+        saldo={240.90}
+        notificacoes={8}
+      />
+    </>
   );
 }

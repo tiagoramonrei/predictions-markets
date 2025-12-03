@@ -524,7 +524,7 @@ export default function Content() {
   });
 
   return (
-    <div className="box-border content-stretch flex flex-col gap-[24px] items-start px-0 py-[28px] relative size-full" data-name="content">
+    <div className="box-border content-stretch flex flex-col gap-[24px] items-start px-0 pt-[28px] pb-0 relative size-full" data-name="content">
       <Chips currentFilter={currentFilter} onFilterChange={setCurrentFilter} />
       
       <div className="box-border content-stretch flex flex-col gap-[12px] items-start overflow-clip px-[20px] py-0 relative shrink-0 w-full" data-name="boxPosicao">

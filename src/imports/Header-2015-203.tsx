@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import svgPaths from "./svg-n7thraeaen";
+import MenuLateral from "../components/MenuLateral";
 
 function Icone() {
   return (
@@ -89,50 +91,67 @@ function IconMenu() {
   );
 }
 
-function BaseMenu() {
+function BaseMenu({ onClick }: { onClick?: () => void }) {
   return (
-    <div className="box-border content-stretch flex items-center justify-center p-[8px] relative rounded-[1000px] shrink-0 size-[40px]" data-name="baseMenu">
+    <button 
+      onClick={onClick}
+      className="box-border content-stretch flex items-center justify-center p-[8px] relative rounded-[1000px] shrink-0 size-[40px] cursor-pointer hover:opacity-80 transition-opacity" 
+      data-name="baseMenu"
+    >
       <div aria-hidden="true" className="absolute border border-solid border-white inset-0 pointer-events-none rounded-[1000px]" />
       <IconMenu />
-    </div>
+    </button>
   );
 }
 
-function Botoes() {
+function Botoes({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-name="botoes">
       <BaseDeposito />
-      <BaseMenu />
+      <BaseMenu onClick={onMenuClick} />
     </div>
   );
 }
 
-function Btns() {
+function Btns({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <div className="content-stretch flex gap-[12px] items-center relative shrink-0" data-name="btns">
       <SaldoCoroas />
-      <Botoes />
+      <Botoes onMenuClick={onMenuClick} />
     </div>
   );
 }
 
-function Content() {
+function Content({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <div className="basis-0 content-stretch flex grow items-center justify-between min-h-px min-w-px relative shrink-0" data-name="content">
       <LogoRei />
-      <Btns />
+      <Btns onMenuClick={onMenuClick} />
     </div>
   );
 }
 
 export default function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   return (
-    <div className="bg-neutral-900 relative w-full" data-name="header">
-      <div className="w-full">
-        <div className="box-border content-stretch flex gap-[8px] items-start p-[20px] pb-[4px] relative w-full">
-          <Content />
+    <>
+      <div className="bg-neutral-900 relative w-full" data-name="header">
+        <div className="w-full">
+          <div className="box-border content-stretch flex gap-[8px] items-start p-[20px] pb-[4px] relative w-full">
+            <Content onMenuClick={() => setIsMenuOpen(true)} />
+          </div>
         </div>
       </div>
-    </div>
+      
+      <MenuLateral 
+        isOpen={isMenuOpen} 
+        onClose={() => setIsMenuOpen(false)}
+        userName="José da Silva"
+        carteira={3400.00}
+        saldo={240.90}
+        notificacoes={8}
+      />
+    </>
   );
 }

@@ -236,7 +236,7 @@ export default function InternaMercado() {
         </div>
         
         {/* Conteúdo com height mínima para permitir sticky */}
-        <div className="pb-[56px] min-h-[200vh]">
+        <div className="pb-[56px]">
           <div ref={imagemRef} className="relative w-full pt-[28px] px-[20px]">
             <Imagem />
           </div>
@@ -291,7 +291,7 @@ export default function InternaMercado() {
           </div>
           
           {/* Estão Gostando */}
-          <div className="py-6">
+          <div className="pt-6">
             <div className="px-[20px] pb-4">
               <div className="content-stretch flex gap-[8px] h-[20px] items-center relative shrink-0 w-full">
                 <div className="basis-0 flex flex-col grow justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-[16px] text-white" style={{ fontWeight: 'bold' }}>
@@ -303,9 +303,8 @@ export default function InternaMercado() {
           </div>
           
           {/* Footer */}
-          <div className="mt-6">
-            <Footer />
-          </div>
+          <div className="h-[40px] shrink-0" />
+          <Footer />
         </div>
         
         {/* Navbar fixa no bottom */}

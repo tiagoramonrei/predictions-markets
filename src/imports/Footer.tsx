@@ -234,9 +234,9 @@ function Footer() {
 
 export default function Footer1() {
   return (
-    <div className="bg-neutral-900 relative size-full" data-name="footer">
-      <div className="size-full">
-        <div className="box-border content-stretch flex flex-col gap-[40px] items-start px-[20px] py-[40px] relative size-full">
+    <div className="bg-neutral-900 relative w-full" data-name="footer">
+      <div className="w-full">
+        <div className="box-border content-stretch flex flex-col gap-[40px] items-start px-[20px] py-[40px] relative w-full">
           <BotoesFooter />
           <Footer />
         </div>

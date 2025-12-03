@@ -4,6 +4,7 @@ import Subheader from "../imports/Subheader";
 import Content from "../imports/Content";
 import Desempenho from "../imports/Desempenho";
 import BaseNavBar from "../imports/BaseNavBar";
+import Footer from "../imports/Footer";
 
 export default function Central() {
   const [isHidden, setIsHidden] = useState(false);
@@ -16,9 +17,11 @@ export default function Central() {
           <Subheader />
         </div>
       </div>
-      <div className="flex-1 flex flex-col text-white pb-[80px]">
+      <div className="flex-1 flex flex-col text-white pb-[56px]">
         <Content isHidden={isHidden} onToggleHidden={() => setIsHidden(!isHidden)} />
         <Desempenho isHidden={isHidden} />
+        <div className="h-[40px] shrink-0" />
+        <Footer />
       </div>
       <div className="fixed bottom-0 left-0 right-0 z-50 h-[56px]">
         <BaseNavBar />

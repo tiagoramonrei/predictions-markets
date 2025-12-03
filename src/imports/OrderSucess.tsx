@@ -265,7 +265,7 @@ function Retorno({
       </div>
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[14px] text-nowrap text-white">
         <p className="leading-[1.4] whitespace-pre font-bold">
-          {formatMoney(returnAmount)}
+          {isSell ? formatMoney(returnAmount) : formatCotas(returnAmount)}
         </p>
       </div>
     </div>

@@ -1447,7 +1447,7 @@ export default function HistoricoContent({ activeTab = 'pitaco' }: { activeTab?:
   }, [activeTab]);
 
   return (
-    <div className="box-border content-stretch flex flex-col gap-[24px] items-start px-0 py-[28px] relative size-full pt-[28px] pr-[0px] pb-[0px] pl-[0px]" data-name="content">
+    <div className="box-border content-stretch flex flex-col gap-[24px] items-start px-0 pt-[28px] pb-0 relative size-full" data-name="content">
       {activeTab === 'pitaco' ? (
         <ChipsPitaco currentFilter={currentFilter} onFilterChange={setCurrentFilter} />
       ) : (

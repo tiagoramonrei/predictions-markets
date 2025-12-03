@@ -4,6 +4,7 @@ import SubheaderHistorico from "../imports/SubheaderHistorico";
 import BaseTab from "../imports/BaseTab";
 import BaseNavBar from "../imports/BaseNavBar";
 import HistoricoContent from "../imports/HistoricoContent";
+import Footer from "../imports/Footer";
 
 export default function Historico() {
   const [activeTab, setActiveTab] = useState<'pitaco' | 'financeiro'>('pitaco');
@@ -19,8 +20,10 @@ export default function Historico() {
           <BaseTab activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
       </div>
-      <div className="flex-1 flex flex-col text-white pb-[80px]">
+      <div className="flex-1 flex flex-col text-white pb-[56px]">
         <HistoricoContent activeTab={activeTab} />
+        <div className="h-[40px] shrink-0" />
+        <Footer />
       </div>
       <div className="fixed bottom-0 left-0 right-0 z-50 h-[56px]">
         <BaseNavBar />

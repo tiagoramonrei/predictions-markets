@@ -281,7 +281,7 @@ export default function InternaMercadoNeymar() {
           <CardNeymar ref={cardRef} />
         </div>
         
-        <div className="pb-[150px] min-h-[200vh]">
+        <div className="flex flex-col">
           <div ref={imagemRef} className="relative w-full pt-[28px] px-[20px]">
             <ImagemNeymar />
           </div>
@@ -325,7 +325,7 @@ export default function InternaMercadoNeymar() {
             </Sobre>
           </div>
           
-          <div className="py-6">
+          <div className="pt-6">
             <div className="px-[20px] pb-4">
               <div className="content-stretch flex gap-[8px] h-[20px] items-center relative shrink-0 w-full">
                 <div className="basis-0 flex flex-col grow justify-center leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-[16px] text-white" style={{ fontWeight: 'bold' }}>
@@ -336,9 +336,11 @@ export default function InternaMercadoNeymar() {
             <EstaoGostando variant="neymar" />
           </div>
           
-          <div className="mt-6">
-            <Footer />
-          </div>
+          <div className="h-[40px] shrink-0" />
+          <Footer />
+          
+          {/* Spacer container para evitar que o conteúdo seja cortado pelo footer fixo */}
+          <div className="w-full shrink-0" style={{ height: '143px', minHeight: '143px' }} />
         </div>
 
         <div className="fixed bottom-[56px] left-0 right-0 z-50">

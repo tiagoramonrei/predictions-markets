@@ -75,7 +75,7 @@ function Btn2({ isActive, onClick }: { isActive: boolean; onClick: () => void })
             <IconPosicoes />
           </div>
           <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[10px] text-nowrap text-inherit">
-            <p className="leading-none whitespace-pre font-bold">Posições</p>
+            <p className="leading-none whitespace-pre font-bold">Pitacos</p>
           </div>
         </div>
       </div>
