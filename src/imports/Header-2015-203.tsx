@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import svgPaths from "./svg-n7thraeaen";
 import MenuLateral from "../components/MenuLateral";
 
@@ -16,9 +17,9 @@ function Icone() {
 
 function LogoRei() {
   return (
-    <div className="content-stretch flex gap-[12px] items-center relative shrink-0" data-name="logoRei">
+    <Link to="/" className="content-stretch flex gap-[12px] items-center relative shrink-0 hover:opacity-80 transition-opacity" data-name="logoRei">
       <Icone />
-    </div>
+    </Link>
   );
 }
 

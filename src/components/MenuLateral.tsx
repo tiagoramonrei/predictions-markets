@@ -8,7 +8,6 @@ import ModalSaldoBs from '../imports/ModalSaldoBs';
 // Importar ícones PNG
 import iconNotificacao from '../assets/iconNotificacao.png';
 import iconFechar from '../assets/iconFechar.png';
-import iconMostrarEsconder from '../assets/iconMostrarEsconder.png';
 import iconVerificacao from '../assets/iconVerificacao.png';
 import iconHome from '../assets/iconHome.png';
 import iconHistorico from '../assets/iconHistorico.png';
@@ -35,6 +34,43 @@ interface MenuLateralProps {
   carteira?: number;
   saldo?: number;
   notificacoes?: number;
+}
+
+// SVG paths para o ícone de olho (aberto/fechado)
+const svgPathsOlhoAberto = {
+  p2bf7c580: "M9.41465 6.5865C10.1953 7.36717 10.1953 8.6345 9.41465 9.4165C8.63398 10.1972 7.36665 10.1972 6.58465 9.4165C5.80398 8.63583 5.80398 7.3685 6.58465 6.5865C7.36665 5.8045 8.63331 5.8045 9.41465 6.5865",
+  p23abe000: "M2 8.00016C2 7.56083 2.10133 7.12616 2.29733 6.7255V6.7255C3.30733 4.66083 5.53933 3.3335 8 3.3335C10.4607 3.3335 12.6927 4.66083 13.7027 6.7255V6.7255C13.8987 7.12616 14 7.56083 14 8.00016C14 8.4395 13.8987 8.87416 13.7027 9.27483V9.27483C12.6927 11.3395 10.4607 12.6668 8 12.6668C5.53933 12.6668 3.30733 11.3395 2.29733 9.27483V9.27483C2.10133 8.87416 2 8.4395 2 8.00016Z",
+};
+
+const svgPathsOlhoFechado = {
+  p102e7900: "M11.9978 11.3309C10.8479 12.203 9.44325 12.6731 8.00005 12.6687C5.60865 12.7113 3.39908 11.397 2.29501 9.2753C1.89841 8.47142 1.89841 7.52878 2.29501 6.7249C2.84717 5.62531 3.72737 4.72447 4.81387 4.14697",
+  p169a2580: "M14.0026 13.3356L2.66455 1.99756",
+  p18fe5000: "M13.6182 9.42318C13.645 9.37249 13.6798 9.32703 13.7051 9.27537C14.1017 8.4715 14.1017 7.52886 13.7051 6.72498C12.6011 4.60326 10.3915 3.28898 8.00006 3.33157C7.85014 3.33157 7.7044 3.35158 7.5564 3.36133",
+  p7bafdc0: "M9.70562 9.03882C9.27926 9.75773 8.4511 10.1361 7.62854 9.98771C6.80598 9.83935 6.16217 9.19555 6.01381 8.37298C5.86546 7.55042 6.24379 6.72226 6.9627 6.2959",
+};
+
+function IconMostrarEsconder({ isHidden }: { isHidden: boolean }) {
+  return (
+    <div style={{ position: 'relative', flexShrink: 0, width: '20px', height: '20px' }}>
+      <svg style={{ display: 'block', width: '100%', height: '100%' }} fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
+        <g>
+          {isHidden ? (
+            <>
+              <path d={svgPathsOlhoFechado.p102e7900} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+              <path d={svgPathsOlhoFechado.p169a2580} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+              <path d={svgPathsOlhoFechado.p18fe5000} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+              <path d={svgPathsOlhoFechado.p7bafdc0} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+            </>
+          ) : (
+            <>
+              <path d={svgPathsOlhoAberto.p2bf7c580} stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+              <path clipRule="evenodd" d={svgPathsOlhoAberto.p23abe000} fillRule="evenodd" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+            </>
+          )}
+        </g>
+      </svg>
+    </div>
+  );
 }
 
 // Componentes movidos para fora para evitar re-criação e manter transições
@@ -321,7 +357,7 @@ function MenuContent({
                 onClick={() => setValoresVisiveis(!valoresVisiveis)}
                 style={{ display: 'flex', gap: '8px', alignItems: 'center', cursor: 'pointer' }}
               >
-                <img src={iconMostrarEsconder} alt="" style={{ width: '20px', height: '20px' }} />
+                <IconMostrarEsconder isHidden={!valoresVisiveis} />
                 <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'white' }}>
                   {valoresVisiveis ? 'Esconder todos os valores' : 'Mostrar todos os valores'}
                 </span>

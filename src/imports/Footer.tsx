@@ -1,13 +1,14 @@
 import svgPaths from "./svg-fw2buucxl5";
 import imgGetItOnGooglePlayBadgeWebColorPortugueseBr1 from "figma:asset/12be12a52911f261f7711148aceffb2d4d5d93c4.png";
 import SocialMediaIcons from "./SocialMedia";
+import { Link } from "react-router-dom";
 
 function Links() {
   return (
     <div className="content-stretch flex flex-col font-['DM_Sans:Regular',sans-serif] gap-[16px] items-start leading-[1.4] not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre" data-name="links">
-      <p className="relative shrink-0">Home</p>
-      <p className="relative shrink-0">Cadastro</p>
-      <p className="relative shrink-0">Login</p>
+      <Link to="/historico" className="relative shrink-0 hover:opacity-70 transition-opacity">Histórico</Link>
+      <Link to="/posicoes" className="relative shrink-0 hover:opacity-70 transition-opacity">Pitacos</Link>
+      <Link to="/central" className="relative shrink-0 hover:opacity-70 transition-opacity">Carteira</Link>
     </div>
   );
 }
@@ -26,7 +27,7 @@ function Links1() {
     <div className="content-stretch flex flex-col font-['DM_Sans:Regular',sans-serif] gap-[16px] items-start leading-[1.4] not-italic relative shrink-0 text-[12px] text-white" data-name="links">
       <p className="relative shrink-0 text-nowrap whitespace-pre">Termo de uso</p>
       <p className="relative shrink-0 text-nowrap whitespace-pre">Privacidade</p>
-      <p className="relative shrink-0 text-nowrap whitespace-pre">Dúvidas</p>
+      <Link to="/duvidas" className="relative shrink-0 text-nowrap whitespace-pre hover:opacity-70 transition-opacity">Dúvidas</Link>
     </div>
   );
 }
@@ -201,9 +202,9 @@ function LogoReiPitacoNew() {
 
 function Logo() {
   return (
-    <div className="content-stretch flex flex-col gap-[16px] items-center relative shrink-0" data-name="logo">
+    <Link to="/" className="content-stretch flex flex-col gap-[16px] items-center relative shrink-0 hover:opacity-80 transition-opacity" data-name="logo">
       <LogoReiPitacoNew />
-    </div>
+    </Link>
   );
 }
 
