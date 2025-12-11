@@ -856,7 +856,7 @@ export default function DestaquesCarousel() {
             justifyContent: "flex-start",
             paddingLeft: "20px",
             textAlign: "left",
-            marginTop: "20px",
+            marginTop: "8px",
           }}
         >
           <div
