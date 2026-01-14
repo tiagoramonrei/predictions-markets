@@ -914,14 +914,8 @@ export default function DestaquesCarousel() {
             returnAmount,
           });
         }}
-        onSell={(amount, isYes) => {
+        onSell={(amount, isYes, returnAmount) => {
           if (!selectedOutcome) return;
-          const percentage = isYes
-            ? selectedOutcome.porcentagemSim / 100
-            : selectedOutcome.porcentagemNao / 100;
-          const returnBruto = amount * percentage; // Retorno bruto = cotas × preço da cota
-          const taxa = returnBruto * 0.02; // Taxa = 2% do retorno bruto
-          const returnAmount = returnBruto - taxa; // Retorno líquido = retorno bruto - taxa
 
           setSuccessToastData({
             artistName: selectedOutcome.nome,

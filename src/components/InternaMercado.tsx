@@ -27,6 +27,7 @@ export interface OutcomeData {
   isMultipleChoice?: boolean;
   initialTab?: 'comprar' | 'vender';
   cotas?: number; // quantidade disponível para vender
+  initialSellType?: 'saldo' | 'bonus'; // chip inicial no bottom sheet de venda
 }
 
 export default function InternaMercado() {
@@ -76,13 +77,8 @@ export default function InternaMercado() {
     // However, handleCloseBottomSheet sets selectedOutcome to null.
   };
 
-  const handleSell = (amount: number, isYes: boolean) => {
+  const handleSell = (amount: number, isYes: boolean, returnAmount: number) => {
     if (!selectedOutcome) return;
-
-    const percentage = isYes ? (selectedOutcome.porcentagemSim / 100) : (selectedOutcome.porcentagemNao / 100);
-    const returnBruto = amount * percentage; // Retorno bruto = cotas × preço da cota
-    const taxa = returnBruto * 0.02; // Taxa = 2% do retorno bruto
-    const returnAmount = returnBruto - taxa; // Retorno líquido = retorno bruto - taxa
 
     setSuccessToastData({
       artistName: selectedOutcome.nome,

@@ -484,7 +484,7 @@ function RetornoValue({ retorno, isDecreasing, isSimulation }: { retorno: number
   );
 }
 
-function BoxSell({ chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange }: { chanceAnterior: number; chanceAtual: number; retorno: number; taxa: number; isDecreasing: boolean; isSimulation?: boolean; onTaxaClick?: () => void; showPriceChange?: boolean }) {
+function BoxSell({ chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange, isSellBonus }: { chanceAnterior: number; chanceAtual: number; retorno: number; taxa: number; isDecreasing: boolean; isSimulation?: boolean; onTaxaClick?: () => void; showPriceChange?: boolean; isSellBonus?: boolean }) {
   const formatarReal = (num: number): string => {
     return num.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
@@ -492,8 +492,8 @@ function BoxSell({ chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isS
     });
   };
   
-  // Retorno líquido = retorno bruto - taxa
-  const retornoLiquido = retorno - Math.abs(taxa);
+  // O retorno já vem calculado corretamente (lucro para bônus, retorno-taxa para saldo)
+  const retornoLiquido = retorno;
   
   // Sempre verde (#32A866) - sem distinção de positivo/negativo
   const retornoColor = isSimulation ? 'text-white' : 'text-[#32A866]';
@@ -502,34 +502,44 @@ function BoxSell({ chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isS
     <div className="relative rounded-[8px] shrink-0 w-full" data-name="boxSell">
       <div aria-hidden="true" className="absolute border border-[#242424] border-solid inset-0 pointer-events-none rounded-[8px]" />
       <div className="size-full">
-        <div className="box-border content-stretch flex gap-[8px] items-center px-[20px] py-[12px] relative w-full">
-          {/* Lado esquerdo - Preço Médio e Taxa */}
-          <div className="flex flex-col gap-[8px] items-start justify-center shrink-0">
-            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
-              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Preço Médio:</span>
-              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">
-                {showPriceChange ? `${Math.round(chanceAnterior)} → ${Math.round(chanceAtual)} centavos` : `${Math.round(chanceAnterior)} centavos`}
-              </span>
+        <div className={`box-border content-stretch flex flex-col gap-[8px] items-start px-[20px] py-[12px] relative w-full`}>
+          <div className={`flex gap-[8px] items-center w-full`} style={isSellBonus ? { borderBottom: '1px solid #242424', paddingBottom: '8px' } : {}}>
+            {/* Lado esquerdo - Preço Médio e Taxa */}
+            <div className="flex flex-col gap-[8px] items-start justify-center shrink-0">
+              <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
+                <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Preço Médio:</span>
+                <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">
+                  {showPriceChange ? `${Math.round(chanceAnterior)} → ${Math.round(chanceAtual)} centavos` : `${Math.round(chanceAnterior)} centavos`}
+                </span>
+              </div>
+              <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap cursor-pointer" onClick={onTaxaClick}>
+                <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Taxa:</span>
+                <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">R${formatarReal(Math.abs(taxa))}</span>
+              </div>
             </div>
-            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap cursor-pointer" onClick={onTaxaClick}>
-              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Taxa:</span>
-              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">R${formatarReal(Math.abs(taxa))}</span>
+            {/* Lado direito - Retorno */}
+            <div className="basis-0 grow flex flex-col items-end justify-center min-h-px min-w-px text-nowrap">
+              <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-none">{isSimulation ? 'Retorno Simulado' : 'Retorno'}</span>
+              <div className="flex items-center justify-end">
+                <span className={`font-['DM_Sans:Bold',sans-serif] text-[16px] ${retornoColor} leading-[1.4] font-bold`}>R${formatarReal(retornoLiquido)}</span>
+              </div>
             </div>
           </div>
-          {/* Lado direito - Retorno */}
-          <div className="basis-0 grow flex flex-col items-end justify-center min-h-px min-w-px text-nowrap">
-            <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-none">{isSimulation ? 'Retorno Simulado' : 'Retorno'}</span>
-            <div className="flex items-center justify-end">
-              <span className={`font-['DM_Sans:Bold',sans-serif] text-[16px] ${retornoColor} leading-[1.4] font-bold`}>R${formatarReal(retornoLiquido)}</span>
-            </div>
-          </div>
+          {/* Observação para cotas de bônus */}
+          {isSellBonus && (
+            <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-none whitespace-normal">
+              {retornoLiquido === 0 
+                ? "Obs.: Cotas de bônus rendem apenas lucro. Se a posição estiver desvalorizada, nenhum valor é retornado."
+                : "Obs.: Cotas de bônus rendem apenas o lucro."}
+            </span>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function BaseValorSell1({ onPct25, onPct50, onPct75, onMax, chanceAnterior, chanceAtual, retorno, taxa, valor, isDecreasing, isSimulation, onTaxaClick, showPriceChange }: { 
+function BaseValorSell1({ onPct25, onPct50, onPct75, onMax, chanceAnterior, chanceAtual, retorno, taxa, valor, isDecreasing, isSimulation, onTaxaClick, showPriceChange, isSellBonus }: { 
   onPct25: () => void; 
   onPct50: () => void; 
   onPct75: () => void; 
@@ -543,6 +553,7 @@ function BaseValorSell1({ onPct25, onPct50, onPct75, onMax, chanceAnterior, chan
   isSimulation?: boolean;
   onTaxaClick?: () => void;
   showPriceChange?: boolean;
+  isSellBonus?: boolean;
 }) {
   const numericValue = parseFloat(valor.replace(/\./g, '').replace(',', '.')) || 0;
   const hasValue = numericValue > 0;
@@ -551,7 +562,7 @@ function BaseValorSell1({ onPct25, onPct50, onPct75, onMax, chanceAnterior, chan
     <div className="relative shrink-0 w-full" data-name="baseValor">
       <div className="flex flex-col items-center justify-center size-full">
         <div className="box-border content-stretch flex flex-col gap-[20px] items-center justify-center px-[20px] py-0 relative w-full">
-          {hasValue && <BoxSell chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} retorno={retorno} taxa={taxa} isDecreasing={isDecreasing} isSimulation={isSimulation} onTaxaClick={onTaxaClick} showPriceChange={showPriceChange} />}
+          {hasValue && <BoxSell chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} retorno={retorno} taxa={taxa} isDecreasing={isDecreasing} isSimulation={isSimulation} onTaxaClick={onTaxaClick} showPriceChange={showPriceChange} isSellBonus={isSellBonus} />}
           <PercentagesSell onPct25={onPct25} onPct50={onPct50} onPct75={onPct75} onMax={onMax} />
         </div>
       </div>
@@ -563,7 +574,7 @@ function BaseContentVenderSim({
   outcome, valor, onPct25, onPct50, onPct75, onMax, cotasDisponiveis,
   onPress1, onPress2, onPress3, onPress4, onPress5, onPress6, 
   onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace,
-  chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange
+  chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange, isSellBonus
 }: {
   outcome: OutcomeData;
   valor: string;
@@ -592,6 +603,7 @@ function BaseContentVenderSim({
   isSimulation?: boolean;
   onTaxaClick?: () => void;
   showPriceChange?: boolean;
+  isSellBonus?: boolean;
 }) {
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
@@ -613,6 +625,7 @@ function BaseContentVenderSim({
         isSimulation={isSimulation}
         onTaxaClick={onTaxaClick}
         showPriceChange={showPriceChange}
+        isSellBonus={isSellBonus}
       />
       <BaseTeclado 
         onPress1={onPress1}
@@ -910,7 +923,7 @@ function BaseContentVenderNaoTaylor({
   outcome, valor, onPct25, onPct50, onPct75, onMax, cotasDisponiveis,
   onPress1, onPress2, onPress3, onPress4, onPress5, onPress6, 
   onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace,
-  chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange
+  chanceAnterior, chanceAtual, retorno, taxa, isDecreasing, isSimulation, onTaxaClick, showPriceChange, isSellBonus
 }: {
   outcome: OutcomeData;
   valor: string;
@@ -939,6 +952,7 @@ function BaseContentVenderNaoTaylor({
   isSimulation?: boolean;
   onTaxaClick?: () => void;
   showPriceChange?: boolean;
+  isSellBonus?: boolean;
 }) {
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
@@ -960,6 +974,7 @@ function BaseContentVenderNaoTaylor({
         isSimulation={isSimulation}
         onTaxaClick={onTaxaClick}
         showPriceChange={showPriceChange}
+        isSellBonus={isSellBonus}
       />
       <BaseTeclado 
         onPress1={onPress1}
@@ -1136,7 +1151,7 @@ function TaxInfo({ value, onClick }: { value: string; onClick?: () => void }) {
   );
 }
 
-function BoxSaldo({ retorno, taxa, chanceAnterior, chanceAtual, cotas }: { retorno: number; taxa: number; chanceAnterior: number; chanceAtual: number; cotas: number }) {
+function BoxSaldo({ retorno, taxa, chanceAnterior, chanceAtual, cotas, useBonus }: { retorno: number; taxa: number; chanceAnterior: number; chanceAtual: number; cotas: number; useBonus?: boolean }) {
   const formatarReal = (num: number): string => {
     return num.toLocaleString('pt-BR', {
       minimumFractionDigits: 2,
@@ -1148,34 +1163,41 @@ function BoxSaldo({ retorno, taxa, chanceAnterior, chanceAtual, cotas }: { retor
     <div className="relative rounded-[8px] shrink-0 w-full" data-name="boxSaldo">
       <div aria-hidden="true" className="absolute border border-[#242424] border-solid inset-0 pointer-events-none rounded-[8px]" />
       <div className="size-full">
-        <div className="box-border content-stretch flex gap-[8px] items-center px-[20px] py-[12px] relative w-full">
-          {/* Lado esquerdo - Preço Médio, Qtde de Cotas e Taxa */}
-          <div className="flex flex-col gap-[8px] items-start justify-center shrink-0">
-            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
-              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Preço Médio:</span>
-              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">{Math.round(chanceAnterior)} centavos</span>
+        <div className="box-border content-stretch flex flex-col gap-[8px] items-start px-[20px] py-[12px] relative w-full">
+          <div className="flex gap-[8px] items-center w-full pt-0 px-0" style={{ borderBottom: useBonus ? '1px solid #242424' : 'none', paddingBottom: useBonus ? '8px' : '0px' }}>
+            {/* Lado esquerdo - Preço Médio, Qtde de Cotas e Taxa */}
+            <div className="flex flex-col gap-[8px] items-start justify-center shrink-0">
+              <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
+                <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Preço Médio:</span>
+                <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">{Math.round(chanceAnterior)} centavos</span>
+              </div>
+              <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
+                <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Qtde de Cotas:</span>
+                <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">{formatarReal(cotas)}</span>
+              </div>
+              <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
+                <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Taxa:</span>
+                <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">R${formatarReal(Math.abs(taxa))}</span>
+              </div>
             </div>
-            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
-              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Qtde de Cotas:</span>
-              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">{formatarReal(cotas)}</span>
-            </div>
-            <div className="flex gap-[4px] items-start text-[10px] text-white text-nowrap">
-              <span className="font-['DM_Sans:Regular',sans-serif] leading-none">Taxa:</span>
-              <span className="font-['DM_Sans:Bold',sans-serif] leading-none font-bold">R${formatarReal(Math.abs(taxa))}</span>
+            {/* Lado direito - Retorno potencial */}
+            <div className="basis-0 grow flex flex-col items-end justify-center min-h-px min-w-px text-nowrap">
+              <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-none">Retorno potencial</span>
+              <span className="font-['DM_Sans:Bold',sans-serif] text-[16px] text-[#32a866] leading-[1.4] font-bold">R${formatarReal(retorno)}</span>
             </div>
           </div>
-          {/* Lado direito - Retorno potencial */}
-          <div className="basis-0 grow flex flex-col items-end justify-center min-h-px min-w-px text-nowrap">
-            <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-none">Retorno potencial</span>
-            <span className="font-['DM_Sans:Bold',sans-serif] text-[16px] text-[#32a866] leading-[1.4] font-bold">R${formatarReal(retorno)}</span>
-          </div>
+          {useBonus && (
+            <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-none">
+              Obs.: Com bônus, você recebe apenas o lucro.
+            </span>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-function BaseValor1({ onAdd10, onAdd50, onAdd100, onMax, retorno, taxa, valor, chanceAnterior, chanceAtual, cotas }: { onAdd10: () => void; onAdd50: () => void; onAdd100: () => void; onMax: () => void; retorno: number; taxa: number; valor: string; chanceAnterior: number; chanceAtual: number; cotas: number }) {
+function BaseValor1({ onAdd10, onAdd50, onAdd100, onMax, retorno, taxa, valor, chanceAnterior, chanceAtual, cotas, useBonus }: { onAdd10: () => void; onAdd50: () => void; onAdd100: () => void; onMax: () => void; retorno: number; taxa: number; valor: string; chanceAnterior: number; chanceAtual: number; cotas: number; useBonus?: boolean }) {
   const numericValue = parseFloat(valor.replace(/\./g, '').replace(',', '.')) || 0;
   const hasValue = numericValue > 0;
   
@@ -1183,7 +1205,7 @@ function BaseValor1({ onAdd10, onAdd50, onAdd100, onMax, retorno, taxa, valor, c
     <div className="relative shrink-0 w-full" data-name="baseValor">
       <div className="flex flex-col items-center justify-center size-full">
         <div className="box-border content-stretch flex flex-col gap-[20px] items-center justify-center px-[20px] py-0 relative w-full">
-          {hasValue && <BoxSaldo retorno={retorno} taxa={taxa} chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} cotas={cotas} />}
+          {hasValue && <BoxSaldo retorno={retorno} taxa={taxa} chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} cotas={cotas} useBonus={useBonus} />}
           <Valor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} />
         </div>
       </div>
@@ -1475,7 +1497,7 @@ function BaseContent({
   valor, onAdd10, onAdd50, onAdd100, onMax,
   onPress1, onPress2, onPress3, onPress4, onPress5, onPress6,
   onPress7, onPress8, onPress9, onPress0, onPressComma, onBackspace,
-  retorno, taxa, isYes, outcome, chanceAnterior, chanceAtual, cotas
+  retorno, taxa, isYes, outcome, chanceAnterior, chanceAtual, cotas, useBonus
 }: {
   valor: string;
   onAdd10: () => void;
@@ -1501,12 +1523,13 @@ function BaseContent({
   chanceAnterior: number;
   chanceAtual: number;
   cotas: number;
+  useBonus?: boolean;
 }) {
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[20px] items-start px-0 py-[20px] relative shrink-0 w-full" data-name="baseContent">
       <BaseEscolha isYes={isYes} outcome={outcome} />
       <BaseValor valor={valor} />
-      <BaseValor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} retorno={retorno} taxa={taxa} valor={valor} chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} cotas={cotas} />
+      <BaseValor1 onAdd10={onAdd10} onAdd50={onAdd50} onAdd100={onAdd100} onMax={onMax} retorno={retorno} taxa={taxa} valor={valor} chanceAnterior={chanceAnterior} chanceAtual={chanceAtual} cotas={cotas} useBonus={useBonus} />
       <BaseTeclado
         onPress1={onPress1}
         onPress2={onPress2}
@@ -1521,6 +1544,210 @@ function BaseContent({
         onPressComma={onPressComma}
         onBackspace={onBackspace}
       />
+    </div>
+  );
+}
+
+function ToggleBonus({ checked, onCheckedChange, bonusValue }: { checked: boolean; onCheckedChange: (checked: boolean) => void; bonusValue: number }) {
+  return (
+    <div style={{ 
+      display: 'flex', 
+      gap: '8px', 
+      alignItems: 'center', 
+      width: '100%'
+    }}>
+      {/* Toggle e texto */}
+      <div style={{ 
+        display: 'flex', 
+        flex: '1 0 0', 
+        gap: '4px', 
+        alignItems: 'center',
+        height: '20px'
+      }}>
+        {/* Switch */}
+        <div style={{ height: '20px', position: 'relative', width: '40px', flexShrink: 0 }}>
+          <button
+            onClick={() => onCheckedChange(!checked)}
+            style={{
+              position: 'relative',
+              width: '40px',
+              height: '20px',
+              borderRadius: '9999px',
+              backgroundColor: checked ? '#19954f' : '#373737',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease',
+              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+            }}
+            role="switch"
+            aria-checked={checked}
+          >
+            <div
+              style={{
+                width: '12px',
+                height: '12px',
+                borderRadius: '50%',
+                backgroundColor: 'white',
+                transform: checked ? 'translateX(20px)' : 'translateX(0)',
+                transition: 'transform 0.2s ease',
+              }}
+            />
+          </button>
+        </div>
+        {/* Texto */}
+        <div style={{ 
+          display: 'flex', 
+          flex: '1 0 0', 
+          flexDirection: 'column', 
+          alignItems: 'flex-start', 
+          justifyContent: 'center'
+        }}>
+          <span style={{ 
+            fontFamily: 'DM Sans, sans-serif', 
+            fontSize: '10px', 
+            color: 'white', 
+            lineHeight: 1,
+            whiteSpace: 'nowrap'
+          }}>
+            Usar Crédito de Bônus?
+          </span>
+        </div>
+      </div>
+      {/* Valor do bônus */}
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'row', 
+        alignItems: 'center',
+        gap: '2px',
+        height: '100%',
+        justifyContent: 'center',
+        textAlign: 'right'
+      }}>
+        <span style={{ 
+          fontFamily: 'DM Sans, sans-serif', 
+          fontSize: '10px', 
+          color: 'white', 
+          lineHeight: 1,
+          whiteSpace: 'nowrap'
+        }}>
+          Bônus disponível:
+        </span>
+        <span style={{ 
+          fontFamily: 'DM Sans, sans-serif', 
+          fontWeight: 700, 
+          fontSize: '14px', 
+          color: 'white', 
+          lineHeight: 1.1,
+          whiteSpace: 'nowrap'
+        }}>
+          {Math.floor(bonusValue)}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function ChipSelectorCotas({ 
+  selectedType, 
+  onTypeChange, 
+  cotasSaldo, 
+  cotasBonus 
+}: { 
+  selectedType: 'saldo' | 'bonus'; 
+  onTypeChange: (type: 'saldo' | 'bonus') => void; 
+  cotasSaldo: number; 
+  cotasBonus: number; 
+}) {
+  const formatarCotas = (num: number): string => {
+    return num.toLocaleString('pt-BR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  };
+
+  const isSaldoDisabled = cotasSaldo === 0;
+
+  return (
+    <div style={{ 
+      display: 'flex', 
+      gap: '8px', 
+      alignItems: 'center', 
+      width: '100%',
+      marginBottom: '8px'
+    }}>
+      {/* Chip Cotas de Saldo */}
+      <button
+        onClick={() => !isSaldoDisabled && onTypeChange('saldo')}
+        disabled={isSaldoDisabled}
+        style={{
+          flex: 1,
+          height: '24px',
+          borderRadius: '100px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '7px 16px',
+          cursor: isSaldoDisabled ? 'not-allowed' : 'pointer',
+          backgroundColor: selectedType === 'saldo' ? '#164c2e' : 'transparent',
+          border: '2px solid',
+          borderColor: selectedType === 'saldo' ? '#32a866' : '#242424',
+          outline: 'none',
+          transition: 'all 0.2s ease',
+          opacity: isSaldoDisabled ? 0.32 : 1
+        }}
+      >
+        <span style={{ 
+          fontFamily: 'DM Sans, sans-serif', 
+          fontSize: '10px', 
+          color: 'white',
+          whiteSpace: 'nowrap',
+          lineHeight: 1
+        }}>
+          Cotas de Saldo: <span style={{ fontWeight: 700 }}>{formatarCotas(cotasSaldo)}</span>
+        </span>
+      </button>
+
+      {/* Texto "ou" */}
+      <span style={{ 
+        fontFamily: 'DM Sans, sans-serif', 
+        fontSize: '10px', 
+        color: 'white',
+        flexShrink: 0
+      }}>
+        ou
+      </span>
+
+      {/* Chip Cotas de Bônus */}
+      <button
+        onClick={() => onTypeChange('bonus')}
+        style={{
+          flex: 1,
+          height: '24px',
+          borderRadius: '100px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '7px 16px',
+          cursor: 'pointer',
+          backgroundColor: selectedType === 'bonus' ? '#164c2e' : 'transparent',
+          border: '2px solid',
+          borderColor: selectedType === 'bonus' ? '#32a866' : '#242424',
+          outline: 'none',
+          transition: 'all 0.2s ease'
+        }}
+      >
+        <span style={{ 
+          fontFamily: 'DM Sans, sans-serif', 
+          fontSize: '10px', 
+          color: 'white',
+          whiteSpace: 'nowrap',
+          lineHeight: 1
+        }}>
+          Cotas de Bônus: <span style={{ fontWeight: 700 }}>{formatarCotas(cotasBonus)}</span>
+        </span>
+      </button>
     </div>
   );
 }
@@ -1566,21 +1793,78 @@ function Btn({ isActive, onClick, isLoading, insufficientFunds, onInsufficientFu
 
 function BaseFooter({ 
   valor, isActive, isYes, activeTab, outcome, onBuy, isLoading,
-  sellValue, isSellActive, sellCotas, sellReturn, onSell, hasSellPosition, currentChance, shouldShowSellForm, insufficientFunds, onInsufficientFundsClick
+  sellValue, isSellActive, sellCotas, sellReturn, onSell, hasSellPosition, currentChance, shouldShowSellForm, insufficientFunds, onInsufficientFundsClick,
+  useBonus, onUseBonusChange, bonusValue,
+  showCotasChips, sellType, onSellTypeChange, cotasSaldo, cotasBonus,
+  showZeroReturnConfirmation, onConfirmZeroReturnSell, onCancelZeroReturnConfirmation
 }: { 
   valor: number; isActive: boolean; isYes: boolean; activeTab: 'comprar' | 'vender'; outcome: OutcomeData; onBuy: () => void; isLoading?: boolean;
   sellValue: number; isSellActive: boolean; sellCotas: number; sellReturn: number; onSell?: () => void; hasSellPosition: boolean; currentChance: number; shouldShowSellForm?: boolean; insufficientFunds?: boolean; onInsufficientFundsClick?: () => void;
+  useBonus?: boolean; onUseBonusChange?: (checked: boolean) => void; bonusValue?: number;
+  showCotasChips?: boolean; sellType?: 'saldo' | 'bonus'; onSellTypeChange?: (type: 'saldo' | 'bonus') => void; cotasSaldo?: number; cotasBonus?: number;
+  showZeroReturnConfirmation?: boolean; onConfirmZeroReturnSell?: () => void; onCancelZeroReturnConfirmation?: () => void;
 }) {
   
   // Se for tab Vender
   if (activeTab === 'vender') {
     if (!shouldShowSellForm) return null;
 
+    // Se mostrar confirmação de retorno zero
+    if (showZeroReturnConfirmation) {
+      return (
+        <div className="bg-[#1e1e1e] relative w-full" data-name="baseFooter">
+          <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
+          <div className="flex flex-col items-center justify-center size-full">
+            <div className="box-border flex flex-col gap-[8px] items-center justify-center p-[20px] relative w-full">
+              <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic text-[12px] text-white text-center w-full">
+                <p className="leading-none whitespace-pre-wrap">Atenção, você não irá receber nenhum valor ao vender essas cotas</p>
+              </div>
+              <div className="flex gap-[8px] items-start w-full">
+                <div 
+                  onClick={onCancelZeroReturnConfirmation}
+                  className="bg-[#19954f] flex flex-1 h-[48px] items-center justify-center px-[24px] py-0 rounded-[1000px] cursor-pointer hover:opacity-90 transition-opacity"
+                >
+                  <p className="font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic text-[16px] text-white whitespace-pre font-bold">
+                    Voltar
+                  </p>
+                </div>
+                <div 
+                  onClick={isLoading ? undefined : onConfirmZeroReturnSell}
+                  className={`border border-[#19954f] border-solid flex flex-1 h-[48px] items-center justify-center px-[24px] py-0 rounded-[1000px] cursor-pointer hover:opacity-90 transition-opacity ${isLoading ? 'cursor-not-allowed' : ''}`}
+                >
+                  {isLoading ? (
+                    <div className="flex gap-[16px] items-center justify-center">
+                      
+                      <div className="relative shrink-0 size-[16px]">
+                        <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full animate-spin" src={imgLoadingAnima} />
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="font-['DM_Sans:Bold',sans-serif] leading-[20px] not-italic text-[16px] text-white whitespace-pre font-bold">
+                      Vender
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter">
         <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
         <div className="flex flex-col items-center justify-center size-full">
           <div className="box-border content-stretch flex flex-col items-center justify-center p-[20px] relative w-full">
+            {showCotasChips && sellType && onSellTypeChange && cotasSaldo !== undefined && cotasBonus !== undefined && (
+              <ChipSelectorCotas 
+                selectedType={sellType} 
+                onTypeChange={onSellTypeChange} 
+                cotasSaldo={cotasSaldo} 
+                cotasBonus={cotasBonus} 
+              />
+            )}
             {isYes ? (
               <BtnSell 
                 cotas={sellCotas} 
@@ -1608,10 +1892,12 @@ function BaseFooter({
 
   // Se for tab Comprar, mostra botão de comprar
   return (
-    <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter">
-      <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
+    <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter" style={{ borderTop: '1px solid #242424' }}>
       <div className="flex flex-col items-center justify-center size-full">
-        <div className="box-border content-stretch flex flex-col items-center justify-center p-[20px] relative w-full">
+        <div className="box-border content-stretch flex flex-col gap-[8px] items-center justify-center p-[20px] relative w-full">
+          {useBonus !== undefined && onUseBonusChange && bonusValue !== undefined && (
+            <ToggleBonus checked={useBonus} onCheckedChange={onUseBonusChange} bonusValue={bonusValue} />
+          )}
           <Btn isActive={isActive} onClick={onBuy} isLoading={isLoading} insufficientFunds={insufficientFunds} onInsufficientFundsClick={onInsufficientFundsClick} />
         </div>
       </div>
@@ -1619,7 +1905,7 @@ function BaseFooter({
   );
 }
 
-export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onSell, onTaxaClick }: { outcome: OutcomeData; onClose: () => void; onBuy: (amount: number, isYes: boolean) => void; onSell?: (amount: number, isYes: boolean) => void; onTaxaClick?: () => void }) {
+export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onSell, onTaxaClick }: { outcome: OutcomeData; onClose: () => void; onBuy: (amount: number, isYes: boolean) => void; onSell?: (amount: number, isYes: boolean, returnAmount: number) => void; onTaxaClick?: () => void }) {
   const navigate = useNavigate();
   const [valueString, setValueString] = useState('0');
   const [sellValueString, setSellValueString] = useState('0');
@@ -1631,11 +1917,31 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
   // Bad Bunny (SIM) e Taylor Swift (NÃO) podem vender mesmo sem posições
   const isBadBunny = outcome.nome === "Bad Bunny" && outcome.isYes === true;
   const isTaylorSwift = outcome.nome === "Taylor Swift" && outcome.isYes === false;
-  // Se for Bad Bunny (SIM) ou Taylor Swift (NÃO) sem posições, usa 111.1 como limite máximo
-  // Para outros sem posições, permite digitar até 99999 para simulação
-  const maxCotas = (availableCotas > 0) ? availableCotas : ((isBadBunny || isTaylorSwift) ? 111.1 : 99999);
   const [activeTab, setActiveTab] = useState<'comprar' | 'vender'>(outcome.initialTab || 'comprar');
   const [isLoading, setIsLoading] = useState(false);
+  const [useBonus, setUseBonus] = useState(false);
+  const bonusValue = 125.00; // Valor do bônus disponível
+  // Usa initialSellType do outcome se fornecido, senão Bad Bunny usa 'bonus' (cotasSaldo é 0), outros usam 'saldo'
+  const [sellType, setSellType] = useState<'saldo' | 'bonus'>(
+    outcome.initialSellType || (isBadBunny ? 'bonus' : 'saldo')
+  );
+  // Estado para mostrar confirmação de venda com retorno zero
+  const [showZeroReturnConfirmation, setShowZeroReturnConfirmation] = useState(false);
+  // Função para trocar o tipo de cotas e limpar o valor digitado
+  const handleSellTypeChange = (newType: 'saldo' | 'bonus') => {
+    if (newType !== sellType) {
+      setSellType(newType);
+      setSellValueString('0'); // Limpa o valor ao trocar de chip
+    }
+  };
+  // Valores de cotas para venda (Bad Bunny e Taylor Swift têm valores diferentes)
+  const cotasSaldo = isTaylorSwift ? 57.70 : 0; // Taylor: 57.70, Bad Bunny: 0
+  const cotasBonus = isTaylorSwift ? 172.94 : 108.89; // Taylor: 172.94, Bad Bunny: 108.89
+  // Se for Bad Bunny (SIM) ou Taylor Swift (NÃO), SEMPRE usa o valor das cotas baseado no chip selecionado
+  // Para outros sem posições, permite digitar até 99999 para simulação
+  const maxCotas = (isBadBunny || isTaylorSwift) 
+    ? (sellType === 'saldo' ? cotasSaldo : cotasBonus)
+    : ((availableCotas > 0) ? availableCotas : 99999);
 
   const displayedOutcome = {
     ...outcome,
@@ -1646,13 +1952,27 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
   const shouldShowSellForm = true;
   // Pode vender apenas se tem posições reais ou é Bad Bunny (SIM) / Taylor Swift (NÃO)
   const canSell = hasSellPosition || isBadBunny || isTaylorSwift;
-  // Para Bad Bunny (SIM) ou Taylor Swift (NÃO) sem posições, mostra 111.1 cotas no header
+  // Para Bad Bunny (SIM) ou Taylor Swift (NÃO), SEMPRE mostra as cotas do chip selecionado no header
   // Para outros sem posições, mostra 0
-  const displayedCotas = (availableCotas > 0) ? availableCotas : ((isBadBunny || isTaylorSwift) ? 111.1 : 0);
+  const displayedCotas = (isBadBunny || isTaylorSwift) 
+    ? (sellType === 'saldo' ? cotasSaldo : cotasBonus)
+    : ((availableCotas > 0) ? availableCotas : 0);
 
   const parseValue = (str: string): number => {
     const cleaned = str.replace(/\./g, '').replace(',', '.');
     return parseFloat(cleaned) || 0;
+  };
+
+  // Função para trocar o toggle de bônus e limpar o valor digitado
+  const handleUseBonusChange = (checked: boolean) => {
+    if (checked !== useBonus) {
+      setUseBonus(checked);
+      // Limpa o valor ao trocar o toggle se houver valor preenchido
+      const currentValue = parseValue(valueString);
+      if (currentValue > 0) {
+        setValueString('0');
+      }
+    }
   };
 
   const formatDisplay = (str: string): string => {
@@ -1702,7 +2022,8 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
     const val = getCurrentValue() + 100;
     setValueString(val.toString().replace('.', ','));
   };
-  const handleSetMax = () => setValueString(maxSaldo.toFixed(2).replace('.', ','));
+  const maxAvailable = useBonus ? bonusValue : maxSaldo;
+  const handleSetMax = () => setValueString(maxAvailable.toFixed(2).replace('.', ','));
 
   // Sell Logic
   const getCurrentSellValue = (): number => parseValue(sellValueString);
@@ -1748,9 +2069,13 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
 
   const selectedPercentage = isYes ? (outcome.porcentagemSim / 100) : (outcome.porcentagemNao / 100);
   const valorSimulado = numericValue > 0 ? numericValue : 100;
-  const taxaValue = valorSimulado * 0.02; // Taxa de 2% sobre o valor investido
-  const cotasBrutas = selectedPercentage > 0 ? valorSimulado / selectedPercentage : 0; // Cotas brutas = valor investido / preço da cota
-  const potentialReturn = cotasBrutas - taxaValue; // Cotas líquidas e retorno potencial = (cotas brutas × R$1) - taxa
+  const cotasBrutas = selectedPercentage > 0 ? valorSimulado / selectedPercentage : 0; // Cotas = valor investido / preço da cota
+  // Taxa = 2% sobre o retorno bruto (cotas), não sobre o valor investido. Zero quando usa bônus.
+  const taxaValue = useBonus ? 0 : cotasBrutas * 0.02;
+  // Cotas líquidas = cotas brutas - taxa
+  const cotasLiquidas = cotasBrutas - taxaValue;
+  // Retorno potencial: quando usa bônus, é apenas o lucro (cotas - valor investido), senão é o retorno líquido (cotas - taxa)
+  const potentialReturn = useBonus ? (cotasBrutas - valorSimulado) : cotasLiquidas;
   
   // Para o box de compra: chance anterior (atual) e chance após compra (ligeiramente maior)
   const buyChanceAnterior = selectedPercentage * 100; // Chance atual em %
@@ -1767,7 +2092,18 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
   const chanceAnterior = isBadBunny ? 90 : (isTaylorSwift ? 85 : buyChanceAnterior);
   const chanceAtual = isBadBunny ? 85 : (isTaylorSwift ? 90 : currentChance);
   const isDecreasing = chanceAtual < chanceAnterior;
-  const sellTaxa = sellReturn * 0.02; // Taxa de 2% sobre o retorno
+  
+  // Para cotas de bônus: taxa é zero e retorno é apenas o lucro
+  const isSellBonus = sellType === 'bonus';
+  // Lucro = (preço atual - preço médio de compra) * quantidade de cotas vendidas
+  const sellProfit = numericSellValue * ((chanceAtual - chanceAnterior) / 100);
+  // Se desvalorizou, lucro é zero (não pode ser negativo)
+  const sellBonusReturn = Math.max(0, sellProfit);
+  
+  // Taxa: 0 para bônus, 2% do retorno para saldo
+  const sellTaxa = isSellBonus ? 0 : (sellReturn * 0.02);
+  // Retorno final: lucro para bônus, retorno normal - taxa para saldo
+  const sellFinalReturn = isSellBonus ? sellBonusReturn : (sellReturn - sellTaxa);
 
   const handleBuy = () => {
     if (isActive && !isLoading) {
@@ -1780,11 +2116,33 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
 
   const handleSell = () => {
     if (isSellActive && !isLoading && onSell) {
+      // Se é venda de bônus com retorno zero, mostrar confirmação
+      if (isSellBonus && sellFinalReturn === 0) {
+        setIsLoading(true);
+        setTimeout(() => {
+          setIsLoading(false);
+          setShowZeroReturnConfirmation(true);
+        }, 2000);
+        return;
+      }
       setIsLoading(true);
       setTimeout(() => {
-        onSell(numericSellValue, isYes);
+        onSell(numericSellValue, isYes, sellFinalReturn);
       }, 2000);
     }
+  };
+
+  const handleConfirmZeroReturnSell = () => {
+    if (onSell) {
+      setIsLoading(true);
+      setTimeout(() => {
+        onSell(numericSellValue, isYes, sellFinalReturn);
+      }, 2000);
+    }
+  };
+
+  const handleCancelZeroReturnConfirmation = () => {
+    setShowZeroReturnConfirmation(false);
   };
 
   return (
@@ -1822,12 +2180,13 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
                 onBackspace={handleBackspace}
                 chanceAnterior={chanceAnterior}
                 chanceAtual={chanceAtual}
-                retorno={sellReturn}
+                retorno={sellFinalReturn}
                 taxa={sellTaxa}
                 isDecreasing={isDecreasing}
                 isSimulation={!canSell}
                 onTaxaClick={onTaxaClick}
                 showPriceChange={isBadBunny}
+                isSellBonus={isSellBonus}
               />
             ) : (
               <BaseContentVenderNaoTaylor 
@@ -1852,12 +2211,13 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
                 onBackspace={handleBackspace}
                 chanceAnterior={chanceAnterior}
                 chanceAtual={chanceAtual}
-                retorno={sellReturn}
+                retorno={sellFinalReturn}
                 taxa={sellTaxa}
                 isDecreasing={isDecreasing}
                 isSimulation={!canSell}
                 onTaxaClick={onTaxaClick}
                 showPriceChange={isTaylorSwift}
+                isSellBonus={isSellBonus}
               />
             )
           ) : (
@@ -1888,7 +2248,8 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
             outcome={displayedOutcome}
             chanceAnterior={buyChanceAnterior}
             chanceAtual={buyChanceAtual}
-            cotas={potentialReturn}
+            cotas={useBonus ? cotasBrutas : cotasLiquidas}
+            useBonus={useBonus}
           />
         )}
       </div>
@@ -1911,11 +2272,22 @@ export default function OrderBottomSheetFuncional({ outcome, onClose, onBuy, onS
           hasSellPosition={hasSellPosition}
           currentChance={currentChance}
           shouldShowSellForm={shouldShowSellForm}
-          insufficientFunds={numericValue > maxSaldo}
+          insufficientFunds={numericValue > maxAvailable}
           onInsufficientFundsClick={() => {
             onClose();
             navigate('/central');
           }}
+          useBonus={useBonus}
+          onUseBonusChange={handleUseBonusChange}
+          bonusValue={bonusValue}
+          showCotasChips={isBadBunny || isTaylorSwift}
+          sellType={sellType}
+          onSellTypeChange={handleSellTypeChange}
+          cotasSaldo={cotasSaldo}
+          cotasBonus={cotasBonus}
+          showZeroReturnConfirmation={showZeroReturnConfirmation}
+          onConfirmZeroReturnSell={handleConfirmZeroReturnSell}
+          onCancelZeroReturnConfirmation={handleCancelZeroReturnConfirmation}
         />
       </div>
     </div>

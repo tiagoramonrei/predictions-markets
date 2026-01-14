@@ -13,6 +13,7 @@ import imgNeymar from "figma:asset/507d98dfcdfe754b3dcec99e575f68c14c734318.png"
 import imgIconBonus1 from "figma:asset/98dcb13e337d143c0ce1c7482337d8f4e5e35474.png";
 import imgIconSaque1 from "figma:asset/cb321f2a755691e6c880119a4759326c4a04f271.png";
 import imgIconSetaIrMercado from "figma:asset/e49bc6748ca1004de584dd1aac26aa2efb00e9ed.png";
+import iconBonusPequeno from "../assets/iconBonusPequeno.png";
 
 const imgIconSetaAccordion = "https://images.unsplash.com/photo-1758354286358-015ba26eb5ae?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnJvdyUyMGRvd24lMjBpY29uJTIwd2hpdGUlMjBiYWNrZ3JvdW5kfGVufDF8fHx8MTc2NDI2NzI1Mnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
 const imgImagem = "https://images.unsplash.com/photo-1637559508411-e6d65573efff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzb2NjZXIlMjBjb2FjaCUyMHBvcnRyYWl0fGVufDF8fHx8MTc2NDI2NzI1M3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral";
@@ -474,8 +475,21 @@ function BaseEscolha2() {
   return (
     <div className="basis-0 content-stretch flex flex-col gap-[2px] grow h-[35px] items-start justify-center min-h-px min-w-px relative shrink-0" data-name="baseEscolha">
       <Text5 />
-      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-        <p className="leading-none whitespace-pre">Comprou</p>
+      <div className="content-stretch flex gap-[8px] items-center relative shrink-0">
+        <div className="box-border content-stretch flex items-center justify-center pl-0 pr-[8px] py-0 relative shrink-0" data-name="txt">
+          <div aria-hidden="true" className="absolute border-[#242424] border-[0px_1px_0px_0px] border-solid inset-0 pointer-events-none" />
+          <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[10px] text-[#e3e3e3] whitespace-nowrap">
+            <p className="leading-none whitespace-pre">Comprou</p>
+          </div>
+        </div>
+        <div className="content-stretch flex gap-[2px] items-center relative shrink-0" data-name="bonus">
+          <div className="relative shrink-0" style={{ width: '10px', height: '10px' }}>
+            <img alt="" src={iconBonusPequeno} style={{ width: '10px', height: '10px', display: 'block', objectFit: 'contain' }} />
+          </div>
+          <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[10px] text-[#e3e3e3] whitespace-nowrap">
+            <p className="leading-none whitespace-pre">Usou bônus</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -539,7 +553,7 @@ function ValorSpotify3() {
         <p className="leading-none text-nowrap whitespace-pre">Retorno Potencial</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[12px] text-white">
-        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">R$235</p>
+        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">R$35,3</p>
       </div>
     </div>
   );

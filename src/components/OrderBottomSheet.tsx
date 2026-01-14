@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { OutcomeData } from '../App';
 
-export default function OrderBottomSheet({ outcome, onClose, onBuy, onSell }: { outcome: OutcomeData | null; onClose?: () => void; onBuy?: (amount: number, isYes: boolean) => void; onSell?: (amount: number, isYes: boolean) => void }) {
+export default function OrderBottomSheet({ outcome, onClose, onBuy, onSell }: { outcome: OutcomeData | null; onClose?: () => void; onBuy?: (amount: number, isYes: boolean) => void; onSell?: (amount: number, isYes: boolean, returnAmount: number) => void }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showTaxaModal, setShowTaxaModal] = useState(false);
 
@@ -49,9 +49,9 @@ export default function OrderBottomSheet({ outcome, onClose, onBuy, onSell }: { 
     handleClose();
   };
 
-  const handleSell = (amount: number, isYes: boolean) => {
+  const handleSell = (amount: number, isYes: boolean, returnAmount: number) => {
     if (onSell) {
-      onSell(amount, isYes);
+      onSell(amount, isYes, returnAmount);
     }
     handleClose();
   };

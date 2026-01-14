@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from './ui/drawer';
 import ModalBs from '../imports/ModalBs';
 import ModalSaldoBs from '../imports/ModalSaldoBs';
+import ModalBonusBs from '../imports/ModalBonusBs';
 
 // Importar ícones PNG
 import iconNotificacao from '../assets/iconNotificacao.png';
@@ -26,6 +27,7 @@ import iconSistema from '../assets/iconSistema.png';
 import iconSair from '../assets/iconSair.png';
 import iconDeletar from '../assets/iconDeletar.png';
 import iconAccordion from '../assets/iconAccordion.png';
+import iconBonusMedio from '../assets/iconBonusMedio.png';
 
 interface MenuLateralProps {
   isOpen: boolean;
@@ -33,6 +35,7 @@ interface MenuLateralProps {
   userName?: string;
   carteira?: number;
   saldo?: number;
+  bonus?: number;
   notificacoes?: number;
 }
 
@@ -139,6 +142,7 @@ function MenuContent({
   userName = "José da Silva",
   carteira = 3400.00,
   saldo = 240.90,
+  bonus = 125.00,
   notificacoes = 8
 }: MenuLateralProps) {
   const [temaAtivo, setTemaAtivo] = useState<'claro' | 'escuro' | 'sistema'>('escuro');
@@ -146,6 +150,7 @@ function MenuContent({
   const contentRef = useRef<HTMLDivElement>(null);
   const [isCarteiraDrawerOpen, setIsCarteiraDrawerOpen] = useState(false);
   const [isSaldoDrawerOpen, setIsSaldoDrawerOpen] = useState(false);
+  const [isBonusDrawerOpen, setIsBonusDrawerOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleNavigate = (path: string) => {
@@ -237,6 +242,17 @@ function MenuContent({
             <DrawerDescription>Explicação detalhada sobre o cálculo do saldo</DrawerDescription>
           </div>
           <ModalSaldoBs onClose={() => setIsSaldoDrawerOpen(false)} />
+        </DrawerContent>
+      </Drawer>
+
+      {/* Bônus Drawer */}
+      <Drawer open={isBonusDrawerOpen} onOpenChange={setIsBonusDrawerOpen}>
+        <DrawerContent className="p-0 bg-transparent border-none shadow-none">
+          <div className="sr-only">
+            <DrawerTitle>Bônus</DrawerTitle>
+            <DrawerDescription>Explicação detalhada sobre o bônus</DrawerDescription>
+          </div>
+          <ModalBonusBs onClose={() => setIsBonusDrawerOpen(false)} />
         </DrawerContent>
       </Drawer>
 
@@ -363,77 +379,97 @@ function MenuContent({
                 </span>
               </div>
 
-              {/* Valores */}
-              <div style={{ display: 'flex', gap: '20px', width: '100%' }}>
-                {/* Sua Carteira */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsCarteiraDrawerOpen(true);
-                    }}
-                    style={{ display: 'flex', gap: '4px', alignItems: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
-                  >
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'white', opacity: 0.56 }}>Sua Carteira</span>
-                    <img src={iconDuvidas} alt="" style={{ width: '16px', height: '16px', opacity: 0.56 }} />
-                  </button>
-                  <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '14px', color: 'white' }}>R$</span>
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '20px', color: 'white', lineHeight: '24px' }}>
-                      {valoresVisiveis ? formatarReal(carteira) : '••••••'}
-                    </span>
+              {/* Container Saldo e Bônus */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%' }}>
+                {/* Valores */}
+                <div style={{ display: 'flex', gap: '20px', width: '100%' }}>
+                  {/* Sua Carteira */}
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsCarteiraDrawerOpen(true);
+                      }}
+                      style={{ display: 'flex', gap: '4px', alignItems: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+                    >
+                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'white', opacity: 0.56 }}>Sua Carteira</span>
+                      <img src={iconDuvidas} alt="" style={{ width: '16px', height: '16px', opacity: 0.56 }} />
+                    </button>
+                    <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '14px', color: 'white' }}>R$</span>
+                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '20px', color: 'white', lineHeight: '24px' }}>
+                        {valoresVisiveis ? formatarReal(carteira) : '••••••'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Seu Saldo */}
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsSaldoDrawerOpen(true);
+                      }}
+                      style={{ display: 'flex', gap: '4px', alignItems: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+                    >
+                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'white', opacity: 0.56 }}>Seu Saldo</span>
+                      <img src={iconDuvidas} alt="" style={{ width: '16px', height: '16px', opacity: 0.56 }} />
+                    </button>
+                    <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '14px', color: 'white' }}>R$</span>
+                      <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '20px', color: 'white', lineHeight: '24px' }}>
+                        {valoresVisiveis ? formatarReal(saldo) : '••••••'}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Seu Saldo */}
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsSaldoDrawerOpen(true);
-                    }}
-                    style={{ display: 'flex', gap: '4px', alignItems: 'center', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
-                  >
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'white', opacity: 0.56 }}>Seu Saldo</span>
-                    <img src={iconDuvidas} alt="" style={{ width: '16px', height: '16px', opacity: 0.56 }} />
-                  </button>
+                {/* Bônus disponível */}
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsBonusDrawerOpen(true);
+                  }}
+                  style={{ display: 'flex', gap: '4px', alignItems: 'center', width: '100%', cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+                >
+                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'white', opacity: 0.56, lineHeight: 1 }}>Bônus disponível:</span>
                   <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '14px', color: 'white' }}>R$</span>
-                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '20px', color: 'white', lineHeight: '24px' }}>
-                      {valoresVisiveis ? formatarReal(saldo) : '••••••'}
+                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '12px', color: 'white', lineHeight: 1 }}>
+                      {valoresVisiveis ? formatarReal(bonus) : '••••••'}
                     </span>
+                    <img src={iconDuvidas} alt="" style={{ width: '16px', height: '16px', opacity: 0.56 }} />
                   </div>
-                </div>
-              </div>
+                </button>
 
-              {/* Botões */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-                <button style={{ 
-                  backgroundColor: '#19954f', 
-                  height: '32px', 
-                  borderRadius: '9999px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  width: '100%',
-                  border: 'none',
-                  cursor: 'pointer',
-                }}>
-                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '12px', color: 'white' }}>Fazer um depósito</span>
-                </button>
-                <button style={{ 
-                  backgroundColor: 'transparent',
-                  border: '1px solid #19954f', 
-                  height: '32px', 
-                  borderRadius: '9999px', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  width: '100%',
-                  cursor: 'pointer',
-                }}>
-                  <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '12px', color: '#32a866' }}>Efetuar um saque</span>
-                </button>
+                {/* Botões */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
+                  <button style={{ 
+                    backgroundColor: '#19954f', 
+                    height: '32px', 
+                    borderRadius: '9999px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    width: '100%',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}>
+                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '12px', color: 'white' }}>Fazer um depósito</span>
+                  </button>
+                  <button style={{ 
+                    backgroundColor: 'transparent',
+                    border: '1px solid #19954f', 
+                    height: '32px', 
+                    borderRadius: '9999px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    width: '100%',
+                    cursor: 'pointer',
+                  }}>
+                    <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '12px', color: '#32a866' }}>Efetuar um saque</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -453,7 +489,8 @@ function MenuContent({
               <MenuItem icon={iconHome} label="Início" onClick={() => handleNavigate('/')} />
               <MenuItem icon={iconHistorico} label="Histórico" onClick={() => handleNavigate('/historico')} />
               <MenuItem icon={iconPosicoes} label="Pitacos" onClick={() => handleNavigate('/posicoes')} />
-              <MenuItem icon={iconCentral} label="Carteira" hasBorder={false} onClick={() => handleNavigate('/central')} />
+              <MenuItem icon={iconCentral} label="Carteira" onClick={() => handleNavigate('/central')} />
+              <MenuItem icon={iconBonusMedio} label="Bônus" hasBorder={false} />
             </AccordionContent>
           </div>
 

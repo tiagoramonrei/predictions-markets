@@ -4,6 +4,8 @@ import svgPathsEsconder from "./svg-py3wa1pfwb";
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "../components/ui/drawer";
 import ModalBs from "./ModalBs";
 import ModalSaldoBs from "./ModalSaldoBs";
+import ModalBonusBs from "./ModalBonusBs";
+import iconDuvidas from "../assets/iconDuvidas.png";
 
 function IconMostrarEsconder({ isHidden }: { isHidden: boolean }) {
   return (
@@ -169,18 +171,51 @@ function Patrimonio1({ isHidden, onTitleClick }: { isHidden: boolean; onTitleCli
 function BaseCarteira({ 
   isHidden, 
   onPortfolioClick, 
-  onSaldoClick 
+  onSaldoClick,
+  onBonusClick
 }: { 
   isHidden: boolean; 
   onPortfolioClick: () => void; 
   onSaldoClick: () => void;
+  onBonusClick: () => void;
 }) {
+  const formatarReal = (valor: number) => {
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   return (
     <div className="relative shrink-0 w-full" data-name="baseCarteira">
       <div className="size-full">
-        <div className="box-border content-stretch flex gap-[20px] items-start px-[20px] py-0 relative w-full">
-          <Patrimonio isHidden={isHidden} onTitleClick={onPortfolioClick} />
-          <Patrimonio1 isHidden={isHidden} onTitleClick={onSaldoClick} />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', paddingLeft: '20px', paddingRight: '20px' }}>
+          {/* Primeira linha: Sua Carteira e Seu Saldo */}
+          <div style={{ display: 'flex', gap: '20px', width: '100%' }}>
+            <Patrimonio isHidden={isHidden} onTitleClick={onPortfolioClick} />
+            <Patrimonio1 isHidden={isHidden} onTitleClick={onSaldoClick} />
+          </div>
+          
+          {/* Segunda linha: Bônus disponível */}
+          <button 
+            onClick={onBonusClick}
+            style={{ 
+              display: 'flex', 
+              gap: '4px', 
+              alignItems: 'center', 
+              width: '100%', 
+              cursor: 'pointer', 
+              background: 'none', 
+              border: 'none', 
+              padding: 0 
+            }}
+            className="hover:opacity-80 transition-opacity"
+          >
+            <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '12px', color: 'white', opacity: 0.56, lineHeight: 1 }}>Bônus disponível:</span>
+            <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+              <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 700, fontSize: '12px', color: 'white', lineHeight: 1 }}>
+                {isHidden ? '••••••' : formatarReal(125.00)}
+              </span>
+              <img src={iconDuvidas} alt="" style={{ width: '16px', height: '16px', opacity: 0.56 }} />
+            </div>
+          </button>
         </div>
       </div>
     </div>
@@ -237,6 +272,7 @@ interface ContentProps {
 export default function Content({ isHidden, onToggleHidden }: ContentProps) {
   const [isPortfolioDrawerOpen, setIsPortfolioDrawerOpen] = useState(false);
   const [isSaldoDrawerOpen, setIsSaldoDrawerOpen] = useState(false);
+  const [isBonusDrawerOpen, setIsBonusDrawerOpen] = useState(false);
 
   return (
     <div className="box-border content-stretch flex flex-col gap-[40px] items-start px-0 py-[28px] relative size-full" data-name="content">
@@ -262,11 +298,23 @@ export default function Content({ isHidden, onToggleHidden }: ContentProps) {
         </DrawerContent>
       </Drawer>
 
+      {/* Bonus Drawer */}
+      <Drawer open={isBonusDrawerOpen} onOpenChange={setIsBonusDrawerOpen}>
+        <DrawerContent className="p-0 bg-transparent border-none shadow-none">
+          <div className="sr-only">
+            <DrawerTitle>Bônus disponível</DrawerTitle>
+            <DrawerDescription>Explicação detalhada sobre o bônus</DrawerDescription>
+          </div>
+          <ModalBonusBs onClose={() => setIsBonusDrawerOpen(false)} />
+        </DrawerContent>
+      </Drawer>
+
       <BtnEsconder onClick={onToggleHidden} isHidden={isHidden} />
       <BaseCarteira 
         isHidden={isHidden} 
         onPortfolioClick={() => setIsPortfolioDrawerOpen(true)}
         onSaldoClick={() => setIsSaldoDrawerOpen(true)}
+        onBonusClick={() => setIsBonusDrawerOpen(true)}
       />
       <BaseBotoes />
     </div>

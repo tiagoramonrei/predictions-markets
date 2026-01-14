@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
 import imgImagem from "figma:asset/9f461ed5c177aabb0fc37cdea7a985be5dd89d45.png";
 import imgImagem1 from "figma:asset/1bfd81d4b769b7a9ec6cf3d17534b7d7b096b973.png";
+import imgTaylorSwift from "../assets/562cec5dc1dde5641c98cbf9e6b84b136f03e611.png";
+import iconBonusPequeno from "../assets/iconBonusPequeno.png";
 import OrderBottomSheet from "../components/OrderBottomSheet";
 import type { OutcomeData } from "../components/InternaMercado";
 import OrderSucess from "./OrderSucess";
@@ -99,15 +101,297 @@ interface CardProps {
   retornoPotencial: string;
   fechamentoData: string;
   linkMercado?: string;
-  onSellSuccess?: (amount: number, isYes: boolean, outcome: OutcomeData) => void;
+  usouBonus?: boolean;
+  isYes?: boolean;
+  onSellSuccess?: (amount: number, isYes: boolean, outcome: OutcomeData, returnAmount?: number) => void;
   onBuySuccess?: (amount: number, isYes: boolean, outcome: OutcomeData) => void;
+}
+
+interface OutcomeItemProps {
+  escolha: string;
+  comprouText: string;
+  valorGrande: string;
+  valorPequeno: string;
+  valorPequenoColor: string;
+  imgSrc: string;
+  cotas: string;
+  chance: string;
+  chanceColor: string;
+  chanceIconDirection: 'up' | 'down';
+  retornoPotencial: string;
+  fechamentoData: string;
+  linkMercado?: string;
+  usouBonus?: boolean;
+  isYes?: boolean;
+  isLast?: boolean;
+  isExpanded?: boolean;
+  onVenderClick?: () => void;
+  onVerMercadoClick?: () => void;
+}
+
+// Componente para renderizar um único outcome dentro de um card agrupado
+function OutcomeItem({
+  escolha, comprouText, valorGrande, valorPequeno, valorPequenoColor, imgSrc,
+  cotas, chance, chanceColor, chanceIconDirection, retornoPotencial, fechamentoData,
+  linkMercado, usouBonus, isYes = true, isLast, isExpanded, onVenderClick, onVerMercadoClick
+}: OutcomeItemProps) {
+  const navigate = useNavigate();
+  
+  return (
+    <div 
+      className={`content-stretch flex flex-col gap-[12px] items-start ${!isLast ? 'border-[0px_0px_1px] border-[#242424] border-solid pb-[12px]' : ''} relative shrink-0 w-full`}
+      data-name="baseEscolhaAberta"
+    >
+      {/* Header do Outcome */}
+      <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full" data-name="headerOutcome">
+        <div className="relative shrink-0 size-[24px]" data-name="imagem">
+          <img alt="" className="block max-w-none size-full rounded-full object-cover" height="24" src={imgSrc} width="24" />
+        </div>
+        
+        <div className="basis-0 content-stretch flex flex-col gap-[2px] grow h-[35px] items-start justify-center min-h-px min-w-px relative shrink-0" data-name="baseEscolha">
+          <div className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full" data-name="text">
+            <div className="box-border content-stretch flex gap-[8px] items-center justify-center pl-0 pr-[8px] py-0 relative shrink-0" data-name="escolha">
+              <div aria-hidden="true" className="absolute border-[#242424] border-[0px_1px_0px_0px] border-solid inset-0 pointer-events-none" />
+              <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[14px] text-nowrap text-white">
+                <p className="leading-[1.2] whitespace-pre font-bold">{escolha}</p>
+              </div>
+            </div>
+            <div className="content-stretch flex gap-[8px] items-center justify-center relative shrink-0" data-name="sim/nao">
+              <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[14px] text-nowrap text-white">
+                <p className="leading-[1.2] whitespace-pre font-bold">{isYes ? 'Sim' : 'Não'}</p>
+              </div>
+            </div>
+          </div>
+          {usouBonus ? (
+            <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-name="baseBonus">
+              <div className="box-border content-stretch flex items-center justify-center pl-0 pr-[8px] py-0 relative shrink-0" data-name="txt">
+                <div aria-hidden="true" className="absolute border-[#242424] border-[0px_1px_0px_0px] border-solid inset-0 pointer-events-none" />
+                <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[10px] text-[#e3e3e3] whitespace-nowrap">
+                  <p className="leading-none whitespace-pre">{comprouText}</p>
+                </div>
+              </div>
+              <div className="content-stretch flex gap-[2px] items-center relative shrink-0" data-name="bonus">
+                <div className="relative shrink-0" data-name="Icon" style={{ width: '10px', height: '10px' }}>
+                  <img alt="" src={iconBonusPequeno} style={{ width: '10px', height: '10px', display: 'block', objectFit: 'contain' }} />
+                </div>
+                <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[10px] text-[#e3e3e3] whitespace-nowrap">
+                  <p className="leading-none whitespace-pre">Usou bônus</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
+              <p className="leading-none whitespace-pre">{comprouText}</p>
+            </div>
+          )}
+        </div>
+
+        <div className="content-stretch flex flex-col gap-[2px] h-[35px] items-end justify-center leading-[0] not-italic relative shrink-0 text-nowrap" data-name="porcentagem">
+          <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[14px] text-white">
+            <p className="leading-[1.1] text-nowrap whitespace-pre font-bold">{valorGrande}</p>
+          </div>
+          {!usouBonus && (
+            <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[10px]" style={{ color: valorPequenoColor }}>
+              <p className="leading-none text-nowrap whitespace-pre">{valorPequeno}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Conteúdo Expandido */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full overflow-hidden"
+          >
+            <div className="flex flex-col gap-[12px]">
+              {/* Tabela de Detalhes */}
+              <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="tabela">
+                {/* Cotas */}
+                <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+                  <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
+                    <p className="leading-none text-nowrap whitespace-pre">Cotas</p>
+                  </div>
+                  <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[12px] text-white">
+                    <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">{cotas}</p>
+                  </div>
+                </div>
+                
+                {/* Chance */}
+                <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start min-h-px min-w-px relative shrink-0" data-name="valor">
+                  <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
+                    <p className="leading-none whitespace-pre">Chance</p>
+                  </div>
+                  <div className="content-stretch flex gap-[4px] items-center relative shrink-0">
+                    <div className="flex flex-col font-['DM_Sans:Bold','Noto_Sans:Bold',sans-serif] justify-center leading-[0] relative shrink-0 text-[12px] text-nowrap text-white" style={{ fontVariationSettings: "'CTGR' 0, 'wdth' 100, 'wght' 700" }}>
+                      <p className="leading-[1.2] whitespace-pre font-bold">{chance}</p>
+                    </div>
+                    {(!chance.includes('→') || chance.split('→')[0].trim() !== chance.split('→')[1].replace('%', '').trim()) && (
+                      <div className={`h-[6px] relative shrink-0 w-[7px] ${chanceIconDirection === 'down' ? 'scale-y-[-100%]' : ''}`} data-name="icon">
+                        <div className="absolute bottom-0 left-[8.45%] right-[8.45%] top-[13.13%]">
+                          <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 6 6">
+                            <path d={svgPaths.triangle} fill={chanceColor} />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Retorno Potencial */}
+                <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+                  <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
+                    <p className="leading-none text-nowrap whitespace-pre">Retorno Potencial</p>
+                  </div>
+                  <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[12px] text-white">
+                    <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">{retornoPotencial}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Data de Fechamento */}
+              <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
+                <p className="leading-none whitespace-pre">{fechamentoData}</p>
+              </div>
+
+              {/* Botões de Ação */}
+              <div className="content-stretch flex gap-[12px] items-start relative shrink-0 w-full">
+                <div 
+                  onClick={onVenderClick}
+                  className="basis-0 bg-[#242424] grow h-[28px] min-h-px min-w-px relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
+                  data-name="valores"
+                >
+                  <div className="flex flex-row items-center justify-center size-full">
+                    <div className="box-border content-stretch flex gap-[8px] h-[28px] items-center justify-center px-[32px] py-0 relative w-full">
+                      <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre font-bold">Vender</p>
+                    </div>
+                  </div>
+                </div>
+                <div 
+                  onClick={() => linkMercado && navigate(linkMercado)}
+                  className="basis-0 bg-[#242424] grow h-[28px] min-h-px min-w-px relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
+                  data-name="valores"
+                >
+                  <div className="flex flex-row items-center justify-center size-full">
+                    <div className="box-border content-stretch flex gap-[8px] h-[28px] items-center justify-center px-[32px] py-0 relative w-full">
+                      <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre font-bold">Ver mercado</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// Componente para card agrupado com múltiplos outcomes
+function GroupedCard({ 
+  title, 
+  outcomes, 
+  onSellSuccess, 
+  onBuySuccess 
+}: { 
+  title: string; 
+  outcomes: Omit<CardProps, 'title' | 'onSellSuccess' | 'onBuySuccess'>[]; 
+  onSellSuccess?: (amount: number, isYes: boolean, outcome: OutcomeData, returnAmount?: number) => void;
+  onBuySuccess?: (amount: number, isYes: boolean, outcome: OutcomeData) => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeOrderBS, setActiveOrderBS] = useState<number | null>(null);
+  const navigate = useNavigate();
+
+  const getPercentage = (str: string) => {
+    const match = str.match(/(\d+)%$/);
+    return match ? parseInt(match[1]) : 50;
+  };
+
+  const createOutcomeData = (outcome: typeof outcomes[0]): OutcomeData => ({
+    nome: outcome.escolha,
+    imagem: outcome.imgSrc,
+    volume: "R$ 1.2M",
+    porcentagemSim: getPercentage(outcome.chance),
+    porcentagemNao: 100 - getPercentage(outcome.chance),
+    isYes: outcome.isYes ?? true,
+    isMultipleChoice: true,
+    initialTab: 'vender',
+    cotas: parseFloat(outcome.cotas.replace(/\./g, "").replace(",", ".")) || 0,
+    // @ts-ignore
+    question: title,
+    initialSellType: outcome.usouBonus ? 'bonus' : 'saldo'
+  });
+
+  const handleSell = useCallback((outcomeIndex: number) => (amount: number, isYes: boolean, returnAmount: number) => {
+    const outcome = outcomes[outcomeIndex];
+    if (onSellSuccess) {
+      onSellSuccess(amount, isYes, createOutcomeData(outcome), returnAmount);
+    }
+  }, [onSellSuccess, outcomes, title]);
+
+  const handleBuy = useCallback((outcomeIndex: number) => (amount: number, isYes: boolean) => {
+    const outcome = outcomes[outcomeIndex];
+    setActiveOrderBS(null);
+    if (onBuySuccess) {
+      onBuySuccess(amount, isYes, createOutcomeData(outcome));
+    }
+  }, [onBuySuccess, outcomes, title]);
+
+  return (
+    <>
+      <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col gap-[12px] items-start justify-center p-[16px] relative rounded-[8px] shrink-0 w-full" data-name="card-grouped">
+        {/* Header com accordion */}
+        <div 
+          onClick={() => setIsOpen(!isOpen)} 
+          className="content-stretch flex gap-[8px] items-center relative shrink-0 w-full cursor-pointer" 
+          data-name="header"
+        >
+          <div className="basis-0 content-stretch flex flex-col gap-[4px] grow h-[12px] items-start justify-center min-h-px min-w-px relative shrink-0" data-name="text">
+            <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[10px] text-white w-full">
+              <p className="leading-[1.2]">{title}</p>
+            </div>
+          </div>
+          <IconSetaAccordion isOpen={isOpen} />
+        </div>
+
+        {/* Lista de Outcomes */}
+        <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-full" data-name="baseOutcome">
+          {outcomes.map((outcome, index) => (
+            <OutcomeItem
+              key={`${outcome.escolha}-${outcome.isYes}-${index}`}
+              {...outcome}
+              isLast={index === outcomes.length - 1}
+              isExpanded={isOpen}
+              onVenderClick={() => setActiveOrderBS(index)}
+              onVerMercadoClick={() => outcome.linkMercado && navigate(outcome.linkMercado)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Order Bottom Sheets */}
+      {activeOrderBS !== null && (
+        <OrderBottomSheet 
+          outcome={createOutcomeData(outcomes[activeOrderBS])}
+          onClose={() => setActiveOrderBS(null)}
+          onBuy={handleBuy(activeOrderBS)}
+          onSell={handleSell(activeOrderBS)}
+        />
+      )}
+    </>
+  );
 }
 
 function Card(props: CardProps) {
   const { 
     title, escolha, comprouText, valorGrande, valorPequeno, valorPequenoColor, imgSrc,
     cotas, chance, chanceColor, chanceIconDirection, retornoPotencial, fechamentoData, linkMercado,
-    onSellSuccess, onBuySuccess
+    usouBonus, isYes = true, onSellSuccess, onBuySuccess
   } = props;
   
   const [isOpen, setIsOpen] = useState(false);
@@ -126,12 +410,13 @@ function Card(props: CardProps) {
     volume: "R$ 1.2M",
     porcentagemSim: getPercentage(chance),
     porcentagemNao: 100 - getPercentage(chance),
-    isYes: true,
+    isYes: isYes,
     isMultipleChoice: true,
     initialTab: 'vender',
     cotas: parseFloat(cotas.replace(/\./g, "").replace(",", ".")) || 0,
     // @ts-ignore - question property might not be in the strict type but is used by OrderBottomSheetFuncional
-    question: title
+    question: title,
+    initialSellType: usouBonus ? 'bonus' : 'saldo'
   };
 
   const handleVenderClick = () => {
@@ -150,9 +435,9 @@ function Card(props: CardProps) {
     }
   };
 
-  const handleSell = useCallback((amount: number, isYes: boolean) => {
+  const handleSell = useCallback((amount: number, isYes: boolean, returnAmount: number) => {
      if (onSellSuccess) {
-        onSellSuccess(amount, isYes, outcomeData);
+        onSellSuccess(amount, isYes, outcomeData, returnAmount);
      }
   }, [onSellSuccess, outcomeData]);
 
@@ -190,13 +475,32 @@ function Card(props: CardProps) {
               </div>
               <div className="content-stretch flex gap-[8px] items-center justify-center relative shrink-0" data-name="sim/nao">
                 <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[14px] text-nowrap text-white">
-                  <p className="leading-[1.2] whitespace-pre font-bold">Sim</p>
+                  <p className="leading-[1.2] whitespace-pre font-bold">{isYes ? 'Sim' : 'Não'}</p>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-              <p className="leading-none whitespace-pre">{comprouText}</p>
-            </div>
+            {usouBonus ? (
+              <div className="content-stretch flex gap-[8px] items-center relative shrink-0" data-name="baseBonus">
+                <div className="box-border content-stretch flex items-center justify-center pl-0 pr-[8px] py-0 relative shrink-0" data-name="txt">
+                  <div aria-hidden="true" className="absolute border-[#242424] border-[0px_1px_0px_0px] border-solid inset-0 pointer-events-none" />
+                  <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[10px] text-[#e3e3e3] whitespace-nowrap">
+                    <p className="leading-none whitespace-pre">{comprouText}</p>
+                  </div>
+                </div>
+                <div className="content-stretch flex gap-[2px] items-center relative shrink-0" data-name="bonus">
+                  <div className="relative shrink-0" data-name="Icon" style={{ width: '10px', height: '10px' }}>
+                    <img alt="" src={iconBonusPequeno} style={{ width: '10px', height: '10px', display: 'block', objectFit: 'contain' }} />
+                  </div>
+                  <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[10px] text-[#e3e3e3] whitespace-nowrap">
+                    <p className="leading-none whitespace-pre">Usou bônus</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
+                <p className="leading-none whitespace-pre">{comprouText}</p>
+              </div>
+            )}
           </div>
 
           {/* BaseValor */}
@@ -204,9 +508,11 @@ function Card(props: CardProps) {
             <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[14px] text-white">
               <p className="leading-[1.1] text-nowrap whitespace-pre font-bold">{valorGrande}</p>
             </div>
-            <div className={`flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[10px]`} style={{ color: valorPequenoColor }}>
-              <p className="leading-none text-nowrap whitespace-pre">{valorPequeno}</p>
-            </div>
+            {!usouBonus && (
+              <div className={`flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center relative shrink-0 text-[10px]`} style={{ color: valorPequenoColor }}>
+                <p className="leading-none text-nowrap whitespace-pre">{valorPequeno}</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -339,38 +645,78 @@ const parseDate = (str: string) => {
     return new Date(`${year}-${month}-${day}T${time}:00`);
 };
 
-// Dados iniciais
+// Dados iniciais - Cards individuais (não agrupados)
 const initialCards: CardProps[] = [
   {
     title: "Quem será o próximo técnico demitido na Série A?",
     escolha: "Vojvoda - Santos",
     comprouText: "Aporte R$400",
-    valorGrande: "R$422,22",
-    valorPequeno: "+R$22,22 (5,55%)",
+    valorGrande: "R$413,78",
+    valorPequeno: "+R$13,78 (3,44%)",
     valorPequenoColor: "#32a866",
     imgSrc: imgImagem,
-    cotas: "444,44",
+    cotas: "435,55",
     chance: "90 → 95%",
     chanceColor: "#19954F",
     chanceIconDirection: "up",
-    retornoPotencial: "R$444,44",
-    fechamentoData: "Mercado fecha: 31/12/2025 - 23:59"
-  },
+    retornoPotencial: "R$435,55",
+    fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
+    isYes: true
+  }
+];
+
+// Dados agrupados para a pergunta do Spotify
+const spotifyOutcomes: Omit<CardProps, 'title' | 'onSellSuccess' | 'onBuySuccess'>[] = [
   {
-    title: "Quem será o artista mais popular no Spotify este ano?",
     escolha: "Bad Bunny",
     comprouText: "Aporte R$100",
-    valorGrande: "R$92,55",
-    valorPequeno: "-R$7,45 (7,45%)",
+    valorGrande: "R$0,00",
+    valorPequeno: "-R$5,57 (5,57%)",
     valorPequenoColor: "#d92341",
     imgSrc: imgImagem1,
-    cotas: "111,1",
+    cotas: "108,89",
     chance: "90 → 85%",
     chanceColor: "#C00A28",
     chanceIconDirection: "down",
-    retornoPotencial: "R$92,55",
+    retornoPotencial: "R$8,89",
     fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
-    linkMercado: "/mercado"
+    linkMercado: "/mercado",
+    usouBonus: true,
+    isYes: true
+  },
+  {
+    escolha: "Taylor Swift",
+    comprouText: "Aporte R$50,00",
+    valorGrande: "R$50,89",
+    valorPequeno: "+R$0,89 (1,78%)",
+    valorPequenoColor: "#32a866",
+    imgSrc: imgTaylorSwift,
+    cotas: "57,70",
+    chance: "85 → 90%",
+    chanceColor: "#19954F",
+    chanceIconDirection: "up",
+    retornoPotencial: "R$57,70",
+    fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
+    linkMercado: "/mercado",
+    usouBonus: false,
+    isYes: false
+  },
+  {
+    escolha: "Taylor Swift",
+    comprouText: "Aporte R$150,00",
+    valorGrande: "R$8,65",
+    valorPequeno: "-R$5,57 (5,57%)",
+    valorPequenoColor: "#d92341",
+    imgSrc: imgTaylorSwift,
+    cotas: "172,94",
+    chance: "85 → 90%",
+    chanceColor: "#19954F",
+    chanceIconDirection: "up",
+    retornoPotencial: "R$22,94",
+    fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
+    linkMercado: "/mercado",
+    usouBonus: true,
+    isYes: false
   }
 ];
 
@@ -431,21 +777,27 @@ export default function Content() {
     }
   }, [successToastData]);
 
-  const handleSellSuccess = (amount: number, isYes: boolean, outcome: OutcomeData) => {
-    const currentChance = isYes ? outcome.porcentagemSim : outcome.porcentagemNao;
-    const price = currentChance / 100;
+  const handleSellSuccess = (amount: number, isYes: boolean, outcome: OutcomeData, passedReturnAmount?: number) => {
+    // Se o returnAmount foi passado diretamente (ex: venda de bônus), usa ele
+    // Senão, calcula baseado na chance atual
+    let finalReturnAmount = passedReturnAmount;
     
-    // Calcula retorno para o toast (valor recebido da venda - já com taxa descontada)
-    const returnBruto = amount * price;
-    const taxa = returnBruto * 0.02;
-    const returnAmount = returnBruto - taxa;
+    if (finalReturnAmount === undefined) {
+      const currentChance = isYes ? outcome.porcentagemSim : outcome.porcentagemNao;
+      const price = currentChance / 100;
+      
+      // Calcula retorno para o toast (valor recebido da venda - já com taxa descontada)
+      const returnBruto = amount * price;
+      const taxa = returnBruto * 0.02;
+      finalReturnAmount = returnBruto - taxa;
+    }
 
     setSuccessToastData({
       artistName: outcome.nome,
       isYes,
       question: (outcome as any).question || outcome.nome,
       amount, 
-      returnAmount, 
+      returnAmount: finalReturnAmount, 
       actionType: 'sell'
     });
 
@@ -535,6 +887,14 @@ export default function Content() {
             <Card {...card} onSellSuccess={handleSellSuccess} onBuySuccess={handleBuySuccess} />
           </div>
         ))}
+        
+        {/* Card agrupado para a pergunta do Spotify */}
+        <GroupedCard 
+          title="Quem será o artista mais popular no Spotify este ano?"
+          outcomes={spotifyOutcomes}
+          onSellSuccess={handleSellSuccess}
+          onBuySuccess={handleBuySuccess}
+        />
       </div>
 
       {createPortal(

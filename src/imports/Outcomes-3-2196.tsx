@@ -259,7 +259,8 @@ function Box({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeData
         porcentagemNao: 15,
         isYes: true,
         isMultipleChoice: true,
-        initialTab: 'vender'
+        initialTab: 'vender',
+        cotas: 108.89 // Quantidade de cotas disponíveis para venda
       });
     }
   };
@@ -274,12 +275,13 @@ function Box({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeData
         porcentagemNao: 15,
         isYes: false,
         isMultipleChoice: true,
-        initialTab: 'vender'
+        initialTab: 'vender',
+        cotas: 0 // Bad Bunny NÃO não tem cotas para venda
       });
     }
   };
 
-  const tagSim = <TagCompras onClick={handleSellSim} cotas="111,1 cotas" />;
+  const tagSim = <TagCompras onClick={handleSellSim} cotas="108,89 cotas" />;
 
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col items-start justify-center p-[16px] rounded-[8px] shrink-0 w-full" data-name="box" style={{ outline: '4px solid #171717' }}>
@@ -535,12 +537,13 @@ function Box1({ onSelect, collapsed = false }: { onSelect?: (outcome: OutcomeDat
         porcentagemNao: 90,
         isYes: false,
         isMultipleChoice: true,
-        initialTab: 'vender'
+        initialTab: 'vender',
+        cotas: 0 // Usa sistema de chips (saldo: 57.70, bônus: 172.94)
       });
     }
   };
 
-  const tagNao = <Tag onClick={handleSellNao} cotas="111,1 cotas" />;
+  const tagNao = <Tag onClick={handleSellNao} cotas="230,64 cotas" />;
 
   return (
     <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col items-start justify-center p-[16px] rounded-[8px] shrink-0 w-full" data-name="box" style={{ outline: '4px solid #171717' }}>
