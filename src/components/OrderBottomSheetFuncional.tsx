@@ -14,6 +14,7 @@ import imgNenhum from "figma:asset/49700c649bca78f49561401caa7e05e89a96668c.png"
 import imgMaduro from "figma:asset/065ca6711a3eca5fd95f4ec7f173ed5f1a9e85b4.png";
 import imgDorival from "figma:asset/50882ac1ab781e7116eedf88af570ea8311d0c1e.png";
 import imgVojvoda from "figma:asset/b56641d75ea5dc11d6fbc5730e830d740cd1329a.png";
+import imgBadBunny from "figma:asset/b8557be30a11c35e72c3a4ac1a0fb0eb28f9c419.png";
 
 // Modal explicativo da Taxa (exportado para usar no OrderBottomSheet)
 export function TaxaExplicativaModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
@@ -262,6 +263,7 @@ function getOutcomeImage(outcome: OutcomeData) {
   const name = outcome.nome?.toLowerCase() || "";
   const question = (outcome as any).question?.toLowerCase() || "";
   
+  if (name.includes("bad bunny")) return imgBadBunny;
   if (name.includes("bitcoin") || question.includes("bitcoin")) return imgBitcoinGold;
   if (name.includes("maduro") || question.includes("maduro")) return imgMaduro;
   if (name.includes("nenhum") || question.includes("nenhum")) return imgNenhum;
@@ -1562,16 +1564,16 @@ function ToggleBonus({ checked, onCheckedChange, bonusValue }: { checked: boolea
         flex: '1 0 0', 
         gap: '4px', 
         alignItems: 'center',
-        height: '20px'
+        height: '24px'
       }}>
         {/* Switch */}
-        <div style={{ height: '20px', position: 'relative', width: '40px', flexShrink: 0 }}>
+        <div style={{ height: '24px', position: 'relative', width: '40px', flexShrink: 0 }}>
           <button
             onClick={() => onCheckedChange(!checked)}
             style={{
               position: 'relative',
               width: '40px',
-              height: '20px',
+              height: '24px',
               borderRadius: '9999px',
               backgroundColor: checked ? '#19954f' : '#373737',
               border: 'none',
@@ -1586,11 +1588,11 @@ function ToggleBonus({ checked, onCheckedChange, bonusValue }: { checked: boolea
           >
             <div
               style={{
-                width: '12px',
-                height: '12px',
+                width: '16px',
+                height: '16px',
                 borderRadius: '50%',
                 backgroundColor: 'white',
-                transform: checked ? 'translateX(20px)' : 'translateX(0)',
+                transform: checked ? 'translateX(16px)' : 'translateX(0)',
                 transition: 'transform 0.2s ease',
               }}
             />
@@ -1674,8 +1676,7 @@ function ChipSelectorCotas({
       display: 'flex', 
       gap: '8px', 
       alignItems: 'center', 
-      width: '100%',
-      marginBottom: '8px'
+      width: '100%'
     }}>
       {/* Chip Cotas de Saldo */}
       <button
@@ -1815,9 +1816,9 @@ function BaseFooter({
         <div className="bg-[#1e1e1e] relative w-full" data-name="baseFooter">
           <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
           <div className="flex flex-col items-center justify-center size-full">
-            <div className="box-border flex flex-col gap-[8px] items-center justify-center p-[20px] relative w-full">
-              <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic text-[12px] text-white text-center w-full">
-                <p className="leading-none whitespace-pre-wrap">Atenção, você não irá receber nenhum valor ao vender essas cotas</p>
+            <div className="box-border flex flex-col gap-[12px] items-center justify-center p-[20px] relative w-full">
+              <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic text-[10px] text-white text-center w-full" style={{ height: '24px' }}>
+                <p className="leading-none whitespace-pre-wrap">Atenção, você não irá receber nenhum valor ao vender essas cotas pois a posição está desvalorizada.</p>
               </div>
               <div className="flex gap-[8px] items-start w-full">
                 <div 
@@ -1856,7 +1857,7 @@ function BaseFooter({
       <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter">
         <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
         <div className="flex flex-col items-center justify-center size-full">
-          <div className="box-border content-stretch flex flex-col items-center justify-center p-[20px] relative w-full">
+          <div className="box-border content-stretch flex flex-col gap-[12px] items-center justify-center p-[20px] relative w-full">
             {showCotasChips && sellType && onSellTypeChange && cotasSaldo !== undefined && cotasBonus !== undefined && (
               <ChipSelectorCotas 
                 selectedType={sellType} 
@@ -1892,9 +1893,10 @@ function BaseFooter({
 
   // Se for tab Comprar, mostra botão de comprar
   return (
-    <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter" style={{ borderTop: '1px solid #242424' }}>
+    <div className="bg-[#1e1e1e] relative shrink-0 w-full" data-name="baseFooter">
+      <div aria-hidden="true" className="absolute border-[#242424] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
       <div className="flex flex-col items-center justify-center size-full">
-        <div className="box-border content-stretch flex flex-col gap-[8px] items-center justify-center p-[20px] relative w-full">
+        <div className="box-border content-stretch flex flex-col gap-[12px] items-center justify-center p-[20px] relative w-full">
           {useBonus !== undefined && onUseBonusChange && bonusValue !== undefined && (
             <ToggleBonus checked={useBonus} onCheckedChange={onUseBonusChange} bonusValue={bonusValue} />
           )}
