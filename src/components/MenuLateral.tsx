@@ -490,7 +490,7 @@ function MenuContent({
               <MenuItem icon={iconHistorico} label="Histórico" onClick={() => handleNavigate('/historico')} />
               <MenuItem icon={iconPosicoes} label="Pitacos" onClick={() => handleNavigate('/posicoes')} />
               <MenuItem icon={iconCentral} label="Carteira" onClick={() => handleNavigate('/central')} />
-              <MenuItem icon={iconBonusMedio} label="Bônus" hasBorder={false} />
+              <MenuItem icon={iconBonusMedio} label="Bônus" onClick={() => handleNavigate('/bonus')} hasBorder={false} />
             </AccordionContent>
           </div>
 

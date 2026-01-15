@@ -5,6 +5,7 @@ import Inicio from "./components/Inicio";
 import Historico from "./components/Historico";
 import Posicoes from "./components/Posicoes";
 import Central from "./components/Central";
+import Bonus from "./components/Bonus";
 import DuvidasFrequentes from "./components/DuvidasFrequentes";
 import MobileGuard from "./components/MobileGuard";
 import ScrollToTop from "./components/ScrollToTop";
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/mercado" element={<PageTransition><InternaMercado /></PageTransition>} />
           <Route path="/neymar" element={<PageTransition><InternaMercadoNeymar /></PageTransition>} />
           <Route path="/duvidas" element={<PageTransition><DuvidasFrequentes /></PageTransition>} />
+          <Route path="/bonus" element={<PageTransition><Bonus /></PageTransition>} />
         </Routes>
       </Router>
     </MobileGuard>

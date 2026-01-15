@@ -1564,7 +1564,7 @@ function ToggleBonus({ checked, onCheckedChange, bonusValue }: { checked: boolea
         flex: '1 0 0', 
         gap: '4px', 
         alignItems: 'center',
-        height: '24px'
+        height: '20px'
       }}>
         {/* Switch */}
         <div style={{ height: '24px', position: 'relative', width: '40px', flexShrink: 0 }}>
@@ -1602,50 +1602,30 @@ function ToggleBonus({ checked, onCheckedChange, bonusValue }: { checked: boolea
         <div style={{ 
           display: 'flex', 
           flex: '1 0 0', 
-          flexDirection: 'column', 
-          alignItems: 'flex-start', 
-          justifyContent: 'center'
+          gap: '2px', 
+          alignItems: 'center',
+          justifyContent: 'flex-start'
         }}>
           <span style={{ 
             fontFamily: 'DM Sans, sans-serif', 
-            fontSize: '10px', 
+            fontSize: '12px', 
             color: 'white', 
             lineHeight: 1,
             whiteSpace: 'nowrap'
           }}>
-            Usar Crédito de Bônus?
+            Usar Crédito de Bônus? Disponível:
+          </span>
+          <span style={{ 
+            fontFamily: 'DM Sans, sans-serif', 
+            fontSize: '14px', 
+            fontWeight: 'bold',
+            color: '#32A866', 
+            lineHeight: 1,
+            whiteSpace: 'nowrap'
+          }}>
+            {Math.floor(bonusValue)}
           </span>
         </div>
-      </div>
-      {/* Valor do bônus */}
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'row', 
-        alignItems: 'center',
-        gap: '2px',
-        height: '100%',
-        justifyContent: 'center',
-        textAlign: 'right'
-      }}>
-        <span style={{ 
-          fontFamily: 'DM Sans, sans-serif', 
-          fontSize: '10px', 
-          color: 'white', 
-          lineHeight: 1,
-          whiteSpace: 'nowrap'
-        }}>
-          Bônus disponível:
-        </span>
-        <span style={{ 
-          fontFamily: 'DM Sans, sans-serif', 
-          fontWeight: 700, 
-          fontSize: '14px', 
-          color: 'white', 
-          lineHeight: 1.1,
-          whiteSpace: 'nowrap'
-        }}>
-          {Math.floor(bonusValue)}
-        </span>
       </div>
     </div>
   );
