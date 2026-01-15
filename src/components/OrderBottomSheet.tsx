@@ -1,20 +1,32 @@
 import OrderBottomSheetFuncional, { TaxaExplicativaModal } from './OrderBottomSheetFuncional';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import type { OutcomeData } from '../App';
 
 export default function OrderBottomSheet({ outcome, onClose, onBuy, onSell }: { outcome: OutcomeData | null; onClose?: () => void; onBuy?: (amount: number, isYes: boolean) => void; onSell?: (amount: number, isYes: boolean, returnAmount: number) => void }) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showTaxaModal, setShowTaxaModal] = useState(false);
+  const scrollPositionRef = useRef(0);
 
   // Bloqueia o scroll quando o bottom sheet está aberto
   useEffect(() => {
     if (outcome) {
-      // Salva o overflow original
-      const originalOverflow = document.body.style.overflow;
+      // Salva a posição atual do scroll
+      scrollPositionRef.current = window.scrollY;
       
-      // Bloqueia o scroll
+      // Salva os estilos originais
+      const originalOverflow = document.body.style.overflow;
+      const originalPosition = document.body.style.position;
+      const originalTop = document.body.style.top;
+      const originalWidth = document.body.style.width;
+      const originalTouchAction = document.body.style.touchAction;
+      
+      // Bloqueia o scroll - solução mais robusta para mobile
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollPositionRef.current}px`;
+      document.body.style.width = '100%';
+      document.body.style.touchAction = 'none';
       
       // Inicia a animação de entrada
       setTimeout(() => setIsAnimating(true), 10);
@@ -22,10 +34,22 @@ export default function OrderBottomSheet({ outcome, onClose, onBuy, onSell }: { 
       // Cleanup: restaura o scroll quando o componente é desmontado ou outcome vira null
       return () => {
         document.body.style.overflow = originalOverflow;
+        document.body.style.position = originalPosition;
+        document.body.style.top = originalTop;
+        document.body.style.width = originalWidth;
+        document.body.style.touchAction = originalTouchAction;
+        
+        // Restaura a posição do scroll
+        window.scrollTo(0, scrollPositionRef.current);
         setIsAnimating(false);
       };
     }
   }, [outcome]);
+
+  // Previne o scroll no overlay (touchmove)
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    e.preventDefault();
+  }, []);
 
   // Só renderiza se houver outcome selecionado
   if (!outcome) return null;
@@ -69,8 +93,9 @@ export default function OrderBottomSheet({ outcome, onClose, onBuy, onSell }: { 
       {/* Overlay escuro com fade - sempre visível */}
       <div 
         className="fixed inset-0 bg-black/80 z-[60] transition-opacity duration-[320ms] ease-in-out" 
-        style={{ opacity: isAnimating ? 1 : 0 }}
-        onClick={showTaxaModal ? () => setShowTaxaModal(false) : handleClose} 
+        style={{ opacity: isAnimating ? 1 : 0, touchAction: 'none' }}
+        onClick={showTaxaModal ? () => setShowTaxaModal(false) : handleClose}
+        onTouchMove={handleTouchMove}
       />
       
       {/* Bottom Sheet de Order - sempre montado para preservar estado, controla visibilidade via transform */}
@@ -78,7 +103,10 @@ export default function OrderBottomSheet({ outcome, onClose, onBuy, onSell }: { 
         className="fixed bottom-0 left-0 right-0 z-[70] max-w-[499px] mx-auto transition-transform duration-[320ms] ease-in-out"
         style={{ transform: orderBSTransform }}
       >
-        <div className="bg-[#1e1e1e] rounded-tl-[8px] rounded-tr-[8px] shadow-2xl">
+        <div 
+          className="bg-[#1e1e1e] rounded-tl-[8px] rounded-tr-[8px] shadow-2xl"
+          style={{ overscrollBehavior: 'contain', touchAction: 'pan-y' }}
+        >
           <OrderBottomSheetFuncional 
             outcome={outcome} 
             onClose={handleClose} 

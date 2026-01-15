@@ -1564,7 +1564,7 @@ function ToggleBonus({ checked, onCheckedChange, bonusValue }: { checked: boolea
         flex: '1 0 0', 
         gap: '4px', 
         alignItems: 'center',
-        height: '20px'
+        height: '24px'
       }}>
         {/* Switch */}
         <div style={{ height: '24px', position: 'relative', width: '40px', flexShrink: 0 }}>
