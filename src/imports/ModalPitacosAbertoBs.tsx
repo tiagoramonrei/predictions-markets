@@ -1,4 +1,4 @@
-import svgPaths from "./svg-h81axpvmsb";
+import svgPaths from "./svg-2njizs40cd";
 
 function Group() {
   return (
@@ -25,7 +25,7 @@ function Icon() {
 function Header({ onClose }: { onClose?: () => void }) {
   return (
     <div className="content-stretch flex gap-[28px] items-center justify-end relative shrink-0 w-full" data-name="header">
-      <div className="cursor-pointer" onClick={onClose}>
+      <div onClick={onClose} className="cursor-pointer">
         <Icon />
       </div>
     </div>
@@ -71,22 +71,10 @@ function Icon1() {
 function Content() {
   return (
     <div className="content-stretch flex flex-col gap-[12px] items-center leading-[1.4] not-italic relative shrink-0 text-center w-full" data-name="content">
-      <p className="font-['DM_Sans:Bold',sans-serif] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre font-bold">O que é Desempenho?</p>
-      <p className="font-['DM_Sans:Regular',sans-serif] min-w-full relative shrink-0 text-[#e3e3e3] text-[12px] w-[min-content]">É o resultado entre todo o seu aporte, os ganhos já realizados e o valor atual dos pitacos em aberto.</p>
-    </div>
-  );
-}
-
-function BoxExplicacao() {
-  return (
-    <div className="bg-[#242424] relative rounded-[8px] shrink-0 w-full" data-name="boxExplicacao">
-      <div className="flex flex-row items-center justify-center size-full">
-        <div className="box-border content-stretch flex gap-[8px] items-center justify-center p-[12px] relative w-full">
-          <p className="font-['DM_Sans:Regular',sans-serif] leading-[1.4] not-italic relative shrink-0 text-[#e3e3e3] text-[0px] text-[12px] text-center text-nowrap whitespace-pre">
-            <span className="font-['DM_Sans:Bold',sans-serif] font-bold">Desempenho</span>
-            <span>{` = Total ganho + Pitacos Abertos – Aporte total`}</span>
-          </p>
-        </div>
+      <p className="font-['DM_Sans:Bold',sans-serif] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre font-bold">O que é Pitacos Aberto?</p>
+      <div className="font-['DM_Sans:Regular',sans-serif] min-w-full relative shrink-0 text-[#e3e3e3] text-[12px] w-[min-content]">
+        <p className="mb-0">Mostra quanto suas escolhas em andamento valem hoje.</p>
+        <p>Esse valor pode variar até que você venda ou o mercado seja finalizado.</p>
       </div>
     </div>
   );
@@ -99,14 +87,13 @@ function Body() {
         <div className="box-border content-stretch flex flex-col gap-[28px] items-center justify-center pb-[40px] pt-[28px] px-[20px] relative w-full">
           <Icon1 />
           <Content />
-          <BoxExplicacao />
         </div>
       </div>
     </div>
   );
 }
 
-export default function ModalDesempenhoBs({ onClose }: { onClose?: () => void }) {
+export default function ModalPitacosAbertoBs({ onClose }: { onClose?: () => void }) {
   return (
     <div className="bg-[#1e1e1e] content-stretch flex flex-col items-start overflow-clip relative rounded-tl-[8px] rounded-tr-[8px] size-full" data-name="modal-bs">
       <Header1 onClose={onClose} />

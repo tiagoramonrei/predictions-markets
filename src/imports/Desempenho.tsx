@@ -4,6 +4,7 @@ import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "../compon
 import ModalInvestidoBs from "./ModalInvestidoBs";
 import ModalTotalGanhoBs from "./ModalTotalGanhoBs";
 import ModalDesempenhoBs from "./ModalDesempenhoBs";
+import ModalPitacosAbertoBs from "./ModalPitacosAbertoBs";
 
 // --- Helper Functions (Adapted from GraficoResponsivo) ---
 
@@ -768,7 +769,71 @@ function TotalInvestido2({ isHidden }: { isHidden: boolean }) {
       <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col h-[120px] items-start justify-between p-[20px] relative rounded-[8px] shrink-0 w-[148px]" data-name="totalInvestido">
         <Title2 onClick={() => setIsDesempenhoDrawerOpen(true)} />
         <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#32a866] text-[20px] text-nowrap">
-          <p className="leading-[24px] whitespace-pre font-bold">{isHidden ? "*****" : "+R$ 1.500"}</p>
+          <p className="leading-[24px] whitespace-pre font-bold">{isHidden ? "*****" : "R$ 2.000"}</p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function Group3() {
+  return (
+    <div className="absolute inset-[-0.02%]" data-name="Group">
+      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 16 16">
+        <g id="Group">
+          <circle cx="8.00333" cy="8.00333" id="Oval" r="6.0025" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+          <path d={svgPaths.p128ba400} id="Path" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+          <path d={svgPaths.p1e110a00} id="Path_2" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+          <path d={svgPaths.pe63e600} id="Path_3" stroke="var(--stroke-0, white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
+          <g id="Path_4"></g>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+function Icon4() {
+  return (
+    <div className="opacity-[0.56] relative shrink-0 size-[16px]" data-name="Icon">
+      <Group3 />
+    </div>
+  );
+}
+
+function Title3({ onClick }: { onClick?: () => void }) {
+  return (
+    <div 
+      className="content-stretch flex gap-[4px] items-center relative shrink-0 cursor-pointer hover:opacity-80 transition-opacity" 
+      data-name="title"
+      onClick={onClick}
+    >
+      <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[12px] text-nowrap text-white">
+        <p className="leading-none whitespace-pre">Pitacos Aberto</p>
+      </div>
+      <Icon4 />
+    </div>
+  );
+}
+
+function TotalInvestido3({ isHidden }: { isHidden: boolean }) {
+  const [isPitacosAbertoDrawerOpen, setIsPitacosAbertoDrawerOpen] = useState(false);
+
+  return (
+    <>
+      <Drawer open={isPitacosAbertoDrawerOpen} onOpenChange={setIsPitacosAbertoDrawerOpen}>
+        <DrawerContent className="p-0 bg-transparent border-none shadow-none">
+          <div className="sr-only">
+            <DrawerTitle>Pitacos Aberto</DrawerTitle>
+            <DrawerDescription>Explicação detalhada sobre pitacos aberto</DrawerDescription>
+          </div>
+          <ModalPitacosAbertoBs onClose={() => setIsPitacosAbertoDrawerOpen(false)} />
+        </DrawerContent>
+      </Drawer>
+
+      <div className="bg-[#1e1e1e] box-border content-stretch flex flex-col h-[120px] items-start justify-between p-[20px] relative rounded-[8px] shrink-0 w-[148px]" data-name="totalInvestido">
+        <Title3 onClick={() => setIsPitacosAbertoDrawerOpen(true)} />
+        <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[20px] text-nowrap text-white">
+          <p className="leading-[24px] whitespace-pre font-bold">{isHidden ? "*****" : "R$ 500"}</p>
         </div>
       </div>
     </>
@@ -781,6 +846,7 @@ function Cards({ isHidden }: { isHidden: boolean }) {
       <div className="size-full">
         <div className="box-border content-stretch flex gap-[8px] items-start px-[20px] py-0 relative w-full overflow-x-auto no-scrollbar">
           <TotalInvestido isHidden={isHidden} />
+          <TotalInvestido3 isHidden={isHidden} />
           <TotalInvestido1 isHidden={isHidden} />
           <TotalInvestido2 isHidden={isHidden} />
         </div>
