@@ -219,12 +219,24 @@ function ValorVojvoda1() {
 
 function ValorVojvoda2() {
   return (
-    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-end leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Retorno Potencial</p>
+        <p className="leading-none text-nowrap whitespace-pre text-right">Retorno Potencial</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[12px] text-white">
-        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">R$444,44</p>
+        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold text-right">R$444,44</p>
+      </div>
+    </div>
+  );
+}
+
+function TaxaAdministrativa({ valor }: { valor?: string }) {
+  return (
+    <div className="content-stretch flex items-center relative shrink-0 w-full" data-name="tabela">
+      <div className="content-stretch flex flex-[1_0_0] flex-col items-start min-h-px min-w-px relative" data-name="valor">
+        <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[10px] text-[#e3e3e3]">
+          <p className="leading-none">Taxa administrativa: {valor || 'R$2,40'}</p>
+        </div>
       </div>
     </div>
   );
@@ -232,11 +244,14 @@ function ValorVojvoda2() {
 
 function TabelaVojvoda() {
   return (
-    <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="tabela">
-      <ValorVojvoda />
-      <ValorVojvoda1 />
-      <ValorVojvoda2 />
-      <></>
+    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full" data-name="tabela">
+      <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full">
+        <ValorVojvoda />
+        <ValorVojvoda1 />
+        <ValorVojvoda2 />
+        <></>
+      </div>
+      <TaxaAdministrativa />
     </div>
   );
 }
@@ -548,12 +563,12 @@ function ValorSpotify2() {
 
 function ValorSpotify3() {
   return (
-    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-end leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Retorno Potencial</p>
+        <p className="leading-none text-nowrap whitespace-pre text-right">Retorno Potencial</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[12px] text-white">
-        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">R$35,3</p>
+        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold text-right">R$35,3</p>
       </div>
     </div>
   );
@@ -576,11 +591,14 @@ function IconVerMercado({ link }: { link?: string }) {
 
 function TabelaSpotify() {
   return (
-    <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="tabela">
-      <ValorSpotify1 />
-      <ValorSpotify2 />
-      <ValorSpotify3 />
-      <></>
+    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full" data-name="tabela">
+      <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full">
+        <ValorSpotify1 />
+        <ValorSpotify2 />
+        <ValorSpotify3 />
+        <></>
+      </div>
+      <TaxaAdministrativa />
     </div>
   );
 }
@@ -648,12 +666,12 @@ function ValorRussia2() {
 
 function ValorRussia3() {
   return (
-    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-end leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Retorno</p>
+        <p className="leading-none text-nowrap whitespace-pre text-right">Retorno</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[#32a866] text-[12px]">
-        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">+R$11,77</p>
+        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold text-right">+R$11,77</p>
       </div>
     </div>
   );
@@ -661,11 +679,14 @@ function ValorRussia3() {
 
 function TabelaRussia() {
   return (
-    <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="tabela">
-      <ValorRussia1 />
-      <ValorRussia2 />
-      <ValorRussia3 />
-      <></>
+    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full" data-name="tabela">
+      <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full">
+        <ValorRussia1 />
+        <ValorRussia2 />
+        <ValorRussia3 />
+        <></>
+      </div>
+      <TaxaAdministrativa />
     </div>
   );
 }
@@ -898,12 +919,12 @@ function ValorNeymar2() {
 
 function ValorNeymar3() {
   return (
-    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-end leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Retorno</p>
+        <p className="leading-none text-nowrap whitespace-pre text-right">Retorno</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[#32a866] text-[12px]">
-        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">+R$75</p>
+        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold text-right">+R$75</p>
       </div>
     </div>
   );
@@ -911,11 +932,14 @@ function ValorNeymar3() {
 
 function TabelaNeymar() {
   return (
-    <div className="content-stretch flex gap-[12px] h-[28px] items-center relative shrink-0 w-full" data-name="tabela">
-      <ValorNeymar1 />
-      <ValorNeymar2 />
-      <ValorNeymar3 />
-      <></>
+    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full" data-name="tabela">
+      <div className="content-stretch flex gap-[12px] h-[28px] items-center relative shrink-0 w-full">
+        <ValorNeymar1 />
+        <ValorNeymar2 />
+        <ValorNeymar3 />
+        <></>
+      </div>
+      <TaxaAdministrativa />
     </div>
   );
 }
@@ -1062,12 +1086,12 @@ function ValorCasimiro2() {
 
 function ValorCasimiro3() {
   return (
-    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+    <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-end leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
       <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
-        <p className="leading-none text-nowrap whitespace-pre">Retorno</p>
+        <p className="leading-none text-nowrap whitespace-pre text-right">Retorno</p>
       </div>
       <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[12px] text-white">
-        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">0</p>
+        <p className="leading-[1.2] text-nowrap whitespace-pre font-bold text-right">0</p>
       </div>
     </div>
   );
@@ -1075,11 +1099,14 @@ function ValorCasimiro3() {
 
 function TabelaCasimiro() {
   return (
-    <div className="content-stretch flex gap-[12px] h-[28px] items-center relative shrink-0 w-full" data-name="tabela">
-      <ValorCasimiro1 />
-      <ValorCasimiro2 />
-      <ValorCasimiro3 />
-      <></>
+    <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full" data-name="tabela">
+      <div className="content-stretch flex gap-[12px] h-[28px] items-center relative shrink-0 w-full">
+        <ValorCasimiro1 />
+        <ValorCasimiro2 />
+        <ValorCasimiro3 />
+        <></>
+      </div>
+      <TaxaAdministrativa />
     </div>
   );
 }

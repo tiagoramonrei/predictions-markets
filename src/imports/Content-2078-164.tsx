@@ -243,12 +243,12 @@ function OutcomeItem({
                 </div>
 
                 {/* Retorno Potencial */}
-                <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+                <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-end leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
                   <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
-                    <p className="leading-none text-nowrap whitespace-pre">Retorno Potencial</p>
+                    <p className="leading-none text-nowrap whitespace-pre text-right">Retorno Potencial</p>
                   </div>
                   <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[12px] text-white">
-                    <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">{retornoPotencial}</p>
+                    <p className="leading-[1.2] text-nowrap whitespace-pre font-bold text-right">{retornoPotencial}</p>
                   </div>
                 </div>
               </div>
@@ -560,12 +560,12 @@ function Card(props: CardProps) {
                   </div>
 
                   {/* Retorno Potencial */}
-                  <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
+                  <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-end leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
                     <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
-                      <p className="leading-none text-nowrap whitespace-pre">Retorno Potencial</p>
+                      <p className="leading-none text-nowrap whitespace-pre text-right">Retorno Potencial</p>
                     </div>
                     <div className="flex flex-col font-['DM_Sans:Bold',sans-serif] justify-center relative shrink-0 text-[12px] text-white">
-                      <p className="leading-[1.2] text-nowrap whitespace-pre font-bold">{retornoPotencial}</p>
+                      <p className="leading-[1.2] text-nowrap whitespace-pre font-bold text-right">{retornoPotencial}</p>
                     </div>
                   </div>
                 </div>
