@@ -8,7 +8,11 @@ import imgImagem from "figma:asset/9f461ed5c177aabb0fc37cdea7a985be5dd89d45.png"
 import imgImagem1 from "figma:asset/1bfd81d4b769b7a9ec6cf3d17534b7d7b096b973.png";
 import imgTaylorSwift from "../assets/562cec5dc1dde5641c98cbf9e6b84b136f03e611.png";
 import iconBonusPequeno from "../assets/iconBonusPequeno.png";
+import iconVerMercado from "../assets/iconVerMercado.png";
 import OrderBottomSheet from "../components/OrderBottomSheet";
+import DefineLimitesBottomSheet from "../components/DefineLimitesBottomSheet";
+import LimiteAtualizadoToaster from "../components/LimiteAtualizadoToaster";
+import LimitesBonusBottomSheet from "../components/LimitesBonusBottomSheet";
 import type { OutcomeData } from "../components/InternaMercado";
 import OrderSucess from "./OrderSucess";
 
@@ -108,6 +112,7 @@ interface CardProps {
 }
 
 interface OutcomeItemProps {
+  title?: string;
   escolha: string;
   comprouText: string;
   valorGrande: string;
@@ -131,11 +136,37 @@ interface OutcomeItemProps {
 
 // Componente para renderizar um único outcome dentro de um card agrupado
 function OutcomeItem({
-  escolha, comprouText, valorGrande, valorPequeno, valorPequenoColor, imgSrc,
+  title, escolha, comprouText, valorGrande, valorPequeno, valorPequenoColor, imgSrc,
   cotas, chance, chanceColor, chanceIconDirection, retornoPotencial, fechamentoData,
   linkMercado, usouBonus, isYes = true, isLast, isExpanded, onVenderClick, onVerMercadoClick
 }: OutcomeItemProps) {
   const navigate = useNavigate();
+  const [showDefineLimitesBS, setShowDefineLimitesBS] = useState(false);
+  const [showLimitesBonusBS, setShowLimitesBonusBS] = useState(false);
+  const [showLimiteToaster, setShowLimiteToaster] = useState(false);
+  const [limitePerda, setLimitePerda] = useState<number | null>(null);
+  const [limiteGanho, setLimiteGanho] = useState<number | null>(null);
+
+  // Helper para extrair porcentagem da chance
+  const getPercentage = (str: string) => {
+    const match = str.match(/(\d+)%$/);
+    return match ? parseInt(match[1]) : 50;
+  };
+
+  // Helper para formatar valor como R$0,90
+  const formatLimiteValue = (value: number | null): string => {
+    if (value === null) return '-';
+    return `R$${value.toFixed(2).replace('.', ',')}`;
+  };
+
+  // Handler para clique em "Definir Limites"
+  const handleDefinirLimitesClick = () => {
+    if (usouBonus) {
+      setShowLimitesBonusBS(true);
+    } else {
+      setShowDefineLimitesBS(true);
+    }
+  };
   
   return (
     <div 
@@ -210,7 +241,7 @@ function OutcomeItem({
           >
             <div className="flex flex-col gap-[12px]">
               {/* Tabela de Detalhes */}
-              <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="tabela">
+              <div className="content-stretch flex gap-[4px] items-center relative shrink-0 w-full" data-name="tabela">
                 {/* Cotas */}
                 <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
                   <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
@@ -222,11 +253,11 @@ function OutcomeItem({
                 </div>
                 
                 {/* Chance */}
-                <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start min-h-px min-w-px relative shrink-0" data-name="valor">
+                <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-center min-h-px min-w-px relative shrink-0" data-name="valor" style={{ borderLeft: '1px solid #242424', borderRight: '1px solid #242424' }}>
                   <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
                     <p className="leading-none whitespace-pre">Chance</p>
                   </div>
-                  <div className="content-stretch flex gap-[4px] items-center relative shrink-0">
+                  <div className="content-stretch flex gap-[4px] items-center justify-center relative shrink-0">
                     <div className="flex flex-col font-['DM_Sans:Bold','Noto_Sans:Bold',sans-serif] justify-center leading-[0] relative shrink-0 text-[12px] text-nowrap text-white" style={{ fontVariationSettings: "'CTGR' 0, 'wdth' 100, 'wght' 700" }}>
                       <p className="leading-[1.2] whitespace-pre font-bold">{chance}</p>
                     </div>
@@ -258,35 +289,112 @@ function OutcomeItem({
                 <p className="leading-none whitespace-pre">{fechamentoData}</p>
               </div>
 
+              {/* Box de Limites - só aparece se não usou bônus */}
+              {!usouBonus && (
+                <div className="border border-[#242424] rounded-[8px]" style={{ paddingTop: '12px', paddingBottom: '12px', paddingLeft: '16px', paddingRight: '16px' }}>
+                  {limitePerda === null && limiteGanho === null ? (
+                    <p className="font-['DM_Sans:Regular',sans-serif] text-[10px]" style={{ color: 'rgba(227, 227, 227, 0.56)' }}>Nenhum limite automático configurado</p>
+                  ) : (
+                    <div className="flex justify-between items-center gap-[16px]">
+                      {/* Limite de Perda */}
+                      <div className="flex items-center gap-[4px]">
+                        <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-[#E3E3E3]">
+                          Limite de Perda:
+                        </span>
+                        <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-[#32A866]">
+                          {formatLimiteValue(limitePerda)}
+                        </span>
+                      </div>
+                      {/* Limite de Ganho */}
+                      <div className="flex items-center gap-[4px]">
+                        <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-[#E3E3E3]">
+                          Limite de Ganho:
+                        </span>
+                        <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-[#32A866]">
+                          {formatLimiteValue(limiteGanho)}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Botões de Ação */}
-              <div className="content-stretch flex gap-[12px] items-start relative shrink-0 w-full">
-                <div 
-                  onClick={onVenderClick}
-                  className="basis-0 bg-[#242424] grow h-[28px] min-h-px min-w-px relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
-                  data-name="valores"
-                >
-                  <div className="flex flex-row items-center justify-center size-full">
-                    <div className="box-border content-stretch flex gap-[8px] h-[28px] items-center justify-center px-[32px] py-0 relative w-full">
+              <div className="content-stretch flex gap-[12px] items-center justify-between relative shrink-0 w-full">
+                <div className="flex gap-[12px] items-center">
+                  <div 
+                    onClick={onVenderClick}
+                    className="bg-[#242424] h-[28px] relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
+                    data-name="valores"
+                    style={{ paddingLeft: '24px', paddingRight: '24px' }}
+                  >
+                    <div className="flex flex-row items-center justify-center h-full">
                       <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre font-bold">Vender</p>
+                    </div>
+                  </div>
+                  <div 
+                    onClick={handleDefinirLimitesClick}
+                    className="bg-[#242424] h-[28px] relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
+                    data-name="valores"
+                    style={{ paddingLeft: '24px', paddingRight: '24px', opacity: usouBonus ? 0.32 : 1 }}
+                  >
+                    <div className="flex flex-row items-center justify-center h-full">
+                      <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre font-bold">Definir Limites</p>
                     </div>
                   </div>
                 </div>
                 <div 
                   onClick={() => linkMercado && navigate(linkMercado)}
-                  className="basis-0 bg-[#242424] grow h-[28px] min-h-px min-w-px relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
-                  data-name="valores"
+                  className="bg-[#242424] w-[28px] h-[28px] rounded-full shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors flex items-center justify-center" 
+                  data-name="iconVerMercado"
                 >
-                  <div className="flex flex-row items-center justify-center size-full">
-                    <div className="box-border content-stretch flex gap-[8px] h-[28px] items-center justify-center px-[32px] py-0 relative w-full">
-                      <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre font-bold">Ver mercado</p>
-                    </div>
-                  </div>
+                  <img src={iconVerMercado} alt="" className="w-full h-full object-contain p-[6px]" />
                 </div>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Bottom Sheet de Limites indisponíveis para bônus */}
+      <LimitesBonusBottomSheet 
+        isOpen={showLimitesBonusBS} 
+        onClose={() => setShowLimitesBonusBS(false)} 
+      />
+
+      {/* Bottom Sheet de Definir Limites */}
+      {showDefineLimitesBS && title && (
+        <DefineLimitesBottomSheet
+          data={{
+            question: title,
+            escolha: escolha,
+            imgSrc: imgSrc,
+            isYes: isYes,
+            precoAtual: getPercentage(chance),
+            cotas: parseFloat(cotas.replace(/\./g, "").replace(",", ".")) || 0
+          }}
+          onClose={() => setShowDefineLimitesBS(false)}
+          onSave={(limitePerdaSalvo, limiteGanhoSalvo) => {
+            console.log('Limites salvos:', { limitePerdaSalvo, limiteGanhoSalvo });
+            setLimitePerda(limitePerdaSalvo);
+            setLimiteGanho(limiteGanhoSalvo);
+            // Mostra toaster sempre ao salvar
+            setTimeout(() => setShowLimiteToaster(true), 350);
+          }}
+          savedLimitePerda={limitePerda}
+          savedLimiteGanho={limiteGanho}
+        />
+      )}
+
+      {/* Toaster de Limite Atualizado */}
+      {createPortal(
+        <AnimatePresence>
+          {showLimiteToaster && (
+            <LimiteAtualizadoToaster onClose={() => setShowLimiteToaster(false)} />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 }
@@ -365,6 +473,7 @@ function GroupedCard({
             <OutcomeItem
               key={`${outcome.escolha}-${outcome.isYes}-${index}`}
               {...outcome}
+              title={title}
               isLast={index === outcomes.length - 1}
               isExpanded={isOpen}
               onVenderClick={() => setActiveOrderBS(index)}
@@ -396,12 +505,32 @@ function Card(props: CardProps) {
   
   const [isOpen, setIsOpen] = useState(false);
   const [showOrderBS, setShowOrderBS] = useState(false);
+  const [showDefineLimitesBS, setShowDefineLimitesBS] = useState(false);
+  const [showLimitesBonusBS, setShowLimitesBonusBS] = useState(false);
+  const [showLimiteToaster, setShowLimiteToaster] = useState(false);
+  const [limitePerda, setLimitePerda] = useState<number | null>(null);
+  const [limiteGanho, setLimiteGanho] = useState<number | null>(null);
   const navigate = useNavigate();
 
   // Helper para extrair porcentagem (Ex: "90 → 85%")
   const getPercentage = (str: string) => {
     const match = str.match(/(\d+)%$/);
     return match ? parseInt(match[1]) : 50;
+  };
+
+  // Helper para formatar valor como R$0,90
+  const formatLimiteValue = (value: number | null): string => {
+    if (value === null) return '-';
+    return `R$${value.toFixed(2).replace('.', ',')}`;
+  };
+
+  // Handler para clique em "Definir Limites"
+  const handleDefinirLimitesClick = () => {
+    if (usouBonus) {
+      setShowLimitesBonusBS(true);
+    } else {
+      setShowDefineLimitesBS(true);
+    }
   };
 
   const outcomeData: OutcomeData = {
@@ -527,7 +656,7 @@ function Card(props: CardProps) {
             >
               <div className="flex flex-col gap-[12px] mt-[12px]">
                 {/* Tabela de Detalhes */}
-                <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="tabela">
+                <div className="content-stretch flex gap-[4px] items-center relative shrink-0 w-full" data-name="tabela">
                   {/* Cotas */}
                   <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start leading-[0] min-h-px min-w-px not-italic relative shrink-0 text-nowrap" data-name="valor">
                     <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px]">
@@ -539,11 +668,11 @@ function Card(props: CardProps) {
                   </div>
                   
                   {/* Chance */}
-                  <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-start min-h-px min-w-px relative shrink-0" data-name="valor">
+                  <div className="basis-0 content-stretch flex flex-col gap-[2px] grow items-center min-h-px min-w-px relative shrink-0" data-name="valor" style={{ borderLeft: '1px solid #242424', borderRight: '1px solid #242424' }}>
                     <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
                       <p className="leading-none whitespace-pre">Chance</p>
                     </div>
-                    <div className="content-stretch flex gap-[4px] items-center relative shrink-0">
+                    <div className="content-stretch flex gap-[4px] items-center justify-center relative shrink-0">
                       <div className="flex flex-col font-['DM_Sans:Bold','Noto_Sans:Bold',sans-serif] justify-center leading-[0] relative shrink-0 text-[12px] text-nowrap text-white" style={{ fontVariationSettings: "'CTGR' 0, 'wdth' 100, 'wght' 700" }}>
                         <p className="leading-[1.2] whitespace-pre font-bold">{chance}</p>
                       </div>
@@ -575,32 +704,66 @@ function Card(props: CardProps) {
                   <p className="leading-none whitespace-pre">{fechamentoData}</p>
                 </div>
 
+                {/* Box de Limites - só aparece se não usou bônus */}
+                {!usouBonus && (
+                  <div className="border border-[#242424] rounded-[8px]" style={{ paddingTop: '12px', paddingBottom: '12px', paddingLeft: '16px', paddingRight: '16px' }}>
+                    {limitePerda === null && limiteGanho === null ? (
+                      <p className="font-['DM_Sans:Regular',sans-serif] text-[10px]" style={{ color: 'rgba(227, 227, 227, 0.56)' }}>Nenhum limite automático configurado</p>
+                    ) : (
+                      <div className="flex justify-between items-center gap-[16px]">
+                        {/* Limite de Perda */}
+                        <div className="flex items-center gap-[4px]">
+                          <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-[#E3E3E3]">
+                            Limite de Perda:
+                          </span>
+                          <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-[#32A866]">
+                            {formatLimiteValue(limitePerda)}
+                          </span>
+                        </div>
+                        {/* Limite de Ganho */}
+                        <div className="flex items-center gap-[4px]">
+                          <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-[#E3E3E3]">
+                            Limite de Ganho:
+                          </span>
+                          <span className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-[#32A866]">
+                            {formatLimiteValue(limiteGanho)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Botões de Ação */}
-                <div className="content-stretch flex gap-[12px] items-start relative shrink-0 w-full">
-                  <div 
-                    onClick={handleVenderClick}
-                    className="basis-0 bg-[#242424] grow h-[28px] min-h-px min-w-px relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
-                    data-name="valores"
-                  >
-                    <div className="flex flex-row items-center justify-center size-full">
-                      <div 
-                        onClick={(e) => escolha.includes("Vojvoda") && e.stopPropagation()}
-                        className="box-border content-stretch flex gap-[8px] h-[28px] items-center justify-center px-[32px] py-0 relative w-full"
-                      >
+                <div className="content-stretch flex gap-[12px] items-center justify-between relative shrink-0 w-full">
+                  <div className="flex gap-[12px] items-center">
+                    <div 
+                      onClick={handleVenderClick}
+                      className="bg-[#242424] h-[28px] relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
+                      data-name="valores"
+                      style={{ paddingLeft: '24px', paddingRight: '24px' }}
+                    >
+                      <div className="flex flex-row items-center justify-center h-full">
                         <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre font-bold">Vender</p>
+                      </div>
+                    </div>
+                    <div 
+                      onClick={handleDefinirLimitesClick}
+                      className="bg-[#242424] h-[28px] relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
+                      data-name="valores"
+                      style={{ paddingLeft: '24px', paddingRight: '24px', opacity: usouBonus ? 0.32 : 1 }}
+                    >
+                      <div className="flex flex-row items-center justify-center h-full">
+                        <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre font-bold">Definir Limites</p>
                       </div>
                     </div>
                   </div>
                   <div 
                     onClick={() => linkMercado && navigate(linkMercado)}
-                    className="basis-0 bg-[#242424] grow h-[28px] min-h-px min-w-px relative rounded-[1000px] shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors" 
-                    data-name="valores"
+                    className="bg-[#242424] w-[28px] h-[28px] rounded-full shrink-0 cursor-pointer hover:bg-[#2a2a2a] transition-colors flex items-center justify-center" 
+                    data-name="iconVerMercado"
                   >
-                    <div className="flex flex-row items-center justify-center size-full">
-                      <div className="box-border content-stretch flex gap-[8px] h-[28px] items-center justify-center px-[32px] py-0 relative w-full">
-                        <p className="font-['DM_Sans:Bold',sans-serif] leading-none not-italic relative shrink-0 text-[12px] text-nowrap text-white whitespace-pre font-bold">Ver mercado</p>
-                      </div>
-                    </div>
+                    <img src={iconVerMercado} alt="" className="w-full h-full object-contain p-[6px]" />
                   </div>
                 </div>
               </div>
@@ -608,6 +771,12 @@ function Card(props: CardProps) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Bottom Sheet de Limites indisponíveis para bônus */}
+      <LimitesBonusBottomSheet 
+        isOpen={showLimitesBonusBS} 
+        onClose={() => setShowLimitesBonusBS(false)} 
+      />
       
       {showOrderBS && (
         <OrderBottomSheet 
@@ -616,6 +785,40 @@ function Card(props: CardProps) {
           onBuy={handleBuy}
           onSell={handleSell}
         />
+      )}
+
+      {/* Bottom Sheet de Definir Limites */}
+      {showDefineLimitesBS && (
+        <DefineLimitesBottomSheet
+          data={{
+            question: title,
+            escolha: escolha,
+            imgSrc: imgSrc,
+            isYes: isYes,
+            precoAtual: getPercentage(chance),
+            cotas: parseFloat(cotas.replace(/\./g, "").replace(",", ".")) || 0
+          }}
+          onClose={() => setShowDefineLimitesBS(false)}
+          onSave={(limitePerdaSalvo, limiteGanhoSalvo) => {
+            console.log('Limites salvos:', { limitePerdaSalvo, limiteGanhoSalvo });
+            setLimitePerda(limitePerdaSalvo);
+            setLimiteGanho(limiteGanhoSalvo);
+            // Mostra toaster sempre ao salvar
+            setTimeout(() => setShowLimiteToaster(true), 350);
+          }}
+          savedLimitePerda={limitePerda}
+          savedLimiteGanho={limiteGanho}
+        />
+      )}
+
+      {/* Toaster de Limite Atualizado */}
+      {createPortal(
+        <AnimatePresence>
+          {showLimiteToaster && (
+            <LimiteAtualizadoToaster onClose={() => setShowLimiteToaster(false)} />
+          )}
+        </AnimatePresence>,
+        document.body
       )}
     </>
   );

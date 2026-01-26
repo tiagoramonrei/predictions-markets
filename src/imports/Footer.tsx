@@ -1,5 +1,6 @@
 import svgPaths from "./svg-fw2buucxl5";
 import imgGetItOnGooglePlayBadgeWebColorPortugueseBr1 from "figma:asset/12be12a52911f261f7711148aceffb2d4d5d93c4.png";
+import logoPrevisoes from "../assets/logoPrevisoes.svg";
 import SocialMediaIcons from "./SocialMedia";
 import { Link } from "react-router-dom";
 
@@ -177,25 +178,8 @@ function LogosConfianca() {
 
 function LogoReiPitacoNew() {
   return (
-    <div className="h-[16px] relative shrink-0 w-[145.333px]" data-name="logo-rei-pitaco-new">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 146 16">
-        <g id="logo-rei-pitaco-new">
-          <path d={svgPaths.pdf73980} fill="var(--fill-0, white)" id="letras" />
-          <path d={svgPaths.p2dad1a00} fill="var(--fill-0, white)" id="letras_2" />
-          <path d={svgPaths.p2b1cdf00} fill="var(--fill-0, white)" id="letras_3" />
-          <path d={svgPaths.p1f40dd00} fill="var(--fill-0, white)" id="letras_4" />
-          <path d={svgPaths.p3f1a5b80} fill="var(--fill-0, white)" id="letras_5" />
-          <path d={svgPaths.p11a21900} fill="var(--fill-0, white)" id="letras_6" />
-          <path d={svgPaths.p397fd000} fill="var(--fill-0, white)" id="letras_7" />
-          <path d={svgPaths.p3632f180} fill="var(--fill-0, white)" id="letras_8" />
-          <path d={svgPaths.p40188c0} fill="var(--fill-0, white)" id="letras_9" />
-          <path d={svgPaths.pa463400} fill="var(--fill-0, white)" id="letras_10" />
-          <path d={svgPaths.p112c6500} fill="var(--fill-0, white)" id="letras_11" />
-          <path d={svgPaths.p34430a00} fill="var(--fill-0, white)" id="letras_12" />
-          <path d={svgPaths.p2fae7d00} fill="var(--fill-0, white)" id="letras_13" />
-          <path d={svgPaths.p1ab1b700} fill="var(--fill-0, white)" id="icon" />
-        </g>
-      </svg>
+    <div className="h-[16px] relative shrink-0 w-[116px]" data-name="logo-rei-pitaco-new">
+      <img src={logoPrevisoes} alt="Logo Previsões" className="block size-full object-contain" />
     </div>
   );
 }
