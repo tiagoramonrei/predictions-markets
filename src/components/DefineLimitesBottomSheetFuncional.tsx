@@ -497,65 +497,74 @@ export default function DefineLimitesBottomSheetFuncional({
   };
 
   return (
-    <div className="bg-[#1e1e1e] flex flex-col rounded-tl-[8px] rounded-tr-[8px]">
-      {/* Header - com texto "Defina limites..." */}
-      <BaseHeader onClose={onClose} text="Defina limites para reduzir perdas ou garantir ganhos automaticamente." />
-
-      {/* Body */}
-      <div className="box-border content-stretch flex flex-col items-start p-[20px] relative w-full" data-name="baseBody">
-        
-        {/* Pergunta - 10px */}
-        <p className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-[1.4]">
-          {data.question}
-        </p>
-
-        {/* Card com escolha e preço atual - gap 16px */}
-        <div style={{ marginTop: '16px', width: '100%' }}>
-          <EscolhaCard data={data} />
-        </div>
-
-        {/* Toggles - gap 28px do card */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', marginTop: '28px' }}>
-          {/* Toggle Limite de Perda */}
-          <ToggleLimiteExpandido
-            checked={limitePerdaAtivo}
-            onCheckedChange={setLimitePerdaAtivo}
-            label="Definir Limite de Perda"
-            helperText="Defina um preço menor do que o preço atual:"
-            value={valorPerda}
-            onValueChange={setValorPerda}
-            minValue={0.01}
-            maxValue={precoAtualDecimal - 0.01}
-            cotas={cotas}
-            precoAtual={precoAtualDecimal}
-          />
-
-          {/* Toggle Limite de Ganho */}
-          <ToggleLimiteExpandido
-            checked={limiteGanhoAtivo}
-            onCheckedChange={setLimiteGanhoAtivo}
-            label="Definir Limite de Ganho"
-            helperText="Defina um preço maior do que o preço atual e que dê lucro:"
-            value={valorGanho}
-            onValueChange={setValorGanho}
-            minValue={precoAtualDecimal + 0.01}
-            maxValue={0.99}
-            cotas={cotas}
-            precoAtual={precoAtualDecimal}
-          />
-        </div>
-
-        {/* Texto de restrição - gap 16px */}
-        <p 
-          className="font-['DM_Sans:Regular',sans-serif] text-[10px] leading-[1.4]"
-          style={{ color: 'rgba(227, 227, 227, 0.56)', marginTop: '16px' }}
-        >
-          Quando o preço definido for atingido, a venda acontece automaticamente. O retorno potencial pode variar conforme a quantidade de cotas que você possui e o preço médio da venda no momento da execução.
-        </p>
+    <div 
+      className="bg-[#1e1e1e] flex flex-col rounded-tl-[8px] rounded-tr-[8px] overflow-hidden"
+      style={{ maxHeight: 'calc(100vh - 80px)' }}
+    >
+      {/* Header fixo - com texto "Defina limites..." */}
+      <div className="flex-shrink-0">
+        <BaseHeader onClose={onClose} text="Defina limites para reduzir perdas ou garantir ganhos automaticamente." />
       </div>
 
-      {/* Footer com botão - separado com linha */}
-      <BaseFooter onClick={handleSave} />
+      {/* Body scrollável */}
+      <div className="flex-1 overflow-y-auto" style={{ minHeight: 0 }}>
+        <div className="box-border content-stretch flex flex-col items-start p-[20px] relative w-full" data-name="baseBody">
+          
+          {/* Pergunta - 10px */}
+          <p className="font-['DM_Sans:Regular',sans-serif] text-[10px] text-white leading-[1.4]">
+            {data.question}
+          </p>
+
+          {/* Card com escolha e preço atual - gap 16px */}
+          <div style={{ marginTop: '16px', width: '100%' }}>
+            <EscolhaCard data={data} />
+          </div>
+
+          {/* Toggles - gap 28px do card */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', marginTop: '28px' }}>
+            {/* Toggle Limite de Perda */}
+            <ToggleLimiteExpandido
+              checked={limitePerdaAtivo}
+              onCheckedChange={setLimitePerdaAtivo}
+              label="Definir Limite de Perda"
+              helperText="Defina um preço menor do que o preço atual:"
+              value={valorPerda}
+              onValueChange={setValorPerda}
+              minValue={0.01}
+              maxValue={precoAtualDecimal - 0.01}
+              cotas={cotas}
+              precoAtual={precoAtualDecimal}
+            />
+
+            {/* Toggle Limite de Ganho */}
+            <ToggleLimiteExpandido
+              checked={limiteGanhoAtivo}
+              onCheckedChange={setLimiteGanhoAtivo}
+              label="Definir Limite de Ganho"
+              helperText="Defina um preço maior do que o preço atual e que dê lucro:"
+              value={valorGanho}
+              onValueChange={setValorGanho}
+              minValue={precoAtualDecimal + 0.01}
+              maxValue={0.99}
+              cotas={cotas}
+              precoAtual={precoAtualDecimal}
+            />
+          </div>
+
+          {/* Texto de restrição - gap 16px */}
+          <p 
+            className="font-['DM_Sans:Regular',sans-serif] text-[10px] leading-[1.4]"
+            style={{ color: 'rgba(227, 227, 227, 0.56)', marginTop: '16px' }}
+          >
+            Quando o preço definido for atingido, a venda acontece automaticamente. O retorno potencial pode variar conforme a quantidade de cotas que você possui e o preço médio da venda no momento da execução.
+          </p>
+        </div>
+      </div>
+
+      {/* Footer fixo com botão - separado com linha */}
+      <div className="flex-shrink-0">
+        <BaseFooter onClick={handleSave} />
+      </div>
     </div>
   );
 }

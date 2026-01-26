@@ -170,7 +170,8 @@ function OutcomeItem({
   
   return (
     <div 
-      className={`content-stretch flex flex-col gap-[12px] items-start ${!isLast ? 'border-[0px_0px_1px] border-[#242424] border-solid pb-[12px]' : ''} relative shrink-0 w-full`}
+      className={`content-stretch flex flex-col gap-[12px] items-start ${!isLast ? 'border-[0px_0px_1px] border-[#242424] border-solid' : ''} relative shrink-0 w-full`}
+      style={!isLast ? { paddingBottom: '16px' } : undefined}
       data-name="baseEscolhaAberta"
     >
       {/* Header do Outcome */}
@@ -468,7 +469,7 @@ function GroupedCard({
         </div>
 
         {/* Lista de Outcomes */}
-        <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-full" data-name="baseOutcome">
+        <div className="content-stretch flex flex-col gap-[16px] items-start relative shrink-0 w-full" data-name="baseOutcome">
           {outcomes.map((outcome, index) => (
             <OutcomeItem
               key={`${outcome.escolha}-${outcome.isYes}-${index}`}

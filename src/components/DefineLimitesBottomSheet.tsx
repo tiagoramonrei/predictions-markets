@@ -121,7 +121,7 @@ export default function DefineLimitesBottomSheet({
         style={{ transform: bsTransform }}
       >
         <div 
-          className="bg-[#1e1e1e] rounded-tl-[8px] rounded-tr-[8px] shadow-2xl max-h-[90vh]"
+          className="bg-[#1e1e1e] rounded-tl-[8px] rounded-tr-[8px] shadow-2xl"
           style={{ overscrollBehavior: 'contain', touchAction: 'pan-y' }}
         >
           <DefineLimitesBottomSheetFuncional 
