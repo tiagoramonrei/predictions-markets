@@ -122,10 +122,9 @@ function ExemploBox() {
 function Content() {
   return (
     <div className="content-stretch flex flex-col gap-[12px] items-center leading-[1.4] not-italic relative shrink-0 text-center w-full" data-name="content">
-      <p className="font-['DM_Sans:Bold',sans-serif] relative shrink-0 text-[16px] text-nowrap text-white whitespace-pre font-bold">Você Sabia?</p>
+      <p className="font-['DM_Sans:Bold',sans-serif] relative shrink-0 text-[16px] text-white font-bold">Controle seus ganhos e perdas!</p>
       <div className="font-['DM_Sans:Regular',sans-serif] min-w-full relative shrink-0 text-[#e3e3e3] text-[12px] w-[min-content]">
-        <p className="mb-0">Que é possível definir limites para reduzir perdas ou garantir ganhos automaticamente.</p>
-        <p className="mt-4">Para usar, basta expandir o card do seu Pitaco e acessar Definir limites.</p>
+        <p>Você pode definir preços para vender automaticamente seu Pitaco, sem precisar acompanhar o mercado o tempo todo.</p>
       </div>
     </div>
   );
@@ -139,6 +138,13 @@ function Body() {
           <IconInfo />
           <Content />
           <ExemploBox />
+          {/* Texto de restrição */}
+          <p 
+            className="font-['DM_Sans:Regular',sans-serif] text-[10px] leading-[1.4] text-center w-full"
+            style={{ color: 'rgba(227, 227, 227, 0.56)' }}
+          >
+            No exemplo acima, se o preço cair até 0,89, o Pitaco é vendido automaticamente. E se o preço subir até 0,92, o lucro é garantido automaticamente.
+          </p>
         </div>
       </div>
     </div>
