@@ -53,6 +53,7 @@ function ChipBase({ label, isActive, onClick }: ChipProps) {
 function Chips({ currentFilter, onFilterChange }: { currentFilter: string, onFilterChange: (filter: string) => void }) {
   const filters = [
     "Todos",
+    "Limite Definido",
     "Maior valorização (%)",
     "Maior desvalorização (%)",
     "Maior valor atual (R$)",
@@ -107,8 +108,10 @@ interface CardProps {
   linkMercado?: string;
   usouBonus?: boolean;
   isYes?: boolean;
+  limiteDefinido?: boolean;
   onSellSuccess?: (amount: number, isYes: boolean, outcome: OutcomeData, returnAmount?: number) => void;
   onBuySuccess?: (amount: number, isYes: boolean, outcome: OutcomeData) => void;
+  onLimiteChange?: (escolha: string, hasLimite: boolean) => void;
 }
 
 interface OutcomeItemProps {
@@ -132,13 +135,14 @@ interface OutcomeItemProps {
   isExpanded?: boolean;
   onVenderClick?: () => void;
   onVerMercadoClick?: () => void;
+  onLimiteChange?: () => void;
 }
 
 // Componente para renderizar um único outcome dentro de um card agrupado
 function OutcomeItem({
   title, escolha, comprouText, valorGrande, valorPequeno, valorPequenoColor, imgSrc,
   cotas, chance, chanceColor, chanceIconDirection, retornoPotencial, fechamentoData,
-  linkMercado, usouBonus, isYes = true, isLast, isExpanded, onVenderClick, onVerMercadoClick
+  linkMercado, usouBonus, isYes = true, isLast, isExpanded, onVenderClick, onVerMercadoClick, onLimiteChange
 }: OutcomeItemProps) {
   const navigate = useNavigate();
   const [showDefineLimitesBS, setShowDefineLimitesBS] = useState(false);
@@ -285,11 +289,6 @@ function OutcomeItem({
                 </div>
               </div>
 
-              {/* Data de Fechamento */}
-              <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-                <p className="leading-none whitespace-pre">{fechamentoData}</p>
-              </div>
-
               {/* Box de Limites - só aparece se não usou bônus */}
               {!usouBonus && (
                 <div className="border border-[#242424] rounded-[8px]" style={{ paddingTop: '12px', paddingBottom: '12px', paddingLeft: '16px', paddingRight: '16px' }}>
@@ -379,6 +378,11 @@ function OutcomeItem({
             console.log('Limites salvos:', { limitePerdaSalvo, limiteGanhoSalvo });
             setLimitePerda(limitePerdaSalvo);
             setLimiteGanho(limiteGanhoSalvo);
+            // Notifica o pai que o limite foi definido
+            const hasLimite = limitePerdaSalvo !== null || limiteGanhoSalvo !== null;
+            if (hasLimite && onLimiteChange) {
+              onLimiteChange();
+            }
             // Mostra toaster sempre ao salvar
             setTimeout(() => setShowLimiteToaster(true), 350);
           }}
@@ -405,12 +409,14 @@ function GroupedCard({
   title, 
   outcomes, 
   onSellSuccess, 
-  onBuySuccess 
+  onBuySuccess,
+  onLimiteChange 
 }: { 
   title: string; 
   outcomes: Omit<CardProps, 'title' | 'onSellSuccess' | 'onBuySuccess'>[]; 
   onSellSuccess?: (amount: number, isYes: boolean, outcome: OutcomeData, returnAmount?: number) => void;
   onBuySuccess?: (amount: number, isYes: boolean, outcome: OutcomeData) => void;
+  onLimiteChange?: () => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeOrderBS, setActiveOrderBS] = useState<number | null>(null);
@@ -479,9 +485,21 @@ function GroupedCard({
               isExpanded={isOpen}
               onVenderClick={() => setActiveOrderBS(index)}
               onVerMercadoClick={() => outcome.linkMercado && navigate(outcome.linkMercado)}
+              onLimiteChange={onLimiteChange}
             />
           ))}
         </div>
+
+        {/* Footer - Data de Fechamento (apenas um para todo o card agrupado, só aparece quando expandido) */}
+        {isOpen && (
+          <div className="w-full" style={{ marginLeft: '-16px', marginRight: '-16px', width: 'calc(100% + 32px)' }}>
+            <div style={{ paddingTop: '16px', borderTop: '1px solid #242424', paddingLeft: '16px', paddingRight: '16px' }}>
+              <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
+                <p className="leading-none whitespace-pre">{outcomes[0]?.fechamentoData}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Order Bottom Sheets */}
@@ -501,7 +519,7 @@ function Card(props: CardProps) {
   const { 
     title, escolha, comprouText, valorGrande, valorPequeno, valorPequenoColor, imgSrc,
     cotas, chance, chanceColor, chanceIconDirection, retornoPotencial, fechamentoData, linkMercado,
-    usouBonus, isYes = true, onSellSuccess, onBuySuccess
+    usouBonus, isYes = true, onSellSuccess, onBuySuccess, onLimiteChange
   } = props;
   
   const [isOpen, setIsOpen] = useState(false);
@@ -700,11 +718,6 @@ function Card(props: CardProps) {
                   </div>
                 </div>
 
-                {/* Data de Fechamento */}
-                <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
-                  <p className="leading-none whitespace-pre">{fechamentoData}</p>
-                </div>
-
                 {/* Box de Limites - só aparece se não usou bônus */}
                 {!usouBonus && (
                   <div className="border border-[#242424] rounded-[8px]" style={{ paddingTop: '12px', paddingBottom: '12px', paddingLeft: '16px', paddingRight: '16px' }}>
@@ -771,6 +784,17 @@ function Card(props: CardProps) {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Footer - Data de Fechamento (só aparece quando expandido) */}
+        {isOpen && (
+          <div className="w-full" style={{ marginLeft: '-16px', marginRight: '-16px', width: 'calc(100% + 32px)' }}>
+            <div style={{ paddingTop: '16px', borderTop: '1px solid #242424', paddingLeft: '16px', paddingRight: '16px' }}>
+              <div className="flex flex-col font-['DM_Sans:Regular',sans-serif] justify-center leading-[0] not-italic opacity-[0.56] relative shrink-0 text-[#e3e3e3] text-[10px] text-nowrap">
+                <p className="leading-none whitespace-pre">{fechamentoData}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom Sheet de Limites indisponíveis para bônus */}
@@ -804,6 +828,11 @@ function Card(props: CardProps) {
             console.log('Limites salvos:', { limitePerdaSalvo, limiteGanhoSalvo });
             setLimitePerda(limitePerdaSalvo);
             setLimiteGanho(limiteGanhoSalvo);
+            // Notifica o pai que o limite foi definido
+            const hasLimite = limitePerdaSalvo !== null || limiteGanhoSalvo !== null;
+            if (onLimiteChange) {
+              onLimiteChange(escolha, hasLimite);
+            }
             // Mostra toaster sempre ao salvar
             setTimeout(() => setShowLimiteToaster(true), 350);
           }}
@@ -865,7 +894,8 @@ const initialCards: CardProps[] = [
     chanceIconDirection: "up",
     retornoPotencial: "R$435,55",
     fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
-    isYes: true
+    isYes: true,
+    limiteDefinido: false
   }
 ];
 
@@ -886,7 +916,8 @@ const spotifyOutcomes: Omit<CardProps, 'title' | 'onSellSuccess' | 'onBuySuccess
     fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
     linkMercado: "/mercado",
     usouBonus: true,
-    isYes: true
+    isYes: true,
+    limiteDefinido: false
   },
   {
     escolha: "Taylor Swift",
@@ -903,7 +934,8 @@ const spotifyOutcomes: Omit<CardProps, 'title' | 'onSellSuccess' | 'onBuySuccess
     fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
     linkMercado: "/mercado",
     usouBonus: false,
-    isYes: false
+    isYes: false,
+    limiteDefinido: true
   },
   {
     escolha: "Taylor Swift",
@@ -920,12 +952,14 @@ const spotifyOutcomes: Omit<CardProps, 'title' | 'onSellSuccess' | 'onBuySuccess
     fechamentoData: "Mercado fecha: 31/12/2025 - 23:59",
     linkMercado: "/mercado",
     usouBonus: true,
-    isYes: false
+    isYes: false,
+    limiteDefinido: false
   }
 ];
 
 export default function Content() {
   const [cards, setCards] = useState(initialCards);
+  const [spotifyLimiteDefinido, setSpotifyLimiteDefinido] = useState(false);
   const [currentFilter, setCurrentFilter] = useState("Todos");
   const [successToastData, setSuccessToastData] = useState<{
     artistName: string;
@@ -935,6 +969,20 @@ export default function Content() {
     returnAmount: number;
     actionType: 'buy' | 'sell';
   } | null>(null);
+
+  // Handler para atualizar o limite definido no card individual
+  const handleLimiteChange = (escolha: string, hasLimite: boolean) => {
+    setCards(prev => prev.map(card => 
+      card.escolha === escolha 
+        ? { ...card, limiteDefinido: hasLimite }
+        : card
+    ));
+  };
+
+  // Handler para atualizar o limite definido no GroupedCard (Spotify)
+  const handleSpotifyLimiteChange = () => {
+    setSpotifyLimiteDefinido(true);
+  };
 
   // Add global styles for the progress animation (igual a Home)
   useEffect(() => {
@@ -1064,6 +1112,11 @@ export default function Content() {
 
   const filteredCards = [...cards].sort((a, b) => {
     switch (currentFilter) {
+      case "Limite Definido":
+        // Cards com limite definido vêm primeiro
+        if (a.limiteDefinido && !b.limiteDefinido) return -1;
+        if (!a.limiteDefinido && b.limiteDefinido) return 1;
+        return 0;
       case "Maior valorização (%)":
         return parsePercent(b.valorPequeno, b.valorPequenoColor) - parsePercent(a.valorPequeno, a.valorPequenoColor);
       case "Maior desvalorização (%)":
@@ -1086,19 +1139,56 @@ export default function Content() {
       <Chips currentFilter={currentFilter} onFilterChange={setCurrentFilter} />
       
       <div className="box-border content-stretch flex flex-col gap-[12px] items-start overflow-clip px-[20px] py-0 relative shrink-0 w-full" data-name="boxPosicao">
-        {filteredCards.map((card) => (
-          <div key={card.escolha} className="w-full">
-            <Card {...card} onSellSuccess={handleSellSuccess} onBuySuccess={handleBuySuccess} />
-          </div>
-        ))}
-        
-        {/* Card agrupado para a pergunta do Spotify */}
-        <GroupedCard 
-          title="Quem será o artista mais popular no Spotify este ano?"
-          outcomes={spotifyOutcomes}
-          onSellSuccess={handleSellSuccess}
-          onBuySuccess={handleBuySuccess}
-        />
+        {/* Renderização ordenada: quando filtro é "Limite Definido", cards com limite vêm primeiro */}
+        {currentFilter === "Limite Definido" ? (
+          <>
+            {/* Primeiro: cards com limite definido */}
+            {filteredCards.filter(c => c.limiteDefinido).map((card) => (
+              <div key={card.escolha} className="w-full">
+                <Card {...card} onSellSuccess={handleSellSuccess} onBuySuccess={handleBuySuccess} onLimiteChange={handleLimiteChange} />
+              </div>
+            ))}
+            {spotifyLimiteDefinido && (
+              <GroupedCard 
+                title="Quem será o artista mais popular no Spotify este ano?"
+                outcomes={spotifyOutcomes}
+                onSellSuccess={handleSellSuccess}
+                onBuySuccess={handleBuySuccess}
+                onLimiteChange={handleSpotifyLimiteChange}
+              />
+            )}
+            {/* Depois: cards sem limite definido */}
+            {filteredCards.filter(c => !c.limiteDefinido).map((card) => (
+              <div key={card.escolha} className="w-full">
+                <Card {...card} onSellSuccess={handleSellSuccess} onBuySuccess={handleBuySuccess} onLimiteChange={handleLimiteChange} />
+              </div>
+            ))}
+            {!spotifyLimiteDefinido && (
+              <GroupedCard 
+                title="Quem será o artista mais popular no Spotify este ano?"
+                outcomes={spotifyOutcomes}
+                onSellSuccess={handleSellSuccess}
+                onBuySuccess={handleBuySuccess}
+                onLimiteChange={handleSpotifyLimiteChange}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            {filteredCards.map((card) => (
+              <div key={card.escolha} className="w-full">
+                <Card {...card} onSellSuccess={handleSellSuccess} onBuySuccess={handleBuySuccess} onLimiteChange={handleLimiteChange} />
+              </div>
+            ))}
+            <GroupedCard 
+              title="Quem será o artista mais popular no Spotify este ano?"
+              outcomes={spotifyOutcomes}
+              onSellSuccess={handleSellSuccess}
+              onBuySuccess={handleBuySuccess}
+              onLimiteChange={handleSpotifyLimiteChange}
+            />
+          </>
+        )}
       </div>
 
       {createPortal(
