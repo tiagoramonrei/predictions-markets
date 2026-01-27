@@ -556,7 +556,7 @@ export default function DefineLimitesBottomSheetFuncional({
             className="font-['DM_Sans:Regular',sans-serif] text-[10px] leading-[1.4]"
             style={{ color: 'rgba(227, 227, 227, 0.56)', marginTop: '16px' }}
           >
-            Quando o preço definido for atingido, a venda acontece automaticamente. O retorno potencial pode variar conforme a quantidade de cotas que você possui e o preço médio da venda no momento da execução.
+            Quando o preço definido for atingido, a venda é acionada automaticamente se houver condições de mercado para execução. O retorno potencial pode variar conforme a quantidade de cotas e a disponibilidade no momento da execução.
           </p>
         </div>
       </div>
