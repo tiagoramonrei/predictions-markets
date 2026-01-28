@@ -556,7 +556,7 @@ export default function DefineLimitesBottomSheetFuncional({
             className="font-['DM_Sans:Regular',sans-serif] text-[10px] leading-[1.4]"
             style={{ color: 'rgba(227, 227, 227, 0.56)', marginTop: '16px' }}
           >
-            Quando o preço definido for atingido, a venda é acionada automaticamente se houver condições de mercado para execução. O retorno potencial pode variar conforme a quantidade de cotas e a disponibilidade no momento da execução.
+            Quando o preço definido for atingido, a venda é acionada automaticamente, conforme as condições do mercado no momento da execução. O valor recebido pode variar de acordo com a quantidade de cotas e a liquidez disponível. Atenção: o limite não garante um preço exato, e sim a tentativa automática de saída da posição.
           </p>
         </div>
       </div>
