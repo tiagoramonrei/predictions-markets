@@ -3783,7 +3783,7 @@ interface CardTotaisProps {
 // Component to show when no search results found
 function NoResultsFound() {
   return (
-    <div className="flex flex-col items-center justify-center w-full py-[px] gap-[28px]">
+    <div className="flex flex-col items-center justify-center w-full py-[40px] gap-[28px]">
       <img 
         src={iconLupaGde} 
         alt="Nenhum resultado" 
