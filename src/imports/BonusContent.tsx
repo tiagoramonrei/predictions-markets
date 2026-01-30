@@ -260,7 +260,7 @@ function BonusCard({ bonus }: { bonus: BonusCampanha }) {
               style={{ 
                 width: '12px',
                 height: '12px',
-                backgroundColor: '#373737',
+                backgroundColor: '#32a866',
                 outline: '2px solid #1E1E1E',
                 outlineOffset: '0px'
               }}

@@ -3318,3 +3318,9 @@ html {
 .font-\[\'DM_Sans\'\,sans-serif\] {
   font-family: 'DM Sans', sans-serif !important;
 }
+
+/* Search input placeholder */
+.search-input-home::placeholder {
+  color: #E3E3E3;
+  opacity: 0.56;
+}

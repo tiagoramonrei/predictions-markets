@@ -1,6 +1,6 @@
 import svgPaths from "./svg-z13utlvb28";
 import { useNavigate } from "react-router-dom";
-import { useState, createContext, useContext, useEffect } from "react";
+import { useState, createContext, useContext, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import confetti from "canvas-confetti";
@@ -39,6 +39,20 @@ import imgLiderMaduro from "figma:asset/e3ee253053ff6e519092909b5742bc97fe169585
 import svgPathsMaisa from "./svg-3f3cowrcu0";
 import imgImgMaisa from "figma:asset/53fc2d8d53b9d30b0de06b7ac771683fec312c28.png";
 import ApostasAndCassino from "./ApostasAndCassino-2108-82";
+import iconLupaGde from "../assets/iconLupaGde.png";
+
+// Search configuration for each card - includes title, choices, and related terms
+const CARD_SEARCH_DATA = [
+  { id: 'card1', keywords: 'bitcoin btc preço dezembro cripto criptomoeda crypto moeda digital 84000 85000 investimento' },
+  { id: 'card3', keywords: 'neymar santos futebol jogando continuar esporte jogador atacante peixe' },
+  { id: 'card5', keywords: 'russia rússia ucrania ucrânia cessar fogo cessar-fogo guerra paz politica política kiev putin zelensky' },
+  { id: 'card7', keywords: 'lider líder maduro venezuela poder politica política próximo proximo presidente ditador governo' },
+  { id: 'apostas', keywords: 'apostas cassino casino jogos aposta bet' },
+  { id: 'maisa', keywords: 'maisa silva apresentadora tv aberta entretenimento globo sbt televisao televisão programa' },
+  { id: 'casimiro', keywords: 'casimiro casemiro programa tv aberta esportes esporte streamer twitch youtube cazé caze transmissao transmissão' },
+  { id: 'tecnico', keywords: 'tecnico técnico demitido serie série futebol esporte vojvoda dorival santos corinthians treinador time clube brasileirao brasileirão campeonato' },
+  { id: 'felipe', keywords: 'felipe neto partido politico político filiação youtube youtuber influenciador influencer eleicao eleição deputado' },
+];
 
 interface OutcomeData {
   nome: string;
@@ -3762,7 +3776,35 @@ function Icon() {
 
 
 
-export default function CardTotais() {
+interface CardTotaisProps {
+  searchTerm?: string;
+}
+
+// Component to show when no search results found
+function NoResultsFound() {
+  return (
+    <div className="flex flex-col items-center justify-center w-full py-[px] gap-[28px]">
+      <img 
+        src={iconLupaGde} 
+        alt="Nenhum resultado" 
+        style={{ width: 56, height: 56 }}
+      />
+      <p 
+        className="font-['DM_Sans:Regular',sans-serif] text-center"
+        style={{ 
+          color: '#E3E3E3', 
+          fontSize: 12, 
+          lineHeight: '140%', 
+          whiteSpace: 'pre-line'
+        }}
+      >
+        Nenhum resultado encontrado.{'\n'}Tente alterar as palavras e busque{'\n'}novamente.
+      </p>
+    </div>
+  );
+}
+
+export default function CardTotais({ searchTerm = '' }: CardTotaisProps) {
   const [selectedOutcome, setSelectedOutcome] = useState<OutcomeData | null>(null);
   const [successToastData, setSuccessToastData] = useState<{
     artistName: string;
@@ -3771,6 +3813,22 @@ export default function CardTotais() {
     amount: number;
     returnAmount: number;
   } | null>(null);
+
+  // Determine which cards to show based on search
+  const isSearching = searchTerm.length >= 3;
+  const searchLower = searchTerm.toLowerCase();
+
+  const visibleCards = useMemo(() => {
+    if (!isSearching) {
+      return ['card1', 'card3', 'card5', 'card7', 'apostas', 'maisa', 'casimiro', 'tecnico', 'felipe'];
+    }
+    
+    return CARD_SEARCH_DATA
+      .filter(card => card.keywords.toLowerCase().includes(searchLower))
+      .map(card => card.id);
+  }, [isSearching, searchLower]);
+
+  const showNoResults = isSearching && visibleCards.length === 0;
 
   // Confetti effect
   useEffect(() => {
@@ -3807,16 +3865,22 @@ export default function CardTotais() {
     <SelectionContext.Provider value={handleSelect}>
       <div className="relative size-full" data-name="cardTotais">
         <div className="size-full">
-          <div className="box-border content-stretch flex flex-col gap-[24px] items-start pb-[40px] pt-[28px] px-[20px] relative size-full">
-            <Card1 />
-            <Card3 />
-            <Card5 />
-            <Card7 />
-            <ApostasAndCassino />
-            <CardMaisa />
-            <CardCasimiro />
-            <CardTecnico />
-            <CardFelipeNeto />
+          <div className="box-border content-stretch flex flex-col gap-[24px] items-start pb-[40px] pt-0 px-[20px] relative size-full">
+            {showNoResults ? (
+              <NoResultsFound />
+            ) : (
+              <>
+                {visibleCards.includes('card1') && <Card1 />}
+                {visibleCards.includes('card3') && <Card3 />}
+                {visibleCards.includes('card5') && <Card5 />}
+                {visibleCards.includes('card7') && <Card7 />}
+                {visibleCards.includes('apostas') && <ApostasAndCassino />}
+                {visibleCards.includes('maisa') && <CardMaisa />}
+                {visibleCards.includes('casimiro') && <CardCasimiro />}
+                {visibleCards.includes('tecnico') && <CardTecnico />}
+                {visibleCards.includes('felipe') && <CardFelipeNeto />}
+              </>
+            )}
           </div>
         </div>
 
